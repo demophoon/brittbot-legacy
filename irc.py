@@ -313,8 +313,8 @@ class Bot(asynchat.async_chat):
             except UnicodeEncodeError, e:
                 return
 
-        if not x:
-            text = text.replace('\x01', '')
+        #if not x:
+        #    text = text.replace('\x01', '')
 
         if wait_time < 1: wait_time = 1
 

@@ -39,6 +39,7 @@ class Jenni(irc.Bot):
         self.stats = {}
         self.times = {}
         self.excludes = {}
+        self.config = config
         if hasattr(config, 'excludes'):
             self.excludes = config.excludes
         self.setup()
