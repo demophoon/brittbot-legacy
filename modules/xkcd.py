@@ -16,7 +16,7 @@ import random
 import web
 import re
 from modules import unicode as uc
-
+from modules.brittbot.filters import smart_ignore
 '''
 Randall Munroe is nice and provides a simple JSON API for fetching comics.
 
@@ -51,6 +51,7 @@ Each comic contains the following JSON keys:
 random.seed()
 
 
+@smart_ignore
 def xkcd(jenni, input):
     '''.xkcd - Print all available information about the most recent (or specified) XKCD clip.'''
 

@@ -18,6 +18,8 @@ import urllib
 import urllib2
 import web
 
+from modules.brittbot.filters import smart_ignore
+
 r_tag = re.compile(r'<(?!!)[^>]+>')
 
 try:
@@ -121,6 +123,7 @@ def translate(text, input='auto', output='en', use_proxy=False):
     return ''.join(x[0] for x in data[0]), language
     """
 
+@smart_ignore
 def tr(jenni, context):
     """Translates a phrase, with an optional language hint."""
     input, output, phrase = context.groups()

@@ -10,6 +10,10 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
+from modules.brittbot.filters import smart_ignore
+
+
+@smart_ignore
 def replaced(jenni, input):
     command = input.group(1)
     responses = {

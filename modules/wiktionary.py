@@ -13,6 +13,8 @@ More info:
 import re
 import web
 
+from modules.brittbot.filters import smart_ignore
+
 uri = 'https://en.wiktionary.org/w/index.php?title=%s&printable=yes'
 r_tag = re.compile(r'<[^>]+>')
 r_ul = re.compile(r'(?ims)<ul>.*?</ul>')
@@ -74,6 +76,7 @@ def format(word, definitions, number=2):
             result += ', '.join(n)
     return result.strip(' .,')
 
+@smart_ignore
 def define(jenni, input):
     word = input.group(2)
     if not word:

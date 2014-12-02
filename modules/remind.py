@@ -16,9 +16,13 @@ import re
 import time
 import threading
 
+from modules.brittbot.filters import smart_ignore
+
+
 def filename(self):
     name = self.nick + '-' + self.config.host + '.reminders.db'
     return os.path.join(os.path.expanduser('~/.jenni'), name)
+
 
 def load_database(name):
     data = {}
@@ -34,12 +38,14 @@ def load_database(name):
         f.close()
     return data
 
+
 def dump_database(name, data):
     f = open(name, 'wb')
     for unixtime, reminders in data.iteritems():
         for channel, nick, message in reminders:
             f.write('%s\t%s\t%s\t%s\n' % (unixtime, channel, nick, message))
     f.close()
+
 
 def setup(jenni):
     jenni.rfn = filename(jenni)
@@ -114,6 +120,8 @@ periods = '|'.join(scaling.keys())
 p_command = r'\.in ([0-9]+(?:\.[0-9]+)?)\s?((?:%s)\b)?:?\s?(.*)' % periods
 r_command = re.compile(p_command)
 
+
+@smart_ignore
 def remind(jenni, input):
     m = r_command.match(input.bytes)
     if not m:
@@ -155,6 +163,8 @@ r_date = re.compile(r'([\d]{4})-([\d]{2})-([\d]{2})')
 import calendar
 from modules import clock
 
+
+@smart_ignore
 def at(jenni, input):
     '''.at YYYY-MM-DD HH:MM TZ -- remind at a specific time.'''
     ## input can be just a HH:MM TZ if you want the same day

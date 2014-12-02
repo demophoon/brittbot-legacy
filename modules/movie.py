@@ -15,7 +15,10 @@ import json
 import urllib2
 import web
 
+from modules.brittbot.filters import smart_ignore
 
+
+@smart_ignore
 def movie(jenni, input):
     """.imdb movie/show title -- displays information about a production"""
 

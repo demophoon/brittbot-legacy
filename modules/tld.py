@@ -14,6 +14,8 @@ import re
 import urllib2
 import web
 
+from modules.brittbot.filters import smart_ignore
+
 BS = BeautifulSoup.BeautifulSoup
 
 uri = 'https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains'
@@ -23,6 +25,7 @@ page = web.get(uri)
 soup = BS(page)
 
 
+@smart_ignore
 def gettld(jenni, input):
     '''.tld .sh -- displays information about a given top level domain.'''
     text = input.group(2)

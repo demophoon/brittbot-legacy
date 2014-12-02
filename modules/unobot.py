@@ -34,6 +34,8 @@ import random
 from datetime import datetime, timedelta
 import time
 
+from modules.brittbot.filters import smart_ignore
+
 random.seed()
 
 away_last = 0
@@ -598,6 +600,7 @@ class UnoBot:
 
 unobot = UnoBot ()
 
+@smart_ignore
 def uno(jenni, input):
     if input.sender != CHANNEL:
         jenni.reply("Please join %s to play uno!" % (CHANNEL))
@@ -608,6 +611,7 @@ uno.priority = 'low'
 uno.thread = False
 uno.rate = 0
 
+@smart_ignore
 def unostop(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -617,6 +621,7 @@ unostop.priority = 'low'
 unostop.thread = False
 unostop.rate = 0
 
+@smart_ignore
 def join(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -627,6 +632,7 @@ join.priority = 'low'
 join.thread = False
 join.rate = 0
 
+@smart_ignore
 def deal(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -636,6 +642,7 @@ deal.priority = 'low'
 deal.thread = False
 deal.rate = 0
 
+@smart_ignore
 def play(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -645,6 +652,7 @@ play.priority = 'low'
 play.thread = False
 play.rate = 0
 
+@smart_ignore
 def draw(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -654,6 +662,7 @@ draw.priority = 'low'
 draw.thread = False
 draw.rate = 0
 
+@smart_ignore
 def passs(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -663,6 +672,7 @@ passs.priority = 'low'
 passs.thread = False
 passs.rate = 0
 
+@smart_ignore
 def unotop10(jenni, input):
     unobot.top10(jenni, input)
 unotop10.commands = ['unotop10']
@@ -670,6 +680,7 @@ unotop10.priority = 'low'
 unotop10.thread = False
 unotop10.rate = 0
 
+@smart_ignore
 def show_user_cards(jenni, input):
     unobot.showCards(jenni, input.nick)
 show_user_cards.commands = ['cards']
@@ -677,6 +688,7 @@ show_user_cards.priority = 'low'
 show_user_cards.thread = False
 show_user_cards.rate = 0
 
+@smart_ignore
 def top_card(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -686,6 +698,7 @@ top_card.priority = 'low'
 top_card.thread = False
 top_card.rate = 0
 
+@smart_ignore
 def leave(jenni, input):
     if not (input.sender).startswith('#'):
         return
@@ -695,6 +708,7 @@ leave.priority = 'low'
 leave.thread = False
 leave.rate = 0
 
+@smart_ignore
 def remove_on_part(jenni, input):
     unobot.remove_player(jenni, (input.nick).lower())
 remove_on_part.event = 'PART'
@@ -703,6 +717,7 @@ remove_on_part.priority = 'low'
 remove_on_part.thread = False
 remove_on_part.rate = 0
 
+@smart_ignore
 def remove_on_quit(jenni, input):
     unobot.remove_player(jenni, (input.nick).lower())
 remove_on_quit.event = 'QUIT'
@@ -711,6 +726,7 @@ remove_on_quit.priority = 'low'
 remove_on_quit.thread = False
 remove_on_quit.rate = 0
 
+@smart_ignore
 def remove_on_kick(jenni, input):
     unobot.remove_player(jenni, (input.nick).lower())
 remove_on_kick.event = 'KICK'
@@ -719,6 +735,7 @@ remove_on_kick.priority = 'low'
 remove_on_kick.thread = False
 remove_on_kick.rate = 0
 
+@smart_ignore
 def remove_on_nickchg(jenni, input):
     unobot.remove_player(jenni, (input.nick).lower())
 remove_on_nickchg.event = 'NICK'
@@ -727,6 +744,7 @@ remove_on_nickchg.priority = 'low'
 remove_on_nickchg.thread = False
 remove_on_nickchg.rate = 0
 
+@smart_ignore
 def unostats(jenni, input):
     unobot.unostat(jenni, input)
 unostats.commands = ['unostats']
@@ -734,6 +752,7 @@ unostats.priority = 'low'
 unostats.thread = False
 unostats.rate = 0
 
+@smart_ignore
 def uno_help(jenni, input):
     nick = input.group(2)
     txt = 'For rules, examples, and getting started: http://j.mp/esl47K'
@@ -748,6 +767,7 @@ uno_help.priority = 'low'
 uno_help.thread = False
 uno_help.rate = 0
 
+@smart_ignore
 def uno_pce_on(jenni, input):
     unobot.enablePCE(jenni, input.nick)
 uno_pce_on.commands = ['pce-on']
@@ -755,6 +775,7 @@ uno_pce_on.priority = 'low'
 uno_pce_on.thread = False
 uno_pce_on.rate = 0
 
+@smart_ignore
 def uno_pce_off(jenni, input):
     unobot.disablePCE(jenni, input.nick)
 uno_pce_off.commands = ['pce-off']
@@ -762,6 +783,7 @@ uno_pce_off.priority = 'low'
 uno_pce_off.thread = False
 uno_pce_off.rate = 0
 
+@smart_ignore
 def uno_ispce(jenni, input):
     unobot.isPCEEnabled(jenni, input.nick)
 uno_ispce.commands = ['pce']
@@ -769,6 +791,7 @@ uno_ispce.priority = 'low'
 uno_ispce.thread = False
 uno_ispce.rate = 0
 
+@smart_ignore
 def uno_pce_clear(jenni, input):
     unobot.PCEClear(jenni, input.nick)
 uno_pce_clear.commands = ['.pce-clear']
@@ -778,6 +801,7 @@ uno_pce_clear.rate = 0
 
 user_triggered = False
 
+@smart_ignore
 def uno_names(jenni, input, override=False):
     global away_last
     global user_triggered
@@ -794,6 +818,7 @@ def uno_names(jenni, input, override=False):
     user_triggered = True
 uno_names.commands = ['ping']
 
+@smart_ignore
 def uno_get_names(jenni, input):
     global user_triggered
     incoming = input.args
@@ -830,6 +855,7 @@ def load_away():
         lines = ['ChanServ']
     return [x.strip() for x in lines]
 
+@smart_ignore
 def save_away(jenni, aways):
     f = open('uno_away.txt', 'w')
     for nick in aways:
@@ -837,6 +863,7 @@ def save_away(jenni, aways):
         f.write('\n')
     f.close()
 
+@smart_ignore
 def uno_away(jenni, input):
     if input.sender != CHANNEL:
         return
@@ -854,6 +881,7 @@ def uno_away(jenni, input):
 uno_away.commands = ['away']
 uno_away.rate = 0
 
+@smart_ignore
 def uno_ping_force(jenni, input):
     if input.admin:
         uno_names(jenni, input, True)

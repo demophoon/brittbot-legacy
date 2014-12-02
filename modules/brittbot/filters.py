@@ -7,6 +7,7 @@ More info:
 '''
 
 import re
+from functools import wraps
 
 ignored_nicks = [
     ".*bot",
@@ -32,18 +33,25 @@ def check_ignore(msg):
     return ignore
 
 
+def is_allowed(function_name, jenni, msg):
+    irc_room = msg.sender
+    filters = jenni.config.channel_filters
+    allowed = True
+    if irc_room in filters:
+        if 'blocked' in filters[irc_room]:
+            if function_name in filters[irc_room]['blocked']:
+                allowed = False
+        if 'allowed' in filters[irc_room]:
+            allowed = function_name in filters[irc_room]['allowed']
+    return allowed
+
+
 def smart_ignore(fn):
+    @wraps(fn)
     def callable(jenni, msg):
-        print fn.__name__
-        if check_ignore(msg):
-            return None
-        if msg.sender in limited_channels:
-            if limited_channels[msg.sender].get('allowed'):
-                if fn in [x._original for x in limited_channels[msg.sender]['allowed']]:
-                    return fn
-                return None
-            if fn in [x._original for x in limited_channels[msg.sender]['ignored']]:
-                return None
+        function_name = fn.__name__
+        default_fn = lambda jenni, msg: None
+        if not is_allowed(function_name, jenni, msg):
+            return default_fn
         return fn(jenni, msg)
-    callable._original = fn
     return callable

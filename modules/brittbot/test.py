@@ -7,7 +7,7 @@ from modules.brittbot.filters import smart_ignore
 
 @smart_ignore
 def config_print(jenni, msg):
-    import pdb; pdb.set_trace()
+    jenni.config.allowed_channels
     jenni.reply("tested.")
     pass
 config_print.rule = r"^test$"

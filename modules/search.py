@@ -16,6 +16,8 @@ import re
 import urllib
 import web
 
+from modules.brittbot.filters import smart_ignore
+
 r_tag = re.compile(r'<(?!!)[^>]+>')
 
 
@@ -71,6 +73,8 @@ def formatnumber(n):
         parts.insert(i, ',')
     return ''.join(parts)
 
+
+@smart_ignore
 def g(jenni, input):
     """Queries Google for the specified input."""
     query = input.group(2)
@@ -91,6 +95,8 @@ g.commands = ['g']
 g.priority = 'high'
 g.example = '.g swhack'
 
+
+@smart_ignore
 def gc(jenni, input):
     """Returns the number of Google results for the specified input."""
     query = input.group(2)
@@ -107,6 +113,8 @@ r_query = re.compile(
     r'\+?"[^"\\]*(?:\\.[^"\\]*)*"|\[[^]\\]*(?:\\.[^]\\]*)*\]|\S+'
 )
 
+
+@smart_ignore
 def gcs(jenni, input):
     if not input.group(2):
         return jenni.reply("Nothing to compare.")
@@ -137,6 +145,8 @@ def bing_search(query, lang='en-GB'):
     m = r_bing.search(bytes)
     if m: return m.group(1)
 
+
+@smart_ignore
 def bing(jenni, input):
     """Queries Bing for the specified input."""
     query = input.group(2)
@@ -263,6 +273,8 @@ def duck_zero_click_api(query):
 
     return output
 
+
+@smart_ignore
 def duck(jenni, input):
     '''Perform a DuckDuckGo Search and Zero-Click lookup'''
     query = input.group(2)
@@ -304,6 +316,8 @@ def duck(jenni, input):
         return jenni.reply("No results found for '%s'." % query)
 duck.commands = ['duck', 'ddg']
 
+
+@smart_ignore
 def search(jenni, input):
     if not input.group(2):
         return jenni.reply('.search for what?')
@@ -329,6 +343,8 @@ def search(jenni, input):
     jenni.reply(result)
 search.commands = ['search']
 
+
+@smart_ignore
 def suggest(jenni, input):
     if not input.group(2):
         return jenni.reply("No query term.")

@@ -10,6 +10,8 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
+from modules.brittbot.filters import smart_ignore
+
 
 def fchannels():
     try:
@@ -22,6 +24,7 @@ def fchannels():
     return lines.split(',')
 
 
+@smart_ignore
 def doc(jenni, input):
     """Shows a command's documentation, and possibly an example."""
     if input.group(1) == "help":
@@ -39,12 +42,14 @@ doc.example = '$nickname: doc tell?'
 doc.priority = 'low'
 
 
+@smart_ignore
 def commands(jenni, input):
     jenni.reply('For a list of all of my commands, please visit: https://is.gd/CPStvK')
 commands.commands = ['commands', 'help']
 commands.priority = 'low'
 
 
+@smart_ignore
 def help(jenni, input):
     response = (
         'Hi, I\'m a bot. Say ".commands" to me in private for a list ' +
@@ -56,6 +61,7 @@ help.rule = ('$nick', r'(?i)help(?:[?!]+)?$')
 help.priority = 'low'
 
 
+@smart_ignore
 def stats(jenni, input):
     """Show information on command usage patterns."""
     if input.sender == '##uno':

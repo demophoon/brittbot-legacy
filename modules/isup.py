@@ -16,6 +16,10 @@ More info:
 import re
 import web
 
+from modules.brittbot.filters import smart_ignore
+
+
+@smart_ignore
 def isup(jenni, input):
     '''isup.me website status checker'''
     site = input.group(2)
