@@ -219,6 +219,7 @@ class Jenni(irc.Bot):
                 s.owner = origin.nick + '@' + origin.host == self.config.owner
                 if s.owner == False: s.owner = origin.nick == self.config.owner
                 s.host = origin.host
+                s.origin = origin
                 return s
 
         return CommandInput(text, origin, bytes, match, event, args)
