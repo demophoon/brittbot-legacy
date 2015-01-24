@@ -11,6 +11,7 @@ More info:
 """
 
 import time, sys, os, re, threading, imp
+import json
 import irc
 
 home = os.getcwd()
@@ -39,6 +40,8 @@ class Jenni(irc.Bot):
         self.stats = {}
         self.times = {}
         self.excludes = {}
+        self.brain_file = 'brain.json'
+        self.brain = {}
         self.config = config
         if hasattr(config, 'excludes'):
             self.excludes = config.excludes
@@ -81,11 +84,24 @@ class Jenni(irc.Bot):
                 self.register(vars(module))
                 modules.append(name)
 
+        print "Loading Brain..."
+        if not os.path.isfile(self.brain_file):
+            self.brain = {}
+            self.save_brain()
+        f = open(self.brain_file, 'r')
+        self.brain = json.loads(f.read())
+        f.close()
+
         if modules:
             print >> sys.stderr, 'Registered modules:', ', '.join(modules)
         else: print >> sys.stderr, "Warning: Couldn't find any modules"
 
         self.bind_commands()
+
+    def save_brain(self):
+        f = open(self.brain_file, 'w')
+        f.write(json.dumps(self.brain))
+        f.close()
 
     def register(self, variables):
         # This is used by reload.py, hence it being methodised
