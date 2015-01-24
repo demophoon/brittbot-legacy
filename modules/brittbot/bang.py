@@ -5,6 +5,7 @@
 import random
 
 from modules.brittbot.filters import smart_ignore
+from modules.brittbot.helpers import action
 
 
 @smart_ignore
@@ -62,3 +63,22 @@ def one_upper(jenni, input):
     ))
 one_upper.rule = r'^(\d+)([a-zA-Z]+)$'
 one_upper.priority = 'medium'
+
+
+@smart_ignore
+def karma_upper(jenni, input):
+    nice_thanks = [
+        ':D :D :D',
+        'Thank you! %s :D' % input.nick,
+        action('does a jolly dance'),
+        action('giggles'),
+        action('smiles real big'),
+        action('high fives %s' % input.nick),
+    ]
+    jenni.say(random.choice(nice_thanks))
+    if random.choice([False for _ in range(10)] + [True]):
+        jenni.say("%s++" % (
+            input.nick
+        ))
+karma_upper.rule = r'$nickname\+\+'
+karma_upper.priority = 'medium'

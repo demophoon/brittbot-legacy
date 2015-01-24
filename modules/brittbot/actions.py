@@ -18,7 +18,7 @@ bad_actions = [
     "reboots",
     "starts having a fit",
     "whurs loudly",
-    "fans spin up to 100%",
+    "spins his fans up to 100%",
     "starts playing 'The Final Countdown' using his piezo buzzer",
     "starts blinking his lights in pain",
     "spits out some printer ink",
@@ -51,13 +51,7 @@ good_actions = [
 
 @smart_ignore
 def pats(jenni, input):
-    jenni.say(action(random.choice([
-        "giggles and smiles",
-        "smiles really big",
-        "grins a little bit",
-        "grins real big",
-        "gives %s a hug" % input.nick,
-    ])))
+    return
 pats.rule = "\x01ACTION pats $nickname on the head"
 pats.priority = 'medium'
 
@@ -71,7 +65,16 @@ standup.priority = 'medium'
 
 @smart_ignore
 def kicks_me(jenni, input):
-    jenni.say(action("%s" % random.choice(bad_actions)))
+    reply = "%s" % random.choice(bad_actions)
+    if all([x in input for x in ['pats', 'head']]):
+        reply += " and %s" % random.choice([
+            "giggles then smiles",
+            "smiles really big",
+            "grins a little bit",
+            "grins real big",
+            "gives %s a hug" % input.nick,
+        ])
+    jenni.say(action(reply))
 kicks_me.rule = "^(\x01ACTION )(\w+s) $nickname"
 kicks_me.priority = 'medium'
 

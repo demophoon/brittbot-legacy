@@ -9,6 +9,8 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
+return
+
 def rankings (ranktype):
     from copy import copy
     prescores = [ ]

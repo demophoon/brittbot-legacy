@@ -17,7 +17,7 @@ def your_mom(jenni, msg):
     )
     if len(msg.split(" ")) > 20:
         return
-    if random.choice(range(25)) == 0:
+    if random.choice(range(75)) == 0:
         jenni.say(msg)
 your_mom.rule = r"^.* (is|has|used to be) (.+)\W?$"
 your_mom.priority = 'medium'

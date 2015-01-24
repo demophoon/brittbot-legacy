@@ -12,3 +12,12 @@ def config_print(jenni, msg):
     pass
 config_print.rule = r"^test$"
 config_print.priority = 'medium'
+
+
+@smart_ignore
+def ohai(jenni, msg):
+    jenni.config.allowed_channels
+    jenni.reply("facter")
+    pass
+ohai.rule = r".*ohai.*"
+ohai.priority = 'medium'

@@ -43,6 +43,9 @@ def is_allowed(function_name, jenni, msg):
                 allowed = False
         if 'allowed' in filters[irc_room]:
             allowed = function_name in filters[irc_room]['allowed']
+    for nick in ignored_nicks:
+        if re.search(re.compile(nick, re.IGNORECASE), msg.nick):
+            allowed = False
     return allowed
 
 

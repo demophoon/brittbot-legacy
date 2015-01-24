@@ -30,6 +30,8 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 [18:03] <Lako> :O
 """
 
+return
+
 import random
 from datetime import datetime, timedelta
 import time

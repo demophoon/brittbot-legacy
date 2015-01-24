@@ -30,8 +30,11 @@ def join(jenni, input):
             ## 2 inputs
             key = inc[1]
         if not key:
+            print "Joining channel: %s" % channel
             jenni.write(['JOIN'], channel)
-        else: jenni.write(['JOIN', channel, key])
+        else:
+            print "Joining channel: %s with key %s" % (channel, key)
+            jenni.write(['JOIN', channel, key])
 join.commands = ['join']
 join.priority = 'low'
 join.example = '.join #example or .join #example key'

@@ -12,7 +12,7 @@ import re
 def is_kick(jenni, channel, hostmask):
     for key, value in jenni.config.auto_kick_users.items():
         if channel not in value['rooms']:
-            return
+            return (False, "")
 
         usernick, username, userhost = hostmask
 
@@ -62,3 +62,15 @@ def nametrigger(jenni, input):
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'
+
+
+def mean_kick(jenni, msg):
+    reply = "%s you too %s" % (
+        msg.groups()[0],
+        msg.nick
+    )
+    if msg.sender == '##brittslittlesliceofheaven':
+        jenni.write(['KICK', msg.sender, msg.nick, ":%s" % reply])
+    jenni.say(reply)
+mean_kick.rule = '(screw|fuck|i hate)(?: you)? $nickname'
+mean_kick.priority = 'high'
