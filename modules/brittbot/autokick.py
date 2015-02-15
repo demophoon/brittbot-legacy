@@ -77,12 +77,6 @@ def nametrigger(jenni, input):
     names = re.split(' ', input)
     #names = [n.split('!')[0] for n in names]
     #names = [n.replace('~', '') for n in names]
-    print input.nick
-    print input.origin.user
-    print input.origin.host
-    print input.sender
-    print names
-    print "----"
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'

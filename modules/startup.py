@@ -10,7 +10,9 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import threading, time
+import threading
+import time
+
 
 def setup(jenni):
     # by clsn
@@ -18,8 +20,10 @@ def setup(jenni):
     refresh_delay = 300.0
 
     if hasattr(jenni.config, 'refresh_delay'):
-        try: refresh_delay = float(jenni.config.refresh_delay)
-        except: pass
+        try:
+            refresh_delay = float(jenni.config.refresh_delay)
+        except:
+            pass
 
         def close():
             print "Nobody PONGed our PING, restarting"
@@ -39,7 +43,8 @@ def setup(jenni):
                 jenni.data['startup.setup.timer'].cancel()
                 time.sleep(refresh_delay + 60.0)
                 pingloop()
-            except: pass
+            except:
+                pass
         pong.event = 'PONG'
         pong.thread = True
         pong.rule = r'.*'
@@ -55,11 +60,8 @@ def setup(jenni):
 
         jenni.handle_connect = outer_handle_connect
 
-joining_channel = None
-
 
 def startup(jenni, input):
-    global joining_channel
     import time
 
     if hasattr(jenni.config, 'serverpass'):
