@@ -8,10 +8,22 @@ More info:
 
 import re
 
+allowed_rooms = [
+    '##brittslittlesliceofheaven',
+    '##brittbot',
+]
+
+
+def init_kick_brain(jenni):
+    brain = jenni.brain
+    if not 'kicks' in brain:
+        brain['kicks'] = {}
+        jenni.save_brain()
+
 
 def is_kick(jenni, channel, hostmask):
     for key, value in jenni.config.auto_kick_users.items():
-        if channel not in value['rooms']:
+        if channel not in value['rooms'] and channel not in allowed_rooms:
             return (False, "")
 
         usernick, username, userhost = hostmask
@@ -35,15 +47,23 @@ def is_kick(jenni, channel, hostmask):
 
 
 def auto_kick(jenni, msg):
+    init_kick_brain(jenni)
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     kick, kickmsg = is_kick(jenni, msg.sender, hostmask)
     if msg.nick == jenni.bot.nick:
         return
     if kick:
+        if msg.nick not in jenni.brain['kicks']:
+            jenni.brain['kicks'][msg.nick] = 0
+        jenni.brain['kicks'][msg.nick] += 1
+        if jenni.brain['kicks'][msg.nick] > 3:
+            jenni.write(['MODE', msg.sender, "+b", "%s!%s@%s" % hostmask])
+        jenni.save_brain()
         print "Kicking %s from %s for reason %s" % (
             msg.nick, msg.sender, kickmsg
         )
         jenni.write(['KICK', msg.sender, msg.nick, ":%s" % kickmsg])
+        jenni.brain['kicks']
     else:
         print "Joining %s: %s" % (
             msg.sender, msg.nick
@@ -57,8 +77,12 @@ def nametrigger(jenni, input):
     names = re.split(' ', input)
     #names = [n.split('!')[0] for n in names]
     #names = [n.replace('~', '') for n in names]
-    print names
+    print input.nick
+    print input.origin.user
+    print input.origin.host
     print input.sender
+    print names
+    print "----"
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'
@@ -69,8 +93,8 @@ def mean_kick(jenni, msg):
         msg.groups()[0],
         msg.nick
     )
-    if msg.sender == '##brittslittlesliceofheaven':
+    if msg.sender in allowed_rooms:
         jenni.write(['KICK', msg.sender, msg.nick, ":%s" % reply])
     jenni.say(reply)
-mean_kick.rule = '(screw|fuck|i hate)(?: you)? $nickname'
+mean_kick.rule = '(?i)(screw|fuck|i hate)(?: you)? $nickname'
 mean_kick.priority = 'high'

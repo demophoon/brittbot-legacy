@@ -2,6 +2,8 @@
 # encoding: utf-8
 # jenni db.py - Database layer for brittbot
 
+return
+
 import datetime
 from sqlalchemy import (
     Column,

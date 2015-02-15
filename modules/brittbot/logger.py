@@ -2,6 +2,8 @@
 # encoding: utf-8
 # jenni brittbot/logger.py - Logs messages for all rooms
 
+return
+
 import collections
 import random
 

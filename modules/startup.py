@@ -55,7 +55,11 @@ def setup(jenni):
 
         jenni.handle_connect = outer_handle_connect
 
+joining_channel = None
+
+
 def startup(jenni, input):
+    global joining_channel
     import time
 
     if hasattr(jenni.config, 'serverpass'):

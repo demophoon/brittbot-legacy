@@ -87,10 +87,13 @@ what_do.priority = 'medium'
 
 
 @smart_ignore
-def sandwich(jenni, input):
-    if "sudo" in input:
-        jenni.say(action("makes %s a sandwich" % input.nick))
+def sandwich(jenni, msg):
+    if "sudo" in msg:
+        jenni.say(action("makes %s a %s" % (
+            msg.nick,
+            msg.groups()[0],
+        )))
     else:
-        jenni.say("Make your own sandwich")
-sandwich.rule = "^($nickname|sudo $nickname)\W? make me a (sandwich|sammich)"
+        jenni.reply("Make your own %s" % msg.groups()[0])
+sandwich.rule = "^(?:$nickname|sudo $nickname|$nickname sudo|)\W? make me a (\w+)"
 sandwich.priority = 'medium'

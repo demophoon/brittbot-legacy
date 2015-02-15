@@ -35,7 +35,10 @@ def check_ignore(msg):
 
 def is_allowed(function_name, jenni, msg):
     irc_room = msg.sender
-    filters = jenni.config.channel_filters
+    if 'filters' not in jenni.brain:
+        jenni.brain['filters'] = jenni.config.channel_filters
+        jenni.save_brain()
+    filters = jenni.brain["filters"]
     allowed = True
     if irc_room in filters:
         if 'blocked' in filters[irc_room]:
@@ -58,3 +61,22 @@ def smart_ignore(fn):
             return default_fn
         return fn(jenni, msg)
     return callable
+
+
+def modify_filtered(jenni, msg):
+    if not msg.admin:
+        return
+    action, room, function = msg.groups()
+    if room not in jenni.brain['filters']:
+        jenni.brain['filters'][room] = {}
+    if 'blocked' not in jenni.brain['filters'][room]:
+        jenni.brain['filters'][room]['blocked'] = []
+    if action == 'enable':
+        jenni.brain['filters'][room]['blocked'].remove(function)
+    else:
+        jenni.brain['filters'][room]['blocked'].append(function)
+    jenni.save_brain()
+    jenni.reply('Function `%s` has been %sd in `%s`' % (
+        function, action, room
+    ))
+modify_filtered.rule = '!(enable|disable) (\S+) (.+)'

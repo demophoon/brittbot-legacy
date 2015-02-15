@@ -24,7 +24,7 @@ karma += "\((.+)\)(\+\+|--)|"
 karma += "(\+\+|--)([a-zA-Z0-9]+)|"
 karma += "(\+\+|--)\((.+)\)|"
 karma += "\((inc|dec) (.+)\)"
-karma += ")"
+karma += ")+"
 
 positive_karma = ['++', 'inc']
 negitive_karma = ['--', 'dec']
@@ -44,11 +44,11 @@ negitive_sayings = [
 
 @filters.smart_ignore
 def karma_award(jenni, msg):
+    if not msg.owner and msg.sender == "#r/kansascity":
+        return
     setup_karma_brain(jenni)
-    sayings = [
-        "Level up",
-    ]
     karmas = re.findall(re.compile(karma), msg)
+    print karmas
     for item in karmas:
         item = [x for x in item if x]
         for k in positive_karma:
@@ -61,6 +61,8 @@ def karma_award(jenni, msg):
                 awarded = -1
                 item = [x for x in item if x not in negitive_karma][0]
                 break
+        if len(item) < 2:
+            return
         if item not in jenni.brain['karma']:
             jenni.brain['karma'][item] = 0
         jenni.brain['karma'][item] += awarded

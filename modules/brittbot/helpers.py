@@ -2,21 +2,34 @@
 # encoding: utf-8
 # jenni brittbot/helpers.py - Various methods for formatting messages
 
+from __future__ import unicode_literals
+import sys
+import datetime
+import random
+
+if sys.version_info.major >= 3:
+    unicode = str
+
+CONTROL_NORMAL = u'\x0f'
+CONTROL_COLOR = u'\x03'
+CONTROL_UNDERLINE = u'\x1f'
+CONTROL_BOLD = u'\x02'
+
 colors = {
-    'white': '0',
-    'black': '1',
-    'blue': '2',
-    'navy': '2',
-    'green': '3',
-    'red': '4',
-    'brown': '5',
-    'maroon': '5',
-    'purple': '6',
-    'orange': '7',
-    'olive': '7',
-    'yellow': '8',
-    'light green': '9',
-    'lime': '9',
+    'white': '00',
+    'black': '01',
+    'blue': '02',
+    'navy': '02',
+    'green': '03',
+    'red': '04',
+    'brown': '05',
+    'maroon': '05',
+    'purple': '06',
+    'orange': '07',
+    'olive': '07',
+    'yellow': '08',
+    'light green': '09',
+    'lime': '09',
     'teal': '10',
     'light cyan': '11',
     'cyan': '11',
@@ -32,9 +45,31 @@ colors = {
 }
 
 
+def color_test(jenni, msg):
+    if not msg.admin:
+        return
+    reply = []
+    for color in colors:
+        reply.append(colorize(colors[color], color))
+    reply = u' '.join(reply)
+    print repr(reply)
+    jenni.reply(reply)
+color_test.rule = r"^color$"
+
+
 def action(msg):
     msg = '\x01ACTION %s\x01' % msg
     return msg
+
+
+def colorize(msg, fg=None, bg=None):
+    if not fg and not bg:
+        final = msg
+    elif bg:
+        final = ''.join([CONTROL_COLOR, fg, ',', bg, msg, CONTROL_COLOR])
+    else:
+        final = ''.join([CONTROL_COLOR, fg, msg, CONTROL_COLOR])
+    return final
 
 
 def colorize_msg(msg):
@@ -48,19 +83,18 @@ def colorize_msg(msg):
         'blue',
         'purple',
     ]
+    starting_index = random.choice(range(len(rainbow)))
     for index, char in enumerate(msg):
-        color_tag = unicode("\x03")
-        final += color_tag
-        final += "%s%s" % (
-            colors[rainbow[index % len(rainbow)]],
+        rindex = index + starting_index
+        final += colorize(
             char,
+            fg=colors[rainbow[rindex % len(rainbow)]],
         )
-        final += color_tag
-    return action(final)
+    return final
 
 
 def duration(seconds):
-    d = datetime.datetime(1,1,1) + seconds
+    d = datetime.datetime(1, 1, 1) + seconds
     fstr = ""
     if d.day - 1 > 0:
         if d.day - 1 == 1:
