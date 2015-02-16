@@ -19,6 +19,7 @@ uri = 'https://en.wiktionary.org/w/index.php?title=%s&printable=yes'
 r_tag = re.compile(r'<[^>]+>')
 r_ul = re.compile(r'(?ims)<ul>.*?</ul>')
 
+
 def text(html):
     text = r_tag.sub('', html).strip()
     text = text.replace('\n', ' ')
@@ -26,6 +27,7 @@ def text(html):
     text = text.replace('(intransitive', '(intr.')
     text = text.replace('(transitive', '(trans.')
     return text
+
 
 def wiktionary(word):
     bytes = web.get(uri % web.urllib.quote(word.encode('utf-8')))
@@ -64,17 +66,19 @@ def wiktionary(word):
     return etymology, definitions
 
 parts = ('preposition', 'particle', 'noun', 'verb',
-    'adjective', 'adverb', 'interjection')
+         'adjective', 'adverb', 'interjection')
+
 
 def format(word, definitions, number=2):
     result = '%s' % word.encode('utf-8')
     for part in parts:
-        if definitions.has_key(part):
+        if part in definitions:
             defs = definitions[part][:number]
             result += u' \u2014 '.encode('utf-8') + ('%s: ' % part)
             n = ['%s. %s' % (i + 1, e.strip(' .')) for i, e in enumerate(defs)]
             result += ', '.join(n)
     return result.strip(' .,')
+
 
 @smart_ignore
 def define(jenni, input):

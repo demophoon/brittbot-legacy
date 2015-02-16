@@ -10,12 +10,16 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import sys, os.path, time, imp
-import irc
+import sys
+import os.path
+import time
+import imp
+
 
 def f_reload(jenni, input):
     """Reloads a module, for use by admins only."""
-    if not input.admin: return
+    if not input.admin:
+        return
 
     name = input.group(2)
     if name == jenni.config.owner:
@@ -27,7 +31,7 @@ def f_reload(jenni, input):
         jenni.setup()
         return jenni.reply('done')
 
-    if not sys.modules.has_key(name):
+    if name not in sys.modules:
         return jenni.reply('%s: no such module!' % name)
 
     # Thanks to moot for prodding me on this

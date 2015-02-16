@@ -70,7 +70,6 @@ def stats(jenni, input):
     users = dict()
     channels = dict()
 
-
     ignore = set(['f_note', 'startup', 'message', 'noteuri',
                   'say_it', 'collectlines', 'oh_baby', 'chat',
                   'collect_links', 'bb_collect', 'random_chat'])

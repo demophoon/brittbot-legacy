@@ -16,7 +16,9 @@ from modules.brittbot.filters import smart_ignore
 
 @smart_ignore
 def addquote(jenni, input):
-    '''.addquote <nick> something they said here -- adds the quote to the quote database.'''
+    '''
+    .addquote <nick> something they said here -- adds the quote to the quote database.
+    '''
     text = input.group(2)
     if not text:
         return jenni.say('No quote provided')
@@ -74,7 +76,8 @@ retrievequote.example = '.quote'
 @smart_ignore
 def delquote(jenni, input):
     '''.rmquote <number> -- removes a given quote from the database. Can only be done by the owner of the bot.'''
-    if not input.owner: return
+    if not input.owner:
+        return
     text = input.group(2)
     number = int()
     try:
@@ -82,7 +85,6 @@ def delquote(jenni, input):
     except:
         return jenni.reply('No quotes to delete.')
     lines = fn.readlines()
-    MAX = len(lines)
     fn.close()
     try:
         number = int(text)
@@ -96,7 +98,7 @@ def delquote(jenni, input):
     elif number == -1:
         newlines = lines[:number]
     else:
-        ## number < -1
+        # number < -1
         newlines = lines[:number] + lines[number + 1:]
     fn = open('quotes.txt', 'w')
     for line in newlines:

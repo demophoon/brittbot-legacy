@@ -13,7 +13,6 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import re
 import web
 
 from modules.brittbot.filters import smart_ignore
@@ -27,7 +26,7 @@ def isup(jenni, input):
         return jenni.reply('What site do you want to check?')
     if ' ' in site:
         idx = site.find(' ')
-        site = site[:idx+1]
+        site = site[:idx + 1]
     site = (site).strip()
 
     if site[:7] != 'http://' and site[:8] != 'https://':
@@ -38,7 +37,7 @@ def isup(jenni, input):
             site = 'http://' + site
     try:
         response = web.get(site)
-    except Exception as e:
+    except Exception:
         jenni.say(site + ' looks down from here.')
         return
 

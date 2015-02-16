@@ -13,8 +13,6 @@ More info:
 
 import json
 import re
-import time
-import urllib
 import urllib2
 import web
 
@@ -63,7 +61,7 @@ def translate(text, input='auto', output='en', use_proxy=False):
         return str(data), 'en-raw'
 
     try:
-        language = data[2] # -2][0][0]
+        language = data[2]
     except:
         language = '?'
 
@@ -123,6 +121,7 @@ def translate(text, input='auto', output='en', use_proxy=False):
     return ''.join(x[0] for x in data[0]), language
     """
 
+
 @smart_ignore
 def tr(jenni, context):
     """Translates a phrase, with an optional language hint."""
@@ -142,20 +141,24 @@ def tr(jenni, context):
         if isinstance(msg, str):
             msg = msg.decode('utf-8')
         if msg:
-            msg = web.decode(msg) # msg.replace('&#39;', "'")
+            msg = web.decode(msg)
             msg = '"%s" (%s to %s, translate.google.com)' % (msg, input, output)
-        else: msg = 'The %s to %s translation failed, sorry!' % (input, output)
+        else:
+            msg = 'The %s to %s translation failed, sorry!' % (input, output)
 
         jenni.reply(msg)
-    else: jenni.reply('Language guessing failed, so try suggesting one!')
+    else:
+        jenni.reply('Language guessing failed, so try suggesting one!')
 
 tr.rule = ('$nick', ur'(?:([a-z]{2}) +)?(?:([a-z]{2}|en-raw) +)?["“](.+?)["”]\? *$')
 tr.example = '$nickname: "mon chien"? or $nickname: fr "mon chien"?'
 tr.priority = 'low'
 
+
 def tr2(jenni, input):
     """Translates a phrase, with an optional language hint."""
-    if not input.group(2): return jenni.say("No input provided.")
+    if not input.group(2):
+        return jenni.say("No input provided.")
     command = input.group(2).encode('utf-8')
 
     def langcode(p):
@@ -164,7 +167,8 @@ def tr2(jenni, input):
     args = ['auto', 'en']
 
     for i in xrange(2):
-        if not ' ' in command: break
+        if ' ' not in command:
+            break
         prefix, cmd = command.split(' ', 1)
         if langcode(prefix):
             args[i] = prefix[1:]
@@ -180,15 +184,18 @@ def tr2(jenni, input):
         if isinstance(msg, str):
             msg = msg.decode('utf-8')
         if msg:
-            msg = web.decode(msg) # msg.replace('&#39;', "'")
+            msg = web.decode(msg)
             msg = '"%s" (%s to %s, translate.google.com)' % (msg, src, dest)
-        else: msg = 'The %s to %s translation failed, sorry!' % (src, dest)
+        else:
+            msg = 'The %s to %s translation failed, sorry!' % (src, dest)
 
         jenni.reply(msg)
-    else: jenni.reply('Language guessing failed, so try suggesting one!')
+    else:
+        jenni.reply('Language guessing failed, so try suggesting one!')
 
 tr2.commands = ['tr']
 tr2.priority = 'low'
+
 
 def mangle(jenni, input):
     phrase = input.group(2).encode('utf-8')
@@ -215,7 +222,6 @@ def iso639(jenni, input):
     inc_text = input.group(2)
     if not inc_text:
         return jenni.say('No input provided.')
-    text = (inc_text).encode('utf-8')
     if not soup:
         return jenni.say('No BeautifulSoup installed.')
     col_match = soup.find('td', text=inc_text)
@@ -251,10 +257,20 @@ def iso639(jenni, input):
     if not notes or len(notes) <= 1:
         notes = 'N/A'
 
-    jenni.say(u'\x02Language Name:\x02 %s, Native name: %s, Language family: %s (639-1: %s, 639-2/T: %s, 639-2/B: %s, 639-3: %s, 639-6: %s, notes: %s)' % (language_name, native_name, family, iso_6391, iso_6392T, iso_6392B, iso_6393, iso_6396, notes))
+    jenni.say(u'\x02Language Name:\x02 %s, Native name: %s, Language family: %s '
+              '(639-1: %s, 639-2/T: %s, 639-2/B: %s, 639-3: %s, 639-6: %s, notes: %s)' % (
+                  language_name,
+                  native_name,
+                  family,
+                  iso_6391,
+                  iso_6392T,
+                  iso_6392B,
+                  iso_6393,
+                  iso_6396,
+                  notes)
+              )
 
 iso639.commands = ['lang', '639']
 
 if __name__ == '__main__':
     print __doc__.strip()
-

@@ -15,6 +15,8 @@ import os
 import re
 import time
 import threading
+import calendar
+from modules import clock
 
 from modules.brittbot.filters import smart_ignore
 
@@ -33,8 +35,10 @@ def load_database(name):
             message = message.rstrip('\n')
             t = int(unixtime)
             reminder = (channel, nick, message)
-            try: data[t].append(reminder)
-            except KeyError: data[t] = [reminder]
+            try:
+                data[t].append(reminder)
+            except KeyError:
+                data[t] = [reminder]
         f.close()
     return data
 
@@ -65,7 +69,8 @@ def setup(jenni):
                     for (channel, nick, message) in jenni.rdb[oldtime]:
                         if message:
                             jenni.msg(channel, nick + ': ' + message)
-                        else: jenni.msg(channel, nick + '!')
+                        else:
+                            jenni.msg(channel, nick + '!')
                     del jenni.rdb[oldtime]
 
                 # jenni.sending.acquire()
@@ -134,13 +139,16 @@ def remind(jenni, input):
 
     if duration % 1:
         duration = int(duration) + 1
-    else: duration = int(duration)
+    else:
+        duration = int(duration)
 
     t = int(time.time()) + duration
     reminder = (input.sender, input.nick, message)
 
-    try: jenni.rdb[t].append(reminder)
-    except KeyError: jenni.rdb[t] = [reminder]
+    try:
+        jenni.rdb[t].append(reminder)
+    except KeyError:
+        jenni.rdb[t] = [reminder]
 
     dump_database(jenni.rfn, jenni.rdb)
 
@@ -153,21 +161,19 @@ def remind(jenni, input):
             jenni.reply('Okay, will remind%s' % w)
         except:
             jenni.reply('Please enter a more realistic time-frame.')
-    else: jenni.reply('Okay, will remind in %s secs' % duration)
+    else:
+        jenni.reply('Okay, will remind in %s secs' % duration)
 remind.commands = ['in']
 
 r_time = re.compile(r'.*([0-9]{2}[:.][0-9]{2}).*')
 r_zone = re.compile(r'(?:[\d]{4}-[\d]{2}-[\d]{2})?\s+?(([A-Za-z]+|[+-]\d\d?)).*')
 r_date = re.compile(r'([\d]{4})-([\d]{2})-([\d]{2})')
 
-import calendar
-from modules import clock
-
 
 @smart_ignore
 def at(jenni, input):
     '''.at YYYY-MM-DD HH:MM TZ -- remind at a specific time.'''
-    ## input can be just a HH:MM TZ if you want the same day
+    # input can be just a HH:MM TZ if you want the same day
 
     help_txt = 'Accepted date inputs are: "YYYY-MM-DD HH:MM TZ" and "HH:MM TZ"'
 
@@ -175,54 +181,54 @@ def at(jenni, input):
     if not txt:
         return jenni.say(help_txt)
 
-    ## remove the ".at " part
-    ## yea, yea, there are better ways at doing this
-    ## but LEGACY!
+    # remove the ".at " part
+    # yea, yea, there are better ways at doing this
+    # but LEGACY!
     bytes = input[4:]
 
-    ## look for time matching the pattern:
-    ## r'.*([0-9]{2}[:.][0-9]{2}).*'
-    ## basically (just a time without a date)
+    # look for time matching the pattern:
+    # r'.*([0-9]{2}[:.][0-9]{2}).*'
+    # basically (just a time without a date)
     m = r_time.findall(bytes)
 
     if not m:
-        ## even if a date is specified, if we couldn't find a specific time
-        ## we don't know *when* to remind the user
+        # even if a date is specified, if we couldn't find a specific time
+        # we don't know *when* to remind the user
         return jenni.reply("Sorry, I couldn't find the time. " + help_txt)
 
-    ## : are better than .
-    ## but we should still accept .
+    # : are better than .
+    # but we should still accept .
     t = m[0].replace('.', ':')
 
-    ## look for full part
-    ## r'(?:[\d]{4}-[\d]{2}-[\d]{2})?\s+?(([A-Za-z]+|[+-]\d\d?)).*'
+    # look for full part
+    # r'(?:[\d]{4}-[\d]{2}-[\d]{2})?\s+?(([A-Za-z]+|[+-]\d\d?)).*'
     m = r_zone.findall(bytes)
 
     if not m:
         return jenni.reply("Sorry, I couldn't figure out what date you wanted. " + help_txt)
 
-    ## pluck out the [A-Za-z]+|[+-]\d\d?
+    # pluck out the [A-Za-z]+|[+-]\d\d?
     z = m[0][0]
 
     tz = None
 
-    ## check to see if someone used an offset instead of a named timezone
+    # check to see if someone used an offset instead of a named timezone
     if z.startswith('+') or z.startswith('-'):
         tz = int(z)
 
-    ## if they didn't use an offset
+    # if they didn't use an offset
     if not tz:
-        ## let's find an offset!
-        if clock.TimeZones.has_key(z):
+        # let's find an offset!
+        if z in clock.TimeZones:
             tz = clock.TimeZones[z]
         else:
-            ## default to UTC
-            ## UTC is much better
+            # default to UTC
+            # UTC is much better
             tz = 0
             z = 'UTC'
 
-    ## let's look for the specific date
-    ## r'([\d]{4})-([\d]{2})-([\d]{2})'
+    # let's look for the specific date
+    # r'([\d]{4})-([\d]{2})-([\d]{2})'
     try_date = r_date.findall(bytes)
 
     if try_date:
@@ -253,7 +259,7 @@ def at(jenni, input):
     t_duration = 0
     duration = float(duration)
     phrase = str()
-    ## make the output remaining time look pretty
+    # make the output remaining time look pretty
     if duration >= (86400.0 * 365 * 2):  # 2 years
         t_years = duration / (86400 * 365)
         t_duration = '%.2f' % (t_years)
@@ -282,25 +288,26 @@ def at(jenni, input):
         t_duration = '%.2f' % (duration)
         phrase = 'seconds'
     else:
-        ## well crap, the duration must be negative!
+        # well crap, the duration must be negative!
         return jenni.reply('Sorry, but that occurs in the past! Please select a time in the future.')
 
-    ## who do we need to remind? and where? and what?
+    # who do we need to remind? and where? and what?
     reminder = (input.sender, input.nick, bytes)
 
-    ## store such information
-    try: jenni.rdb[unix_stamp_event].append(reminder)
-    except KeyError: jenni.rdb[unix_stamp_event] = [reminder]
+    # store such information
+    try:
+        jenni.rdb[unix_stamp_event].append(reminder)
+    except KeyError:
+        jenni.rdb[unix_stamp_event] = [reminder]
 
-    ## threading/reminding voodoo
+    # threading/reminding voodoo
     jenni.sending.acquire()
     dump_database(jenni.rfn, jenni.rdb)
     jenni.sending.release()
 
-    ## communicate to the user!
+    # communicate to the user!
     jenni.reply('Reminding at %s %s - in %s %s' % (t, z, t_duration, phrase))
 at.commands = ['at']
 
 if __name__ == '__main__':
     print __doc__.strip()
-
