@@ -10,6 +10,7 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
+
 def deprecated(old):
     def new(jenni, input, old=old):
         self = jenni
@@ -27,4 +28,3 @@ def deprecated(old):
 
 if __name__ == '__main__':
     print __doc__.strip()
-

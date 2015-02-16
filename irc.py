@@ -10,13 +10,38 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import sys, re, time, traceback
-import socket, asyncore, asynchat, ssl, select
-import os, codecs
+import sys
+import re
+import time
+import traceback
+import socket
+import asyncore
+import asynchat
+import ssl
+import select
+import os
+import codecs
 import errno
 
-IRC_CODES = ('251', '252', '254', '255', '265', '266', '250', '332', '333', '353', '366', '372', '375', '376', 'QUIT', 'NICK')
+IRC_CODES = (
+    '251',
+    '252',
+    '254',
+    '255',
+    '265',
+    '266',
+    '250',
+    '332',
+    '333',
+    '353',
+    '366',
+    '372',
+    '375',
+    '376',
+    'QUIT',
+    'NICK')
 cwd = os.getcwd()
+
 
 class Origin(object):
     source = re.compile(r'([^!]*)!?([^@]*)@?(.*)')
@@ -27,22 +52,27 @@ class Origin(object):
 
         if len(args) > 1:
             target = args[1]
-        else: target = None
+        else:
+            target = None
 
         mappings = {bot.nick: self.nick, None: None}
         self.sender = mappings.get(target, target)
 
+
 def create_logdir():
-    try: os.mkdir(cwd + "/logs")
+    try:
+        os.mkdir(cwd + "/logs")
     except Exception, e:
         print >> sys.stderr, 'There was a problem creating the logs directory.'
         print >> sys.stderr, e.__class__, str(e)
         print >> sys.stderr, 'Please fix this and then run jenni again.'
         sys.exit(1)
 
+
 def check_logdir():
     if not os.path.isdir(cwd + "/logs"):
         create_logdir()
+
 
 def log_raw(line):
     check_logdir()
@@ -60,7 +90,9 @@ def log_raw(line):
     f.write("\n")
     f.close()
 
+
 class Bot(asynchat.async_chat):
+
     def __init__(self, nick, name, channels, password=None, logchan_pm=None, logging=False, ipv6=False):
         asynchat.async_chat.__init__(self)
         self.set_terminator('\n')
@@ -100,7 +132,6 @@ class Bot(asynchat.async_chat):
         except Exception, e:
             print 'Uncaptured error!!!', e
 
-
     def __write(self, args, text=None, raw=False):
         # print '%r %r %r' % (self, args, text)
         try:
@@ -118,7 +149,6 @@ class Bot(asynchat.async_chat):
         except Exception, e:
             print time.time()
             print '[__WRITE FAILED]', e
-            #pass
 
     def write(self, args, text=None, raw=False):
         try:
@@ -156,12 +186,12 @@ class Bot(asynchat.async_chat):
             for res in socket.getaddrinfo(host, port, socket.AF_UNSPEC, socket.SOCK_STREAM):
                 af, socktype, proto, canonname, sa = res
                 try:
-                    self.create_socket(af,socktype)
-                except socket.error as msg:
+                    self.create_socket(af, socktype)
+                except socket.error:
                     continue
                 try:
                     self.connect(sa)
-                except socket.error as msg:
+                except socket.error:
                     self.close()
                     continue
                 break
@@ -171,7 +201,8 @@ class Bot(asynchat.async_chat):
             self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
             self.connect((host, port))
 
-        try: asyncore.loop()
+        try:
+            asyncore.loop()
         except KeyboardInterrupt:
             sys.exit()
         except Exception, e:
@@ -263,15 +294,15 @@ class Bot(asynchat.async_chat):
 
         if line:
             if self.logchan_pm:
-                ## if logging to logging channel is enabled
-                ## send stuff in PM to logging channel
+                # if logging to logging channel is enabled
+                # send stuff in PM to logging channel
                 dlist = line.split()
                 if len(dlist) >= 3:
                     if "#" not in dlist[2] and dlist[1].strip() not in IRC_CODES:
                         self.msg(self.logchan_pm, line, True)
             if self.logging:
-                ## if logging (to log file) is enabled
-                ## send stuff to the log file
+                # if logging (to log file) is enabled
+                # send stuff to the log file
                 log_raw(line)
 
         self.buffer = ''
@@ -296,7 +327,6 @@ class Bot(asynchat.async_chat):
         if args[0] == 'PING':
             self.write(('PONG', text))
 
-
     def dispatch(self, origin, args):
         pass
 
@@ -305,18 +335,18 @@ class Bot(asynchat.async_chat):
 
         # Cf. http://swhack.com/logs/2006-03-01#T19-43-25
         if isinstance(text, unicode):
-            try: text = text.encode('utf-8')
+            try:
+                text = text.encode('utf-8')
             except UnicodeEncodeError, e:
                 text = e.__class__ + ': ' + str(e)
         if isinstance(recipient, unicode):
-            try: recipient = recipient.encode('utf-8')
+            try:
+                recipient = recipient.encode('utf-8')
             except UnicodeEncodeError, e:
                 return
 
-        #if not x:
-        #    text = text.replace('\x01', '')
-
-        if wait_time < 1: wait_time = 1
+        if wait_time < 1:
+            wait_time = 1
 
         # No messages within the last 3 seconds? Go ahead!
         # Otherwise, wait so it's been at least 0.8 seconds + penalty
@@ -370,20 +400,25 @@ class Bot(asynchat.async_chat):
                 if line.startswith('File "/'):
                     report.append(line[0].lower() + line[1:])
                     break
-            else: report.append('source unknown')
+            else:
+                report.append('source unknown')
 
             self.msg(origin.sender, report[0] + ' (' + report[1] + ')')
-        except: self.msg(origin.sender, "Got an error.")
+        except:
+            self.msg(origin.sender, "Got an error.")
+
 
 class TestBot(Bot):
     def f_ping(self, origin, match, args):
-        delay = m.group(1)
+        delay = match.group(1)
         if delay is not None:
             import time
             time.sleep(int(delay))
             self.msg(origin.sender, 'pong (%s)' % delay)
-        else: self.msg(origin.sender, 'pong')
+        else:
+            self.msg(origin.sender, 'pong')
     f_ping.rule = r'^\.ping(?:[ \t]+(\d+))?$'
+
 
 def main():
     # bot = TestBot('testbot', ['#d8uv.com'])
