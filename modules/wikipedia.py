@@ -10,7 +10,10 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import re, urllib, gzip, StringIO
+import re
+import urllib
+import gzip
+import StringIO
 import web
 
 from modules.brittbot.filters import smart_ignore
@@ -28,12 +31,13 @@ r_redirect = re.compile(
 )
 
 abbrs = ['etc', 'ca', 'cf', 'Co', 'Ltd', 'Inc', 'Mt', 'Mr', 'Mrs',
-            'Dr', 'Ms', 'Rev', 'Fr', 'St', 'Sgt', 'pron', 'approx', 'lit',
-            'syn', 'transl', 'sess', 'fl', 'Op', 'Dec', 'Brig', 'Gen'] \
+         'Dr', 'Ms', 'Rev', 'Fr', 'St', 'Sgt', 'pron', 'approx', 'lit',
+         'syn', 'transl', 'sess', 'fl', 'Op', 'Dec', 'Brig', 'Gen'] \
     + list('ABCDEFGHIJKLMNOPQRSTUVWXYZ') \
     + list('abcdefghijklmnopqrstuvwxyz')
 t_sentence = r'^.{5,}?(?<!\b%s)(?:\.(?=[\[ ][A-Z0-9]|\Z)|\Z)'
 r_sentence = re.compile(t_sentence % r')(?<!\b'.join(abbrs))
+
 
 def unescape(s):
     s = s.replace('&gt;', '>')
@@ -42,38 +46,48 @@ def unescape(s):
     s = s.replace('&#160;', ' ')
     return s
 
+
 def text(html):
     html = r_tag.sub('', html)
     html = r_whitespace.sub(' ', html)
     return unescape(html).strip()
 
+
 def search(term):
-    try: import search
+    try:
+        import search
     except ImportError, e:
         print e
         return term
 
     if isinstance(term, unicode):
         term = term.encode('utf-8')
-    else: term = term.decode('utf-8')
+    else:
+        term = term.decode('utf-8')
 
     term = term.replace('_', ' ')
-    try: uri = search.google_search('site:en.wikipedia.org %s' % term)
-    except IndexError: return term
+    try:
+        uri = search.google_search('site:en.wikipedia.org %s' % term)
+    except IndexError:
+        return term
     if uri:
         return uri[len('https://en.wikipedia.org/wiki/'):]
-    else: return term
+    else:
+        return term
+
 
 def wikipedia(term, language='en', last=False):
     global wikiuri
-    if not '%' in term:
+    if '%' not in term:
         if isinstance(term, unicode):
             t = term.encode('utf-8')
-        else: t = term
+        else:
+            t = term
         q = urllib.quote(t)
         u = wikiuri % (language, q)
         bytes = web.get(u)
-    else: bytes = web.get(wikiuri % (language, term))
+    else:
+        bytes = web.get(wikiuri % (language, term))
 
     if bytes.startswith('\x1f\x8b\x08\x00\x00\x00\x00\x00'):
         f = StringIO.StringIO(bytes)
@@ -101,18 +115,17 @@ def wikipedia(term, language='en', last=False):
 
     # Pre-process
     paragraphs = [para for para in paragraphs
-                      if (para and 'technical limitations' not in para
-                                  and 'window.showTocToggle' not in para
-                                  and 'Deletion_policy' not in para
-                                  and 'Template:AfD_footer' not in para
-                                  and not (para.startswith('<p><i>') and
-                                              para.endswith('</i></p>'))
-                                  and not 'disambiguation)"' in para)
-                                  and not '(images and media)' in para
-                                  and not 'This article contains a' in para
-                                  and not 'id="coordinates"' in para
-                                  and not 'class="thumb' in para]
-                                  # and not 'style="display:none"' in para]
+                  if (para and 'technical limitations' not in para and
+                      'window.showTocToggle' not in para and
+                      'Deletion_policy' not in para and
+                      'Template:AfD_footer' not in para and
+                      not (para.startswith('<p><i>') and
+                               para.endswith('</i></p>')) and
+                      'disambiguation)"' not in para) and
+                  '(images and media)' not in para and
+                  'This article contains a' not in para and
+                  'id="coordinates"' not in para and
+                  'class="thumb' not in para]
 
     for i, para in enumerate(paragraphs):
         para = para.replace('<sup>', '|')
@@ -121,7 +134,7 @@ def wikipedia(term, language='en', last=False):
 
     # Post-process
     paragraphs = [para for para in paragraphs if
-                      (para and not (para.endswith(':') and len(para) < 150))]
+                  (para and not (para.endswith(':') and len(para) < 150))]
 
     para = text(paragraphs[0])
     m = r_sentence.match(para)
@@ -140,9 +153,9 @@ def wikipedia(term, language='en', last=False):
         words.pop()
         sentence = ' '.join(words) + ' [...]'
 
-    if (('using the Article Wizard if you wish' in sentence)
-     or ('or add a request for it' in sentence)
-     or ('in existing articles' in sentence)):
+    if ('using the Article Wizard if you wish' in sentence) \
+            or ('or add a request for it' in sentence) \
+            or ('in existing articles' in sentence):
         if not last:
             term = search(term)
             return wikipedia(term, language=language, last=True)
@@ -173,7 +186,8 @@ def wik(jenni, input):
     term = term[0].upper() + term[1:]
     term = term.replace(' ', '_')
 
-    try: result = wikipedia(term, language)
+    try:
+        result = wikipedia(term, language)
     except IOError:
         args = (language, wikiuri % (language, term))
         error = "Can't connect to %s.wikipedia.org (%s)" % args
@@ -181,7 +195,8 @@ def wik(jenni, input):
 
     if result is not None:
         jenni.say(result)
-    else: jenni.say('Can\'t find anything in Wikipedia for "%s".' % origterm)
+    else:
+        jenni.say('Can\'t find anything in Wikipedia for "%s".' % origterm)
 
 wik.commands = ['w', 'wik', 'wiki']
 wik.priority = 'high'

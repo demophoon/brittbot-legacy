@@ -10,8 +10,13 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import sys, os, time, threading, signal
+import sys
+import os
+import time
+import threading
+import signal
 import bot
+
 
 class Watcher(object):
     # Cf. http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496735
@@ -21,19 +26,24 @@ class Watcher(object):
             self.watch()
 
     def watch(self):
-        try: os.wait()
+        try:
+            os.wait()
         except KeyboardInterrupt:
             self.kill()
         sys.exit()
 
     def kill(self):
-        try: os.kill(self.child, signal.SIGKILL)
-        except OSError: pass
+        try:
+            os.kill(self.child, signal.SIGKILL)
+        except OSError:
+            pass
+
 
 def run_jenni(config):
     if hasattr(config, 'delay'):
         delay = config.delay
-    else: delay = 20
+    else:
+        delay = 20
 
     def connect(config):
         p = bot.Jenni(config)
@@ -41,12 +51,14 @@ def run_jenni(config):
         p.use_sasl = config.sasl
         p.run(config.host, config.port)
 
-    try: Watcher()
+    try:
+        Watcher()
     except Exception, e:
         print >> sys.stderr, 'Warning:', e, '(in __init__.py)'
 
     while True:
-        try: connect(config)
+        try:
+            connect(config)
         except KeyboardInterrupt:
             sys.exit()
 
@@ -57,11 +69,13 @@ def run_jenni(config):
         print >> sys.stderr, warning
         time.sleep(delay)
 
+
 def run(config):
     t = threading.Thread(target=run_jenni, args=(config,))
     if hasattr(t, 'run'):
         t.run()
-    else: t.start()
+    else:
+        t.start()
 
 if __name__ == '__main__':
     print __doc__

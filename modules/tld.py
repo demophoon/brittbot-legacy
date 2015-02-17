@@ -11,7 +11,6 @@ More info:
 
 import BeautifulSoup
 import re
-import urllib2
 import web
 
 from modules.brittbot.filters import smart_ignore

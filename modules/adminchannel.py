@@ -19,6 +19,7 @@ import re
 auth_list = []
 admins = []
 
+
 def voice(jenni, input):
     """
     Command to voice users in a room. If no nick is given,
@@ -34,7 +35,8 @@ def voice(jenni, input):
     channel = None
     try:
         channel = inputs[0]
-        if not channel.startswith('#'): raise Exception
+        if not channel.startswith('#'):
+            raise Exception
     except:
         return jenni.say('You must provide a valid channel')
     nick = None
@@ -48,6 +50,7 @@ def voice(jenni, input):
 voice.commands = ['voice']
 voice.priority = 'low'
 voice.example = '.voice ##example or .voice ##example nick'
+
 
 def devoice(jenni, input):
     """
@@ -64,7 +67,8 @@ def devoice(jenni, input):
     channel = None
     try:
         channel = inputs[0]
-        if not channel.startswith('#'): raise Exception
+        if not channel.startswith('#'):
+            raise Exception
     except:
         return jenni.say('You must provide a valid channel')
     nick = None
@@ -78,6 +82,7 @@ def devoice(jenni, input):
 devoice.commands = ['devoice']
 devoice.priority = 'low'
 devoice.example = '.devoice ##example or .devoice ##example nick'
+
 
 def op(jenni, input):
     """
@@ -94,7 +99,8 @@ def op(jenni, input):
     channel = None
     try:
         channel = inputs[0]
-        if not channel.startswith('#'): raise Exception
+        if not channel.startswith('#'):
+            raise Exception
     except:
         return jenni.say('You must provide a valid channel')
     nick = None
@@ -108,6 +114,7 @@ def op(jenni, input):
 op.commands = ['op']
 op.priority = 'low'
 op.example = '.op ##example or .op ##example nick'
+
 
 def deop(jenni, input):
     """
@@ -124,7 +131,8 @@ def deop(jenni, input):
     channel = None
     try:
         channel = inputs[0]
-        if not channel.startswith('#'): raise Exception
+        if not channel.startswith('#'):
+            raise Exception
     except:
         return jenni.say('You must provide a valid channel')
     nick = None
@@ -139,6 +147,7 @@ deop.commands = ['deop']
 deop.priority = 'low'
 deop.example = '.deop ##example or .deop ##example nick'
 
+
 def auth_request(jenni, input):
     """
     This will scan every message in a room for nicks in jenni's
@@ -152,6 +161,7 @@ def auth_request(jenni, input):
         jenni.msg('NickServ', 'ACC ' + x)
 auth_request.rule = r'.*'
 auth_request.priority = 'high'
+
 
 def auth_verify(jenni, input):
     """
@@ -179,6 +189,7 @@ auth_verify.event = 'NOTICE'
 auth_verify.rule = r'(\S+) (ACC) ([0-3])'
 auth_verify.priority = 'high'
 
+
 def auth_check(jenni, nick, target=None):
     """
     Checks if nick is on the auth list and returns true if so
@@ -189,6 +200,7 @@ def auth_check(jenni, nick, target=None):
     elif nick in auth_list:
         return 1
 
+
 def deauth(nick):
     """
     Remove pepole from the deauth list.
@@ -198,32 +210,39 @@ def deauth(nick):
         a = auth_list.index(nick)
         del(auth_list[a])
 
+
 def deauth_quit(jenni, input):
     deauth(input.nick)
 deauth_quit.event = 'QUIT'
 deauth_quit.rule = '.*'
+
 
 def deauth_part(jenni, input):
     deauth(input.nick)
 deauth_part.event = 'PART'
 deauth_part.rule = '.*'
 
+
 def deauth_nick(jenni, input):
     deauth(input.nick)
 deauth_nick.event = 'NICK'
 deauth_nick.rule = '.*'
 
+
 def kick(jenni, input):
-    if not input.admin: return
+    if not input.admin:
+        return
     text = input.group().split()
     argc = len(text)
-    if argc < 2: return
+    if argc < 2:
+        return
     opt = text[1]
     nick = opt
     channel = input.sender
     reasonidx = 2
     if opt.startswith('#'):
-        if argc < 3: return
+        if argc < 3:
+            return
         nick = text[2]
         channel = opt
         reasonidx = 3
@@ -233,136 +252,167 @@ def kick(jenni, input):
 kick.commands = ['kick']
 kick.priority = 'high'
 
-def configureHostMask (mask):
-    if mask == '*!*@*': return mask
-    if re.match('^[^.@!/]+$', mask) is not None: return '%s!*@*' % mask
-    if re.match('^[^@!]+$', mask) is not None: return '*!*@%s' % mask
+
+def configureHostMask(mask):
+    if mask == '*!*@*':
+        return mask
+    if re.match('^[^.@!/]+$', mask) is not None:
+        return '%s!*@*' % mask
+    if re.match('^[^@!]+$', mask) is not None:
+        return '*!*@%s' % mask
 
     m = re.match('^([^!@]+)@$', mask)
-    if m is not None: return '*!%s@*' % m.group(1)
+    if m is not None:
+        return '*!%s@*' % m.group(1)
 
     m = re.match('^([^!@]+)@([^@!]+)$', mask)
-    if m is not None: return '*!%s@%s' % (m.group(1), m.group(2))
+    if m is not None:
+        return '*!%s@%s' % (m.group(1), m.group(2))
 
     m = re.match('^([^!@]+)!(^[!@]+)@?$', mask)
-    if m is not None: return '%s!%s@*' % (m.group(1), m.group(2))
+    if m is not None:
+        return '%s!%s@*' % (m.group(1), m.group(2))
     return ''
 
-def ban (jenni, input):
+
+def ban(jenni, input):
     """
     This give admins the ability to ban a user.
     The bot must be a Channel Operator for this command to work.
     """
-    if not input.admin: return
+    if not input.admin:
+        return
     text = input.group().split()
     argc = len(text)
-    if argc < 2: return
+    if argc < 2:
+        return
     opt = text[1]
     banmask = opt
     channel = input.sender
     if opt.startswith('#'):
-        if argc < 3: return
+        if argc < 3:
+            return
         channel = opt
         banmask = text[2]
     banmask = configureHostMask(banmask)
-    if banmask == '': return
+    if banmask == '':
+        return
     jenni.write(['MODE', channel, '+b', banmask])
 ban.commands = ['ban']
 ban.priority = 'high'
 
-def unban (jenni, input):
+
+def unban(jenni, input):
     """
     This give admins the ability to unban a user.
     The bot must be a Channel Operator for this command to work.
     """
-    if not input.admin: return
+    if not input.admin:
+        return
     text = input.group().split()
     argc = len(text)
-    if argc < 2: return
+    if argc < 2:
+        return
     opt = text[1]
     banmask = opt
     channel = input.sender
     if opt.startswith('#'):
-        if argc < 3: return
+        if argc < 3:
+            return
         channel = opt
         banmask = text[2]
     banmask = configureHostMask(banmask)
-    if banmask == '': return
+    if banmask == '':
+        return
     jenni.write(['MODE', channel, '-b', banmask])
 unban.commands = ['unban']
 unban.priority = 'high'
 
-def quiet (jenni, input):
-   """
-   This gives admins the ability to quiet a user.
-   The bot must be a Channel Operator for this command to work
-   """
-   if not input.admin: return
-   text = input.group().split()
-   argc = len(text)
-   if argc < 2: return
-   opt = text[1]
-   quietmask = opt
-   channel = input.sender
-   if opt.startswith('#'):
-      if argc < 3: return
-      quietmask = text[2]
-      channel = opt
-   quietmask = configureHostMask(quietmask)
-   if quietmask == '': return
-   jenni.write(['MODE', channel, '+q', quietmask])
+
+def quiet(jenni, input):
+    """
+    This gives admins the ability to quiet a user.
+    The bot must be a Channel Operator for this command to work
+    """
+    if not input.admin:
+        return
+    text = input.group().split()
+    argc = len(text)
+    if argc < 2:
+        return
+    opt = text[1]
+    quietmask = opt
+    channel = input.sender
+    if opt.startswith('#'):
+        if argc < 3:
+            return
+        quietmask = text[2]
+        channel = opt
+    quietmask = configureHostMask(quietmask)
+    if quietmask == '':
+        return
+    jenni.write(['MODE', channel, '+q', quietmask])
 quiet.commands = ['quiet']
 quiet.priority = 'high'
 
-def unquiet (jenni, input):
-   """
-   This gives admins the ability to unquiet a user.
-   The bot must be a Channel Operator for this command to work
-   """
-   if not input.admin: return
-   text = input.group().split()
-   argc = len(text)
-   if argc < 2: return
-   opt = text[1]
-   quietmask = opt
-   channel = input.sender
-   if opt.startswith('#'):
-       if argc < 3: return
-       quietmask = text[2]
-       channel = opt
-   quietmask = configureHostMask(quietmask)
-   if quietmask == '': return
-   jenni.write(['MODE', opt, '-q', quietmask])
+
+def unquiet(jenni, input):
+    """
+    This gives admins the ability to unquiet a user.
+    The bot must be a Channel Operator for this command to work
+    """
+    if not input.admin:
+        return
+    text = input.group().split()
+    argc = len(text)
+    if argc < 2:
+        return
+    opt = text[1]
+    quietmask = opt
+    if opt.startswith('#'):
+        if argc < 3:
+            return
+        quietmask = text[2]
+    quietmask = configureHostMask(quietmask)
+    if quietmask == '':
+        return
+    jenni.write(['MODE', opt, '-q', quietmask])
 unquiet.commands = ['unquiet']
 unquiet.priority = 'high'
 
-def kickban (jenni, input):
-   """
-   This gives admins the ability to kickban a user.
-   The bot must be a Channel Operator for this command to work
-   .kickban [#chan] user1 user!*@* get out of here
-   """
-   if not input.admin: return
-   text = input.group().split()
-   argc = len(text)
-   if argc < 4: return
-   opt = text[1]
-   nick = opt
-   mask = text[2]
-   reasonidx = 3
-   if opt.startswith('#'):
-       if argc < 5: return
-       channel = opt
-       nick = text[2]
-       mask = text[3]
-       reasonidx = 4
-   reason = ' '.join(text[reasonidx:])
-   mask = configureHostMask(mask)
-   if mask == '': return
-   jenni.write(['MODE', channel, '+b', mask])
-   jenni.write(['KICK', channel, nick, ' :', reason])
+
+def kickban(jenni, input):
+    """
+    This gives admins the ability to kickban a user.
+    The bot must be a Channel Operator for this command to work
+    .kickban [#chan] user1 user!*@* get out of here
+    """
+    if not input.admin:
+        return
+    text = input.group().split()
+    argc = len(text)
+    if argc < 4:
+        return
+    opt = text[1]
+    nick = opt
+    mask = text[2]
+    reasonidx = 3
+    if opt.startswith('#'):
+        if argc < 5:
+            return
+        channel = opt
+        nick = text[2]
+        mask = text[3]
+        reasonidx = 4
+    reason = ' '.join(text[reasonidx:])
+    mask = configureHostMask(mask)
+    if mask == '':
+        return
+    jenni.write(['MODE', channel, '+b', mask])
+    jenni.write(['KICK', channel, nick, ' :', reason])
 kickban.commands = ['kickban', 'kb']
 kickban.priority = 'high'
+
 
 def topic(jenni, input):
     """
@@ -376,7 +426,6 @@ def topic(jenni, input):
     topic = ' '.join(text[1:])
     if topic == '':
         return
-    channel = input.sender
     jenni.write(['PRIVMSG', 'ChanServ'], 'TOPIC %s %s' % (input.sender, topic))
     return
 topic.commands = ['topic']

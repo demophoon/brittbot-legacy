@@ -17,6 +17,7 @@ from modules.brittbot.filters import smart_ignore
 whyuri = 'http://www.leonatkinson.com/random/index.php/rest.html?method=advice'
 r_paragraph = re.compile(r'<quote>.*?</quote>')
 
+
 @smart_ignore
 def getwhy(jenni, input):
     page = web.get(whyuri)

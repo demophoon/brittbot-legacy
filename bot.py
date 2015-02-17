@@ -10,30 +10,49 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import time, sys, os, re, threading, imp
+import time
+import sys
+import os
+import re
+import threading
+import imp
 import json
 import irc
 
 home = os.getcwd()
 
+
 def decode(bytes):
-    try: text = bytes.decode('utf-8')
+    try:
+        text = bytes.decode('utf-8')
     except UnicodeDecodeError:
-        try: text = bytes.decode('iso-8859-1')
+        try:
+            text = bytes.decode('iso-8859-1')
         except UnicodeDecodeError:
             text = bytes.decode('cp1252')
     return text
 
+
 class Jenni(irc.Bot):
     def __init__(self, config):
         lc_pm = None
-        if hasattr(config, "logchan_pm"): lc_pm = config.logchan_pm
+        if hasattr(config, "logchan_pm"):
+            lc_pm = config.logchan_pm
         logging = False
-        if hasattr(config, "logging"): logging = config.logging
+        if hasattr(config, "logging"):
+            logging = config.logging
         ipv6 = False
-        if hasattr(config, 'ipv6'): ipv6 = config.ipv6
-        args = (config.nick, config.name, config.channels, config.password, lc_pm, logging, ipv6)
-        ## next, try putting a try/except around the following line
+        if hasattr(config, 'ipv6'):
+            ipv6 = config.ipv6
+        args = (
+            config.nick,
+            config.name,
+            config.channels,
+            config.password,
+            lc_pm,
+            logging,
+            ipv6)
+        # next, try putting a try/except around the following line
         irc.Bot.__init__(self, *args)
         self.config = config
         self.doc = {}
@@ -72,10 +91,12 @@ class Jenni(irc.Bot):
         excluded_modules = getattr(self.config, 'exclude', [])
         for filename in filenames:
             name = os.path.basename(filename)[:-3]
-            if name in excluded_modules: continue
+            if name in excluded_modules:
+                continue
             # if name in sys.modules:
             #     del sys.modules[name]
-            try: module = imp.load_source(name, filename)
+            try:
+                module = imp.load_source(name, filename)
             except Exception, e:
                 print >> sys.stderr, "Error loading %s: %s (in bot.py)" % (name, e)
             else:
@@ -94,7 +115,8 @@ class Jenni(irc.Bot):
 
         if modules:
             print >> sys.stderr, 'Registered modules:', ', '.join(modules)
-        else: print >> sys.stderr, "Warning: Couldn't find any modules"
+        else:
+            print >> sys.stderr, "Warning: Couldn't find any modules"
 
         self.bind_commands()
 
@@ -121,7 +143,8 @@ class Jenni(irc.Bot):
                 if hasattr(func, 'example'):
                     example = func.example
                     example = example.replace('$nickname', self.nick)
-                else: example = None
+                else:
+                    example = None
                 self.doc[func.name] = (func.__doc__, example)
             self.commands[priority].setdefault(regexp, []).append(func)
 
@@ -200,7 +223,7 @@ class Jenni(irc.Bot):
                 sender = origin.sender or text
                 if attr == 'reply':
                     return (lambda msg:
-                        self.bot.msg(sender, origin.nick + ': ' + msg))
+                            self.bot.msg(sender, origin.nick + ': ' + msg))
                 elif attr == 'say':
                     return lambda msg: self.bot.msg(sender, msg)
                 return getattr(self.bot, attr)
@@ -222,7 +245,7 @@ class Jenni(irc.Bot):
                 s.raw = origin
                 s.args = args
                 s.admin = origin.nick in self.config.admins
-                if s.admin == False:
+                if s.admin is False:
                     for each_admin in self.config.admins:
                         re_admin = re.compile(each_admin)
                         if re_admin.findall(origin.host):
@@ -233,7 +256,8 @@ class Jenni(irc.Bot):
                             if re_host.findall(origin.host):
                                 s.admin = True
                 s.owner = origin.nick + '@' + origin.host == self.config.owner
-                if s.owner == False: s.owner = origin.nick == self.config.owner
+                if s.owner is False:
+                    s.owner = origin.nick == self.config.owner
                 s.host = origin.host
                 s.origin = origin
                 return s
@@ -243,11 +267,11 @@ class Jenni(irc.Bot):
     def call(self, func, origin, jenni, input):
         nick = (input.nick).lower()
 
-        ## rate limiting
+        # rate limiting
         if nick in self.times:
             if func in self.times[nick]:
                 if not input.admin:
-                    ## admins are not rate limited
+                    # admins are not rate limited
                     if time.time() - self.times[nick][func] < func.rate:
                         self.times[nick][func] = time.time()
                         return
@@ -266,13 +290,13 @@ class Jenni(irc.Bot):
                     if fname in self.excludes[input.sender]:
                         # block function call if channel is blacklisted
                         return
-        except Exception, e:
+        except Exception:
             print "Error attempting to block:", str(func.name)
             self.error(origin)
 
         try:
             func(jenni, input)
-        except Exception, e:
+        except Exception:
             self.error(origin)
 
     def limit(self, origin, func):
@@ -291,11 +315,13 @@ class Jenni(irc.Bot):
             items = self.commands[priority].items()
             for regexp, funcs in items:
                 for func in funcs:
-                    if event != func.event: continue
+                    if event != func.event:
+                        continue
 
                     match = regexp.match(text)
                     if match:
-                        if self.limit(origin, func): continue
+                        if self.limit(origin, func):
+                            continue
 
                         jenni = self.wrapped(origin, text, match)
                         input = self.input(origin, text, bytes, match, event, args)
@@ -308,11 +334,15 @@ class Jenni(irc.Bot):
                             contents = g.readlines()
                             g.close()
 
-                            try: bad_masks = contents[0].split(',')
-                            except: bad_masks = ['']
+                            try:
+                                bad_masks = contents[0].split(',')
+                            except:
+                                bad_masks = ['']
 
-                            try: bad_nicks = contents[1].split(',')
-                            except: bad_nicks = ['']
+                            try:
+                                bad_nicks = contents[1].split(',')
+                            except:
+                                bad_nicks = ['']
 
                             # check for blocked hostmasks
                             if len(bad_masks) > 0:
@@ -320,7 +350,8 @@ class Jenni(irc.Bot):
                                 host = host.lower()
                                 for hostmask in bad_masks:
                                     hostmask = hostmask.replace("\n", "").strip()
-                                    if len(hostmask) < 1: continue
+                                    if len(hostmask) < 1:
+                                        continue
                                     try:
                                         re_temp = re.compile(hostmask)
                                         if re_temp.findall(host):
@@ -332,7 +363,8 @@ class Jenni(irc.Bot):
                             if len(bad_nicks) > 0:
                                 for nick in bad_nicks:
                                     nick = nick.replace("\n", "").strip()
-                                    if len(nick) < 1: continue
+                                    if len(nick) < 1:
+                                        continue
                                     try:
                                         re_temp = re.compile(nick)
                                         if re_temp.findall(input.nick):
@@ -345,10 +377,12 @@ class Jenni(irc.Bot):
                             targs = (func, origin, jenni, input)
                             t = threading.Thread(target=self.call, args=targs)
                             t.start()
-                        else: self.call(func, origin, jenni, input)
+                        else:
+                            self.call(func, origin, jenni, input)
 
                         for source in [origin.sender, origin.nick]:
-                            try: self.stats[(func.name, source)] += 1
+                            try:
+                                self.stats[(func.name, source)] += 1
                             except KeyError:
                                 self.stats[(func.name, source)] = 1
 

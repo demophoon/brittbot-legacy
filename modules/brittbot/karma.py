@@ -2,10 +2,8 @@
 # encoding: utf-8
 # jenni brittbot/karma.py - Fuck it, Ship it!
 
-import os
 import re
 import random
-import json
 
 from modules.brittbot import (
     filters,

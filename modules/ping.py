@@ -9,8 +9,6 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import random
-
 from modules.brittbot.filters import smart_ignore
 
 

@@ -15,7 +15,6 @@ import json
 import random
 import web
 import re
-from modules import unicode as uc
 from modules.brittbot.filters import smart_ignore
 '''
 Randall Munroe is nice and provides a simple JSON API for fetching comics.
@@ -33,17 +32,20 @@ for the 614th comic.
 Each comic contains the following JSON keys:
 
 {
- "month": "10"
-,"num": 1432
-, "link": ""
-, "year": "2014"
-, "news": ""
-, "safe_title": "The Sake of Argument"
-, "transcript": ""
-, "alt": "'It's not actually ... it's a DEVICE for EXPLORING a PLAUSIBLE REALITY that's not the one we're in, to gain a broader understanding about it.' 'oh, like a boat!' '...' 'Just for the sake of argument, we should get a boat! You can invite the Devil, too, if you want.'"
-, "img": "http:\/\/imgs.xkcd.com\/comics\/the_sake_of_argument.png"
-, "title": "The Sake of Argument"
-, "day": "10"
+ "month": "10",
+ "num": 1432,
+ "link": "",
+ "year": "2014",
+ "news": "",
+ "safe_title": "The Sake of Argument",
+ "transcript": "",
+ "alt": "'It's not actually ... it's a DEVICE for EXPLORING a PLAUSIBLE REALITY
+ that's not the one we're in, to gain a broader understanding about it.' 'oh,
+ like a boat!' '...' 'Just for the sake of argument, we should get a boat! You
+ can invite the Devil, too, if you want.'",
+ "img": "http:\/\/imgs.xkcd.com\/comics\/the_sake_of_argument.png",
+ "title": "The Sake of Argument",
+ "day": "10"
 }
 
 '''
@@ -55,7 +57,7 @@ random.seed()
 def xkcd(jenni, input):
     '''.xkcd - Print all available information about the most recent (or specified) XKCD clip.'''
 
-    def tryToGetJSON (site_url):
+    def tryToGetJSON(site_url):
         try:
             page = web.get(xkcd_url)
         except:
@@ -65,7 +67,6 @@ def xkcd(jenni, input):
         except:
             return jenni.say('Failed to make use of data loaded by xkcd.com: <' + xkcd_url + '>')
         return body
-
 
     xkcd_url = 'https://xkcd.com/info.0.json'
 
@@ -81,7 +82,6 @@ def xkcd(jenni, input):
         else:
             jenni.say(u'Incorrect argument for .xkcd: ' + line)
 
-
     body = tryToGetJSON(xkcd_url)
 
     if show_random_comic:
@@ -89,7 +89,6 @@ def xkcd(jenni, input):
         xkcd_rand_num = random.randint(0, max_int)
         xkcd_url = 'https://xkcd.com/' + str(xkcd_rand_num) + '/info.0.json'
         body = tryToGetJSON(xkcd_url)
-
 
     comic_date_str = body['year'] + u'-' + str(body['month']).zfill(2) + u'-' + str(body['day']).zfill(2)
     header_str = u'\x02xkcd #\x02' + str(body['num']) + u' (' + comic_date_str + u') \x02' + body['title'] + u'\x02'
@@ -99,14 +98,11 @@ def xkcd(jenni, input):
         transcript_text = '\x02Transcript:\x02 ' + body['transcript']
         jenni.say(transcript_text)
 
-
     alt_text = u'\x02Alt text\x02: ' + body['alt']
     jenni.say(alt_text)
 
     img_ssl_link = u'[ ' + re.sub(r'http://', 'https://ssl', body['img']) + u' ]'
     jenni.say(img_ssl_link)
-
-
 xkcd.commands = ['xkcd']
 xkcd.example = '.xkcd  (for most recent), .xkcd [comic number]  (for specific comic), or .xkcd [r | ran | rand | random]  (for a random comic)'
 xkcd.priority = 'medium'

@@ -14,20 +14,22 @@ import time
 
 intentional_part = False
 
+
 def join(jenni, input):
     '''Join the specified channel. This is an admin-only command.'''
     # Can only be done in privmsg by an admin
-    if input.sender.startswith('#'): return
+    if input.sender.startswith('#'):
+        return
     incoming = input.group(2)
     inc = incoming.split(' ')
     if len(inc) > 2:
-        ## 3 or more inputs
+        # 3 or more inputs
         return jenni.say('Too many inputs.')
     if input.owner:
         channel = inc[0]
         key = str()
         if len(inc) > 1:
-            ## 2 inputs
+            # 2 inputs
             key = inc[1]
         if not key:
             print "Joining channel: %s" % channel
@@ -39,11 +41,13 @@ join.commands = ['join']
 join.priority = 'low'
 join.example = '.join #example or .join #example key'
 
+
 def part(jenni, input):
     '''Part the specified channel. This is an admin-only command.'''
     # Can only be done in privmsg by an admin
     global intentional_part
-    if input.sender.startswith('#'): return
+    if input.sender.startswith('#'):
+        return
     if input.admin:
         intentional_part = True
         jenni.write(['PART'], input.group(2))
@@ -51,28 +55,32 @@ part.commands = ['part']
 part.priority = 'low'
 part.example = '.part #example'
 
+
 def quit(jenni, input):
     '''Quit from the server. This is an owner-only command.'''
     # Can only be done in privmsg by the owner
-    if input.sender.startswith('#'): return
+    if input.sender.startswith('#'):
+        return
     if input.owner:
         jenni.write(['QUIT'])
         __import__('os')._exit(0)
 quit.commands = ['quit']
 quit.priority = 'low'
 
+
 def msg(jenni, input):
     # Can only be done in privmsg by an admin
-    if input.sender.startswith('#'): return
+    if input.sender.startswith('#'):
+        return
     a, b = input.group(2), input.group(3)
-    if (not a) or (not b): return
+    if (not a) or (not b):
+        return
     if (a.startswith('+') or a.startswith('@')) and not input.owner:
         return
     al = a.lower()
     parts = al.split(',')
     if not input.owner:
         notallowed = ['chanserv', 'nickserv', 'hostserv', 'memoserv', 'saslserv', 'operserv']
-        #if al == 'chanserv' or al == 'nickserv' or al == 'hostserv' or al == 'memoserv' or al == 'saslserv' or al == 'operserv':
         for each in notallowed:
             for part in parts:
                 if part in notallowed:
@@ -87,9 +95,11 @@ def msg(jenni, input):
 msg.rule = (['msg'], r'(#?\S+) (.+)')
 msg.priority = 'low'
 
+
 def me(jenni, input):
     # Can only be done in privmsg by an admin
-    if input.sender.startswith('#'): return
+    if input.sender.startswith('#'):
+        return
     a, b = input.group(2), input.group(3)
     helper = False
     if hasattr(jenni.config, 'helpers'):
@@ -134,22 +144,23 @@ defend_ground2.priority = 'low'
 
 
 def blocks(jenni, input):
-    if not input.admin: return
+    if not input.admin:
+        return
 
     if hasattr(jenni.config, 'logchan_pm') and input.sender != jenni.config.logchan_pm:
         # BLOCKS USED - user in ##channel - text
         jenni.msg(jenni.config.logchan_pm, 'BLOCKS USED - %s in %s -- %s' % (input.nick, input.sender, input))
 
     STRINGS = {
-            'success_del' : 'Successfully deleted block: %s',
-            'success_add' : 'Successfully added block: %s',
-            'no_nick' : 'No matching nick block found for: %s',
-            'no_host' : 'No matching hostmask block found for: %s',
-            'invalid' : 'Invalid format for %s a block. Try: .blocks add (nick|hostmask) jenni',
-            'invalid_display' : 'Invalid input for displaying blocks.',
-            'nonelisted' : 'No %s listed in the blocklist.',
-            'huh' : 'I could not figure out what you wanted to do.',
-            }
+        'success_del': 'Successfully deleted block: %s',
+        'success_add': 'Successfully added block: %s',
+        'no_nick': 'No matching nick block found for: %s',
+        'no_host': 'No matching hostmask block found for: %s',
+        'invalid': 'Invalid format for %s a block. Try: .blocks add (nick|hostmask) jenni',
+        'invalid_display': 'Invalid input for displaying blocks.',
+        'nonelisted': 'No %s listed in the blocklist.',
+        'huh': 'I could not figure out what you wanted to do.',
+    }
 
     if not os.path.isfile('blocks'):
         blocks = open('blocks', 'w')
@@ -160,11 +171,15 @@ def blocks(jenni, input):
     contents = blocks.readlines()
     blocks.close()
 
-    try: masks = contents[0].replace('\n', '').split(',')
-    except: masks = ['']
+    try:
+        masks = contents[0].replace('\n', '').split(',')
+    except:
+        masks = ['']
 
-    try: nicks = contents[1].replace('\n', '').split(',')
-    except: nicks = ['']
+    try:
+        nicks = contents[1].replace('\n', '').split(',')
+    except:
+        nicks = ['']
 
     text = input.group().split()
 
@@ -236,13 +251,15 @@ blocks.priority = 'low'
 blocks.thread = False
 
 char_replace = {
-        r'\x01': chr(1),
-        r'\x02': chr(2),
-        r'\x03': chr(3),
-        }
+    r'\x01': chr(1),
+    r'\x02': chr(2),
+    r'\x03': chr(3),
+}
+
 
 def write_raw(jenni, input):
-    if not input.owner: return
+    if not input.owner:
+        return
     txt = input.bytes[7:]
     txt = txt.encode('utf-8')
     a = txt.split(':')
@@ -266,4 +283,3 @@ write_raw.thread = False
 
 if __name__ == '__main__':
     print __doc__.strip()
-

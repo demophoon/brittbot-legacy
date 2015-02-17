@@ -6,7 +6,6 @@ import time
 import re
 import urllib
 import json
-import random
 
 from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import colorize, colors
@@ -33,14 +32,13 @@ def init_user_brain(jenni, nick):
             'skipped': 0,
             'banned': 0,
         }
-    if not 'banned' in jenni.brain['trivia']['users'][nick]:
+    if 'banned' not in jenni.brain['trivia']['users'][nick]:
         jenni.brain['trivia']['users'][nick]['banned'] = 0
     jenni.save_brain()
 
 
 @smart_ignore
 def trivia(jenni, msg):
-    hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     init_trivia_brain(jenni)
     chan = msg.sender
     if chan not in trivia_rooms:
@@ -154,7 +152,7 @@ def trivia_answer(jenni, msg):
 
     correctness_threshold = .5
 
-    if correct/len(answer) >= correctness_threshold:
+    if correct / len(answer) >= correctness_threshold:
         if msg.nick in rooms[chan]['noplay']:
             jenni.reply("Thanks for ruining the game."
                         " Yes. The answer is \"%s\" but you "
@@ -189,10 +187,7 @@ def trivia_answer(jenni, msg):
         ))
         jenni.brain['trivia']['users'][msg.nick]['incorrect'] += 1
         rooms[chan]['attempts'] -= 1
-        #if msg.nick == 'quakeaddict':
-        #    reply = "Wow. That was wrong. Just leave. You are awarded no points. May god have mercy on your soul."
-        #    jenni.write(['KICK', msg.sender, msg.nick, ":%s" % reply])
-    if msg.sender in trivia_rooms and rooms[chan]['question'] == None:
+    if msg.sender in trivia_rooms and not rooms[chan]['question']:
         trivia(jenni, msg)
     jenni.save_brain()
 trivia_answer.rule = r"^(?:$nickname\W? )?(?:w?W?hat|w?W?ho) \w+ (.*)\??"
@@ -218,7 +213,6 @@ def trivia_giveup(jenni, msg):
         rooms[chan]['answer']
     ))
     hostmask = "%s!%s@%s" % hostmask
-    #jenni.write(['MODE', msg.sender, "+q", hostmask])
     jenni.brain['trivia']['rooms'][chan]['noplay_hostmask'].append(hostmask)
     jenni.save_brain()
 trivia_giveup.rule = r"^$nickname\W? i (give up|have no idea|don'?t know)"
@@ -260,7 +254,6 @@ trivia_skip.rule = r"$nickname\W? skip"
 
 @smart_ignore
 def trivia_points(jenni, msg):
-    chan = msg.sender
     nick = msg.nick
     if msg.groups()[0]:
         nick = msg.groups()[0].strip()
@@ -310,7 +303,6 @@ join_trivia_handle.priority = 'high'
 
 
 def shutdown_handler(jenni, msg):
-    hostmask = ('*', '*', '*')
     if not msg.owner:
         return
     reply = "Shutting down."

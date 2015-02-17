@@ -13,7 +13,6 @@ More info:
 """
 
 import random
-import re
 import traceback
 import urllib
 import urlparse

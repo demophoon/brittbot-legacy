@@ -15,6 +15,7 @@ More info:
 import re
 import urllib
 import urllib2
+import urlparse
 from htmlentitydefs import name2codepoint
 from modules import unicode as uc
 
@@ -59,7 +60,6 @@ def post(uri, query):
     return bytes
 
 
-
 def entity(match):
     value = match.group(1).lower()
     if value.startswith('#x'):
@@ -74,8 +74,10 @@ def entity(match):
 def decode(html):
     return r_entity.sub(entity, html)
 
+
 def entity_replace(txt):
     return r_entity.sub(ep, txt)
+
 
 def ep(m):
     entity = m.group()
@@ -91,10 +93,7 @@ def ep(m):
             char = name2codepoint[entity_stripped]
             meep = unichr(char)
         except:
-            if entity_stripped in HTML_ENTITIES:
-                meep = HTML_ENTITIES[entity_stripped]
-            else:
-                meep = str()
+            meep = str()
     try:
         return uc.decode(meep)
     except:
@@ -130,11 +129,14 @@ def get_urllib_object(uri, timeout):
             status = '200'
         else:
             status = str(info[1])
-            try: info = info[0]
-            except: pass
+            try:
+                info = info[0]
+            except:
+                pass
         if status.startswith('3'):
             uri = urlparse.urljoin(uri, info['Location'])
-        else: break
+        else:
+            break
         redirects += 1
         if redirects >= 50:
             return "Too many re-directs."
@@ -153,7 +155,3 @@ def urlencode(data):
     in your module and don't want to import urllib just to use the urlencode
     function.'''
     return urllib.urlencode(data)
-
-
-if __name__ == "__main__":
-    main()

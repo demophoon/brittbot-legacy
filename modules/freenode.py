@@ -31,9 +31,12 @@ def replaced(jenni, input):
         'origin': ".origin hasn't been ported to my new codebase yet"
         # 'gs': 'sorry, .gs no longer works'
     }
-    try: response = responses[command]
-    except KeyError: return
-    else: jenni.reply(response)
+    try:
+        response = responses[command]
+    except KeyError:
+        return
+    else:
+        jenni.reply(response)
 replaced.commands = [
     'cp', 'pc', 'unicode', 'compare', 'map', 'acronym',
     'v', 'validate', 'thesaurus', 'web', 'mangle', 'origin',
