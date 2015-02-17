@@ -152,7 +152,7 @@ def trivia_answer(jenni, msg):
 
     correctness_threshold = .5
 
-    if correct/len(answer) >= correctness_threshold:
+    if correct / len(answer) >= correctness_threshold:
         if msg.nick in rooms[chan]['noplay']:
             jenni.reply("Thanks for ruining the game."
                         " Yes. The answer is \"%s\" but you "
