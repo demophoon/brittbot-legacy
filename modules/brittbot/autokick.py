@@ -16,7 +16,7 @@ allowed_rooms = [
 
 def init_kick_brain(jenni):
     brain = jenni.brain
-    if not 'kicks' in brain:
+    if 'kicks' not in brain:
         brain['kicks'] = {}
         jenni.save_brain()
 
@@ -75,8 +75,7 @@ auto_kick.priority = 'high'
 
 def nametrigger(jenni, input):
     names = re.split(' ', input)
-    #names = [n.split('!')[0] for n in names]
-    #names = [n.replace('~', '') for n in names]
+    print names
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'

@@ -16,14 +16,9 @@ def notice(jenni, chan, msg):
 
 @smart_ignore
 def config_print(jenni, msg):
-    hostmask = (msg.nick, msg.origin.user, msg.origin.host)
-    import pprint
-    pprint.pprint(jenni.brain.get('filters'))
     if not msg.admin:
         return
-    #jenni.write(['MODE', "##brittbot-trivia", "-q", "%s!%s@%s" % hostmask])
     reply = colorize_msg("tested. rainbows and stuff.")
-    #jenni.msg(msg.sender, colorize_msg("tested."))
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
 config_print.rule = r"^test$"
 config_print.priority = 'medium'
@@ -262,7 +257,7 @@ def adr_gathers_wood(jenni, msg):
     brain = jenni.brain['adr']
     duration = brain['cooldown']['wood']
     if now - brain['inventory']['wood'][-1] < duration:
-        remaining =  duration - (now - brain['inventory']['wood'][-1])
+        remaining = duration - (now - brain['inventory']['wood'][-1])
         jenni.reply("you are currently gathering wood. "
                     "Try again in %s seconds." % (remaining))
         return
