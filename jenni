@@ -98,6 +98,13 @@ def create_default_config(fn):
     # insult database available: "spanish" and "english"
     insult_lang = "english"
 
+    allowed_channels = []
+
+    channel_filters = {}
+
+    # Hostmasks: (nick, username, host)
+    auto_kick_users = {}
+
     # EOF
     """
     print >> f, trim(output)
@@ -147,6 +154,7 @@ def config_names(config):
         return files(there)
 
     sys.exit(1)
+
 
 def main(argv=None):
     # Step One: Parse The Command Line
