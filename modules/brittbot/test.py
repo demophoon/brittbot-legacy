@@ -58,7 +58,58 @@ xofthey.rule = r"^!(\w+)ofthe(\w+)( .*)?"
 def rainbowize(jenni, msg):
     reply = colorize_msg(msg.groups()[0])
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
-rainbowize.rule = r"^!rainbows? (.*)"
+    rainbowize.rule = r"^!rainbows?(:?fg)? (.*)"
+
+
+@smart_ignore
+def rainbowizebg(jenni, msg):
+    rmsg = msg.groups()[0]
+    final = unicode()
+    rainbow = [
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'cyan',
+        'blue',
+        'purple',
+    ]
+    starting_index = random.choice(range(len(rainbow)))
+    for index, char in enumerate(rmsg):
+        rindex = index + starting_index
+        final += colorize(
+            char,
+            fg=colors['black'],
+            bg=colors[rainbow[rindex % len(rainbow)]],
+        )
+    jenni.write(['PRIVMSG', msg.sender, ":%s" % final])
+rainbowizebg.rule = r"^!rainbows?bg (.*)"
+
+
+@smart_ignore
+def rainbowizefgbg(jenni, msg):
+    rmsg = msg.groups()[0]
+    final = unicode()
+    rainbow = [
+        'red',
+        'orange',
+        'yellow',
+        'green',
+        'cyan',
+        'blue',
+        'purple',
+    ]
+    starting_index = random.choice(range(len(rainbow)))
+    for index, char in enumerate(rmsg):
+        rindex = index + starting_index
+        rindexbg = index + starting_index + (len(rainbow) / 2)
+        final += colorize(
+            char,
+            fg=colors[rainbow[rindex % len(rainbow)]],
+            bg=colors[rainbow[rindexbg % len(rainbow)]],
+        )
+    jenni.write(['PRIVMSG', msg.sender, ":%s" % final])
+rainbowizefgbg.rule = r"^!rainbows?(?:fgbg|bgfg) (.*)"
 
 
 @smart_ignore
