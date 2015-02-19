@@ -46,7 +46,6 @@ irc_cap.priority = 'high'
 
 def irc_authenticated(jenni, input):
     auth = False
-    import pdb; pdb.set_trace()
     if hasattr(jenni.config, 'nick') and hasattr(jenni.config, 'password'):
         if jenni.config.nick and jenni.config.password:
             auth = "\0".join((jenni.config.nick, jenni.config.nick, jenni.config.password))
