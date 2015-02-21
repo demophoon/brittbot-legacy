@@ -22,6 +22,8 @@ def init_kick_brain(jenni):
 
 
 def is_kick(jenni, channel, hostmask):
+    kick = False
+    kickmsg = None
     for key, value in jenni.config.auto_kick_users.items():
         if channel not in value['rooms'] and channel not in allowed_rooms:
             return (False, "")

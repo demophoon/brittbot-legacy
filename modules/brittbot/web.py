@@ -13,23 +13,16 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/test")
-def test_message():
-    gjenni.msg(
-        "##brittslittlesliceofheaven",
-        "This is a web posted message"
-    )
-    return str(gjenni.brain)
-
-
-@socketio.on('my event')
-def ws_logger(jenni, msg):
-    send({
-        'room': str(msg.sender),
-        'msg': str(msg),
-        'nick': str(msg.nick),
-    }, json=True, broadcast=True)
-ws_logger.rule = r".*"
+@app.route("/<room>/<x>ofthe<y>")
+def karma_list(room, x, y):
+    brain = gjenni.brain['ofthe']
+    room = room.replace("_", "#")
+    xes = brain[x][y][room]
+    xes.reverse()
+    l = []
+    fstr = '<br>'.join(["%s. %s" % (x, y) for x, y in enumerate(xes)])
+    print "Web called."
+    return fstr
 
 
 def setup(jenni):
