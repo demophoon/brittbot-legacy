@@ -28,6 +28,14 @@ def pod_bay_doors(jenni, input):
 pod_bay_doors.rule = "^!?open the pod bay doors(, $nickname)?"
 pod_bay_doors.priority = 'medium'
 
+@smart_ignore
+def party(jenni, input):
+    jenni.say("/me dances :D-<")
+    jenni.say("/me dances :D|-<")
+    jenni.say("/me dances :D/-<")
+    jenni.say("/me dances :D\-<")
+party.rule = "^!party"
+party.priority = 'medium'
 
 @smart_ignore
 def command_help(jenni, input):
