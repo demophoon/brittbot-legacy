@@ -30,10 +30,7 @@ pod_bay_doors.priority = 'medium'
 
 @smart_ignore
 def party(jenni, input):
-    jenni.say("/me dances :D-<")
-    jenni.say("/me dances :D|-<")
-    jenni.say("/me dances :D/-<")
-    jenni.say("/me dances :D\-<")
+    jenni.say("/me dances :D\-<  :D|-<  :D/-<  :D\-<  :D|-< :D/-<")
 party.rule = "^!party"
 party.priority = 'medium'
 
