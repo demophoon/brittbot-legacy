@@ -2,12 +2,19 @@
 # encoding: utf-8
 # jenni brittbot/test.py - Test modules and features
 
+import datetime
+from dateutil.relativedelta import relativedelta
 import time
 import math
 import random
 
 from modules.brittbot.filters import smart_ignore
-from modules.brittbot.helpers import colorize_msg, colorize, colors
+from modules.brittbot.helpers import (
+    colorize_msg,
+    colorize,
+    colors,
+    elapsed
+)
 
 
 def notice(jenni, chan, msg):
@@ -26,6 +33,21 @@ config_print.priority = 'medium'
 
 @smart_ignore
 def xofthey(jenni, msg):
+    now = datetime.datetime.utcnow()
+    durations = {
+        'millisecond': relativedelta(microseconds=1),
+        'microsecond': relativedelta(microseconds=1),
+        'second': relativedelta(seconds=1),
+        'minute': relativedelta(minutes=1),
+        'hour': relativedelta(hours=1),
+        'day': relativedelta(days=1),
+        'week': relativedelta(weeks=1),
+        'month': relativedelta(months=1),
+        'year': relativedelta(years=1),
+        'decade': relativedelta(years=10),
+        'century': relativedelta(years=100),
+        'millennium': relativedelta(years=1000),
+    }
     x = msg.groups()[0].strip()
     y = msg.groups()[1].strip()
     item = msg.groups()[2]
@@ -38,20 +60,80 @@ def xofthey(jenni, msg):
         rekt_dict[x][y] = {}
     if msg.sender not in rekt_dict[x][y]:
         rekt_dict[x][y][msg.sender] = []
+    expires = None
+    if durations.get(y):
+        expires = now + durations.get(y)
     if item:
-        rekt_dict[x][y][msg.sender].append(item.strip())
+        if expires:
+            rekt_dict[x][y][msg.sender].append({
+                'item': item.strip(),
+                'created': time.mktime(now.timetuple()),
+                'expires': time.mktime(expires.timetuple()),
+            })
+        else:
+            rekt_dict[x][y][msg.sender].append(item.strip())
         jenni.save_brain()
     try:
         rekt = jenni.brain['ofthe'][x][y][msg.sender][-1]
+        expires = None
+        if isinstance(rekt, dict):
+            expires = rekt['expires']
+            if time.mktime(now.timetuple()) > expires:
+                reply = "I need a new %s of the %s. It was %s." % (
+                    x,
+                    y,
+                    colorize(rekt['item'], fg=colors['red']),
+                )
+                jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
+                return
+            rekt = rekt['item']
     except Exception:
         return
-    reply = "The %s of the %s is %s" % (
+    reply = "The %s of the %s is %s." % (
         x,
         y,
-        colorize(rekt, fg=colors['red'])
+        colorize(rekt, fg=colors['red']),
     )
+    if expires:
+        reply += ' (Expires in %s)' % (
+            elapsed(expires - time.mktime(now.timetuple())).strip()
+        )
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
 xofthey.rule = r"^!(\w+)ofthe(\w+)( .*)?"
+
+
+@smart_ignore
+def dayssincelast(jenni, msg):
+    item = msg.groups()[0]
+    if 'days_since' not in jenni.brain:
+        jenni.brain['days_since'] = {}
+    if msg.sender not in jenni.brain['days_since']:
+        jenni.brain['days_since'][msg.sender] = {}
+    if item not in jenni.brain['days_since'][msg.sender]:
+        return
+    jenni.reply("Days since %s: %s" % (
+        item,
+        elapsed(
+            time.time() - jenni.brain['days_since'][msg.sender][item]
+        ),
+    ))
+dayssincelast.rule = r"^!dayssince (.*)"
+
+
+@smart_ignore
+def dayssincelastset(jenni, msg):
+    item = msg.groups()[0]
+    if 'days_since' not in jenni.brain:
+        jenni.brain['days_since'] = {}
+    if msg.sender not in jenni.brain['days_since']:
+        jenni.brain['days_since'][msg.sender] = {}
+    jenni.brain['days_since'][msg.sender][item] = time.time()
+    jenni.save_brain()
+    jenni.reply("Days since %s: %s" % (
+        item,
+        elapsed(0),
+    ))
+dayssincelastset.rule = r"^!setdayssince (.*)"
 
 
 @smart_ignore

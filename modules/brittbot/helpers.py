@@ -97,23 +97,39 @@ def duration(seconds):
     d = datetime.datetime(1, 1, 1) + seconds
     fstr = ""
     if d.day - 1 > 0:
-        if d.day - 1 == 1:
-            fstr += "%d day " % (d.day - 1)
-        else:
-            fstr += "%d days " % (d.day - 1)
+        fstr += "%dd " % (d.day - 1)
     if d.hour > 0:
-        if d.hour == 1:
-            fstr += "%d hour " % d.hour
-        else:
-            fstr += "%d hours " % d.hour
+        fstr += "%dh " % d.hour
     if d.minute > 0:
-        if d.minute == 1:
-            fstr += "%d minute " % d.minute
-        else:
-            fstr += "%d minutes " % d.minute
+        fstr += "%dm " % d.minute
     if d.second > 0:
-        if d.second == 1:
-            fstr += "%d second " % d.second
-        else:
-            fstr += "%d seconds " % d.second
+        fstr += "%ds " % d.second
+    return fstr
+
+
+def elapsed(seconds):
+    fstr = ''
+    seconds = int(seconds)
+    if seconds >= 86400 * 365:
+        fstr += "%sy %s" % (
+            seconds / (86400 * 365),
+            elapsed(seconds % (86400 * 365)),
+        )
+    elif seconds >= 86400:
+        fstr += "%sd %s" % (
+            seconds / 86400,
+            elapsed(seconds % 86400),
+        )
+    elif seconds >= 3600:
+        fstr += "%sh %s" % (
+            seconds / 3600,
+            elapsed(seconds % 3600),
+        )
+    elif seconds >= 60:
+        fstr += "%sm %s" % (
+            seconds / 60,
+            elapsed(seconds % 60),
+        )
+    elif seconds > 0:
+        fstr += "%ss " % seconds
     return fstr
