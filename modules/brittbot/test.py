@@ -258,7 +258,7 @@ global_notice.priority = 'medium'
 
 def init_adr_brain(jenni):
     brain = jenni.brain
-    adr_version = "1.0.1"
+    adr_version = "1.0.2"
     if 'adr' not in brain or brain['adr']['version'] != adr_version:
         now = int(time.time())
         brain['adr'] = {
@@ -329,6 +329,12 @@ def adr_stoke_fire(jenni, msg):
         notice(jenni, msg.sender, "You must wait before stoking the fire again.")
         return
 
+    duration = brain['cooldown']['fire']
+    elapsed = now - brain['events']['fire']['last_update']
+    dv = math.floor(float(elapsed) / float(duration))
+    brain['events']['fire']['value'] -= dv
+    brain['events']['fire']['value'] = max(0, brain['events']['fire']['value'])
+
     if len(brain['inventory']['wood']) > 0:
         brain['inventory']['wood'] = brain['inventory']['wood'][1:]
         brain['events']['fire']['value'] += 1
@@ -338,11 +344,7 @@ def adr_stoke_fire(jenni, msg):
     else:
         notice(jenni, msg.sender, "Not enough wood to keep the fire going")
         return
-    duration = brain['cooldown']['fire']
-    elapsed = now - brain['events']['fire']['last_update']
-    dv = math.floor(float(elapsed) / float(duration))
-    brain['events']['fire']['value'] -= dv
-    brain['events']['fire']['value'] = max(0, brain['events']['fire']['value'])
+
     fire = None
     if brain['events']['fire']['value'] >= 4:
         brain['events']['fire']['value'] = 4
