@@ -7,6 +7,10 @@ from dateutil.relativedelta import relativedelta
 import time
 import math
 import random
+import os
+import json
+
+from textblob import TextBlob
 
 from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import (
@@ -15,6 +19,7 @@ from modules.brittbot.helpers import (
     colors,
     elapsed
 )
+from modules.brittbot.pil import justxthings
 
 
 def notice(jenni, chan, msg):
@@ -29,6 +34,176 @@ def config_print(jenni, msg):
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
 config_print.rule = r"^test$"
 config_print.priority = 'medium'
+
+
+def approval_rating(jenni, msg):
+    analysis = TextBlob(str(msg))
+    if 'approval' not in jenni.brain:
+        jenni.brain['approval'] = {}
+    if msg.nick not in jenni.brain['approval']:
+        jenni.brain['approval'][msg.nick] = 0
+    jenni.brain['approval'][msg.nick] += analysis.sentiment.polarity
+    jenni.save_brain()
+    print "Approval rating from %s: %s (%s)" % (
+        msg.nick,
+        jenni.brain['approval'][msg.nick],
+        analysis.sentiment.polarity,
+    )
+approval_rating.rule = r".*$nickname.*"
+
+
+def room_rating(jenni, msg):
+    try:
+        analysis = TextBlob(str(msg))
+    except Exception:
+        return
+    if 'approval_room' not in jenni.brain:
+        jenni.brain['approval_room'] = {}
+    if msg.sender not in jenni.brain['approval_room']:
+        jenni.brain['approval_room'][msg.sender] = {}
+    if msg.nick not in jenni.brain['approval_room'][msg.sender]:
+        jenni.brain['approval_room'][msg.sender][msg.nick] = 0
+    if analysis.sentiment.subjectivity < .5:
+        return
+    jenni.brain['approval_room'][msg.sender][msg.nick] += analysis.sentiment.polarity
+    if not analysis.sentiment.polarity == 0:
+        jenni.save_brain()
+        p = analysis.sentiment.polarity
+        if p > 0:
+            p = "+%0.2f" % (p, )
+        else:
+            p = "%0.2f" % (p, )
+        print "%s <%s> (%s, %0.2f): %s" % (
+            msg.sender,
+            msg.nick,
+            p,
+            jenni.brain['approval_room'][msg.sender][msg.nick],
+            msg,
+        )
+room_rating.rule = r".*"
+
+
+@smart_ignore
+def how_happy_is_room(jenni, msg):
+    if not msg.admin:
+        return
+    room = msg.groups()[0]
+    final_score = 0
+    highest_score = 0
+    highest_user = None
+    lowest_score = 0
+    lowest_user = None
+    if room not in jenni.brain['approval_room']:
+        return
+    for user in jenni.brain['approval_room'][room]:
+        score = jenni.brain['approval_room'][room][user]
+        if not (highest_user and lowest_user):
+            highest_user = user
+            highest_score = score
+            lowest_user = user
+            lowest_score = score
+        if score > highest_score:
+            highest_score = score
+            highest_user = user
+        if score < lowest_score:
+            lowest_score = score
+            lowest_user = user
+        final_score += score
+    reply = room
+    if final_score > 0:
+        reply += " is generally a positive room"
+    else:
+        reply += " is generally a negative room"
+    reply += " (%0.2f)." % (final_score, )
+    reply += " The most positive person in the room is %s (%0.2f) and " % (
+        highest_user,
+        highest_score,
+    )
+    reply += "it seems the most negative person in the room is %s (%0.2f)." % (
+        lowest_user,
+        lowest_score,
+    )
+    jenni.reply(reply)
+how_happy_is_room.rule = r"!approval (\S+)"
+
+
+@smart_ignore
+def how_happy_am_i(jenni, msg):
+    room = msg.sender
+    nick = msg.nick
+    jenni.brain['approval'][msg.nick],
+    if nick not in jenni.brain['approval']:
+        return
+    score = jenni.brain['approval'][nick]
+    jenni.reply("Your approval score is: %0.2f" % score)
+how_happy_am_i.rule = r"!approval$"
+
+
+@smart_ignore
+def reload_brain(jenni, msg):
+    if not msg.admin:
+        return
+    if not os.path.isfile(jenni.brain_file):
+        jenni.brain = {}
+        jenni.save_brain()
+    f = open(jenni.brain_file, 'r')
+    jenni.brain = json.loads(f.read())
+    f.close()
+    jenni.reply("brain reloaded.")
+reload_brain.rule = r"^!loadbrain"
+
+
+@smart_ignore
+def justxthingshandler(jenni, msg):
+    hashtag = msg.groups()[1]
+    quote = msg.groups()[0]
+
+    if msg.sender in [
+        #'#reddit-stlouis',
+    ]:
+        jenni.reply("nou")
+        return
+
+    if quote[0] in ['!']:
+        return
+    if hashtag.startswith("##"):
+        return
+    url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
+        str(quote),
+        hashtag,
+    )
+    jenni.reply(url)
+justxthingshandler.rule = r"(.*) (#\S+)$"
+
+
+@smart_ignore
+def justxthingslistener(jenni, msg):
+    if msg.sender not in [
+        "#internship",
+        "#r/kansascity",
+        "#reddit-stlouis",
+        "demophoon",
+    ]:
+        return
+    if 'last_action' not in jenni.brain:
+        jenni.brain['last_action'] = {}
+    if msg.sender not in jenni.brain['last_action']:
+        jenni.brain['last_action'][msg.sender] = 0
+    if time.time() < jenni.brain['last_action'][msg.sender] + 3600:
+        return
+    if len(msg.split(' ')) == 1 or len(msg.split(' ')) > 20:
+        return
+    if str(msg)[0] in ['!']:
+        return
+
+    if random.choice(range(175)) == 0:
+        url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
+            str(msg),
+            "#just%sthings" % (msg.nick, )
+        )
+        jenni.say(url)
+        jenni.brain['last_action'][msg.sender] = time.time()
+justxthingslistener.rule = r".*"
 
 
 @smart_ignore
@@ -51,6 +226,8 @@ def xofthey(jenni, msg):
     x = msg.groups()[0].strip()
     y = msg.groups()[1].strip()
     item = msg.groups()[2]
+    if x == 'gay':
+        return
     if 'ofthe' not in jenni.brain:
         jenni.brain['ofthe'] = {}
     rekt_dict = jenni.brain['ofthe']
@@ -138,9 +315,10 @@ dayssincelastset.rule = r"^!setdayssince (.*)"
 
 @smart_ignore
 def rainbowize(jenni, msg):
+    print msg.groups()
     reply = colorize_msg(msg.groups()[0])
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
-    rainbowize.rule = r"^!rainbows?(:?fg)? (.*)"
+rainbowize.rule = r"^!rainbows?(?:fg)? (.*)"
 
 
 @smart_ignore
@@ -202,6 +380,89 @@ def ohai(jenni, msg):
     pass
 ohai.rule = r".*ohai.*"
 ohai.priority = 'medium'
+
+
+@smart_ignore
+def correct_me(jenni, msg):
+    pass
+correct_me.rule = r".*$nickname.*"
+
+
+@smart_ignore
+def buzzfeedify(jenni, msg):
+    subjects = TextBlob(str(msg)).noun_phrases.pluralize()
+    if subjects:
+        subject = random.choice(subjects)
+    else:
+        subject = msg.groups()[0]
+    random_number = random.choice(range(300))
+    people = [
+        'you',
+        'your dog',
+        'your cat',
+        'your mom',
+        'your dad',
+        'your mother',
+        'your father',
+        'your coworker',
+    ]
+    is_are = [
+        'could possibly be',
+        'are not',
+        'could not possibly be',
+        'are actually',
+        'are literally',
+    ]
+    actions = [
+        'Russian cosmonauts',
+        'eating these cookies',
+        'fake',
+        'lizard people',
+        'what your worst nightmares are made of',
+        'completely wrong',
+        'literally cannot even',
+    ]
+    actions += people
+    switch = random.choice(['count'])
+    if switch == 'count':
+        saying = ["%(count)s"]
+        qualifiers = [
+            'annoying',
+            'irritating',
+            'dangerous',
+            'realistic',
+            'unimaginative',
+            'amazing',
+            'cutest',
+        ]
+        things = [
+            'things',
+            'reasons',
+            'ideas',
+        ]
+        saying.append('of the most')
+        saying.append(random.choice(qualifiers))
+        saying.append(random.choice(things))
+        saying.append('why')
+        saying.append('%(subject)s')
+        saying.append(random.choice(is_are))
+        saying.append(random.choice(actions))
+        if random.choice([True, False]):
+            saying[-1] += '.'
+            you_wont_believe = [
+                "Just wait until until you get to #%(justwait)s.",
+                "You won't believe #%(justwait)s.",
+                "I cannot believe #%(justwait)s.",
+            ]
+            saying.append(random.choice(you_wont_believe))
+        saying = ' '.join(saying)
+    reply = saying % {
+        'subject': subject,
+        'count': random_number,
+        'justwait': random.choice(range(random_number)),
+    }
+    jenni.reply(reply)
+buzzfeedify.rule = r"^!buzzfeed (.*)"
 
 
 @smart_ignore

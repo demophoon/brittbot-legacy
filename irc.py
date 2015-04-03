@@ -403,9 +403,9 @@ class Bot(asynchat.async_chat):
             else:
                 report.append('source unknown')
 
-            self.msg(origin.sender, report[0] + ' (' + report[1] + ')')
+            self.msg("##brittslittlesliceofheaven", report[0] + ' (' + report[1] + ')')
         except:
-            self.msg(origin.sender, "Got an error.")
+            self.msg("##brittslittlesliceofheaven", "Got an error.")
 
 
 class TestBot(Bot):

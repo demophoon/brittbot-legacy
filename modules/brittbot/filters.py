@@ -9,31 +9,12 @@ More info:
 import re
 from functools import wraps
 
-ignored_nicks = [
-    ".*bot",
-]
-
 limited_channels = {
 }
 
 
-def check_ignore(msg):
-    ignore = False
-    if not msg.sender.startswith("#"):
-        ignore = True
-    for ignored_nick in ignored_nicks:
-        if re.search(re.compile(ignored_nick, re.IGNORECASE), msg.nick):
-            ignore = True
-            print "%s is ignored by rule %s" % (
-                msg.nick,
-                ignored_nick
-            )
-    if msg.admin:
-        ignore = False
-    return ignore
-
-
 def is_allowed(function_name, jenni, msg):
+    ignored_nicks = jenni.brain['filtered_nicks']
     irc_room = msg.sender
     if 'filters' not in jenni.brain:
         jenni.brain['filters'] = jenni.config.channel_filters
@@ -80,3 +61,20 @@ def modify_filtered(jenni, msg):
         function, action, room
     ))
 modify_filtered.rule = '!(enable|disable) (\S+) (.+)'
+
+
+def modify_ignored(jenni, msg):
+    if not msg.admin:
+        return
+    action, nick = msg.groups()
+    if 'filtered_nicks' not in jenni.brain:
+        jenni.brain['filtered_nicks'] = []
+    if action == 'unignore':
+        jenni.brain['filtered_nicks'].remove(nick)
+    else:
+        jenni.brain['filtered_nicks'].append(nick)
+    jenni.save_brain()
+    jenni.reply('`%s` has been %sd' % (
+        nick, action
+    ))
+modify_ignored.rule = '!(ignore|unignore) (\S+)'

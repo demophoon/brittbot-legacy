@@ -21,7 +21,7 @@ from PIL import (
 # pillow
 
 
-def generate_image(user, quote):
+def generate_image(quote, hashtag="#justgirlthings"):
     images = glob.glob('modules/brittbot/pil/images/*.jpg')
     images += glob.glob('modules/brittbot/pil/images/*.png')
 
@@ -38,7 +38,7 @@ def generate_image(user, quote):
     quotefont = ImageFont.truetype('modules/brittbot/pil/LibreBaskerville-Regular.ttf', 28)
 
     # What are we going to say?
-    justtextthings = "#just%sthings" % user
+    justtextthings = hashtag
     quote = quote.strip()
     xpadding = 40
 
@@ -124,5 +124,5 @@ def generate_image(user, quote):
     return imagefile
 
 if __name__ == '__main__':
-    user, quote = sys.argv[1:]
-    print generate_image(user, quote)
+    quote, hashtag = sys.argv[1:]
+    print generate_image(quote, hashtag)

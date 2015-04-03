@@ -63,6 +63,7 @@ def karma_award(jenni, msg):
             return
         if item.lower() == jenni.nick.lower():
             item = msg.nick.lower()
+
         if item not in jenni.brain['karma']:
             jenni.brain['karma'][item] = 0
         jenni.brain['karma'][item] += awarded
