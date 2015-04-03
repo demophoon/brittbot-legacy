@@ -10,7 +10,7 @@ from modules.brittbot.helpers import action
 
 @smart_ignore
 def sadtuba(jenni, input):
-    jenni.say("http://www.sadtuba.com/")
+    jenni.say("http://sadtrombone.com/") #add ?autoplay=true at the end of the link for button free "whaa whaa"
 sadtuba.rule = "^(!|\x01ACTION )(sadtuba|sadtrombone)"
 sadtuba.priority = 'medium'
 
