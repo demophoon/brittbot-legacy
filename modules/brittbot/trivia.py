@@ -11,7 +11,7 @@ from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import colorize, colors
 
 trivia_room = '##brittbot-jeopardy'
-trivia_rooms = [trivia_room]
+trivia_rooms = [trivia_room, '#stlouis-games']
 
 
 def init_trivia_brain(jenni):
@@ -47,9 +47,7 @@ def trivia(jenni, msg):
             time.sleep(.5)
             jenni.write(['MODE', trivia_room, "+i"])
             jenni.channels.append(trivia_room)
-        jenni.msg(msg.nick, "Join %s" % (
-            trivia_room
-        ))
+        jenni.reply("Join %s" % (trivia_room))
         jenni.write(['INVITE', msg.nick, trivia_room])
         return
     rooms = jenni.brain['trivia']['rooms']
@@ -68,6 +66,7 @@ def trivia(jenni, msg):
             count = 1
             if chan != trivia_room:
                 count = 25
+                count = 1
             questions = json.loads(
                 urllib.urlopen("http://jservice.io/api/random?count=%s" % (count, )).read())
             for question in questions:

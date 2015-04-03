@@ -12,7 +12,10 @@ from modules.brittbot.filters import smart_ignore
 @smart_ignore
 def awwyiss(jenni, input):
     url = 'http://awyisser.com/api/generator'
-    data = {"phrase": input.groups()[1]}
+    data = {
+        "phrase": input.groups()[1],
+        "tweet": False,
+    }
     data = urllib.urlencode(data)
     req = urllib2.Request(url, data)
     response = json.loads(urllib2.urlopen(req).read())
