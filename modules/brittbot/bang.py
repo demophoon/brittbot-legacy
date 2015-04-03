@@ -58,7 +58,7 @@ def one_one_upper(jenni, input):
         int(input.groups()[2]) + 1,
         input.groups()[3],
     ))
-one_one_upper.rule = r'^(\d+)([a-zA-Z]+)(\d+)([a-zA-Z]+)$'
+one_one_upper.rule = r'^(-?\d+)(\s?[a-zA-Z]+\s?)(-?\d+)(\s?[a-zA-Z]+)$'
 one_one_upper.priority = 'medium'
 
 
@@ -68,7 +68,7 @@ def one_upper(jenni, input):
         int(input.groups()[0]) + 1,
         input.groups()[1],
     ))
-one_upper.rule = r'^(\d+)([a-zA-Z]+)$'
+one_upper.rule = r'^(-?\d+)(\s?[a-zA-Z]+)$'
 one_upper.priority = 'medium'
 
 
