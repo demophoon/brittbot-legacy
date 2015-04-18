@@ -21,6 +21,16 @@ def is_allowed(function_name, jenni, msg):
         jenni.save_brain()
     filters = jenni.brain["filters"]
     allowed = True
+    if not irc_room.startswith("#") and not msg.admin:
+        allowed = False
+    if msg.nick in jenni.brain['approval']:
+        if jenni.brain['approval'][msg.nick] < -5:
+            allowed = False
+            msg.friend = False
+            msg.enemy = True
+        elif jenni.brain['approval'][msg.nick] > 5:
+            msg.friend = True
+            msg.enemy = False
     if irc_room in filters:
         if 'blocked' in filters[irc_room]:
             if function_name in filters[irc_room]['blocked']:
