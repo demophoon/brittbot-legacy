@@ -36,8 +36,105 @@ config_print.rule = r"^test$"
 config_print.priority = 'medium'
 
 
+@smart_ignore
+def mnightwho(jenni, msg):
+    reply = "Did you mean M. Night Sha"
+    reply += ''.join([random.choice("lamin") for _ in range(random.randint(6,24))])
+    reply += 'n?'
+    jenni.reply(reply)
+mnightwho.rule = r"(?i).*(m\.? night).*"
+
+
+@smart_ignore
+def arewefriends(jenni, msg):
+    if msg.friend:
+        reply = "Yes"
+    else:
+        reply = "No"
+    jenni.reply(reply)
+arewefriends.rule = r"(?i)^$nickname\W? (?:are you my|am i your|are we) friends?\??"
+
+
+@smart_ignore
+def noneed(jenni, msg):
+    reply = "http://youtu.be/ygr5AHufBN4"
+    jenni.say(reply)
+noneed.rule = r"(?i)^!noneed"
+
+
+@smart_ignore
+def xfacts(jenni, msg):
+    if 'facts' not in jenni.brain:
+        jenni.brain['facts'] = {}
+    facttype = msg.groups()[0]
+    fact = msg.groups()[1]
+    if facttype not in jenni.brain['facts']:
+        jenni.brain['facts'][facttype] = []
+    if fact and fact.strip():
+        jenni.brain['facts'][facttype].append(fact.strip())
+        reply = "Fact added"
+    else:
+        if not jenni.brain['facts'][facttype]:
+            return
+        reply = random.choice(jenni.brain['facts'][facttype])
+    jenni.reply(reply)
+xfacts.rule = r"(?i)^!(\w+)facts( .*)?"
+
+
+@smart_ignore
+def alwaysbouttoretto(jenni, msg):
+    jenni.brain['alwaysbouttorreto'] = time.time()
+    reply = "Is it about Toretto?"
+    jenni.reply(reply)
+alwaysbouttoretto.rule = r"^$nickname\W? guess what"
+
+
+@smart_ignore
+def alwaysabouttorettoreply(jenni, msg):
+    if 'alwaysbouttorreto' in jenni.brain:
+        if time.time() - jenni.brain['alwaysbouttorreto'] > 60:
+            return
+        if not jenni.brain['alwaysbouttorreto']:
+            return
+    if msg.groups()[0].lower() == 'y':
+        reply = "Continue."
+    else:
+        reply = "I don't care."
+    jenni.brain['alwaysbouttorreto'] = False
+    jenni.reply(reply)
+alwaysabouttorettoreply.rule = r"(?i)^(?:$nickname\W? )?(y|n)\w+"
+
+
+@smart_ignore
+def diceroll(jenni, msg):
+    num_of_dice = min(10, int(msg.groups()[0]))
+    num_of_side = min(1000, int(msg.groups()[1]))
+    rolls = [random.choice(range(1, num_of_side)) for _ in range(num_of_dice)]
+    total = sum(rolls)
+    reply = ""
+    if msg.groups()[2]:
+        if total >= num_of_dice * num_of_side / 2:
+            reply = "Roll Succeeds! "
+        else:
+            reply = "Roll Fails! "
+    if len(rolls) > 1:
+        reply += "Total: %s, Rolls: %s" % (
+            total,
+            ', '.join([str(x) for x in rolls])
+        )
+    else:
+        reply += "Roll: %s" % (
+            ', '.join([str(x) for x in rolls])
+        )
+    jenni.reply(reply)
+diceroll.rule = r"^(?:\x01ACTION rolls |)(\d+)d(\d+)(.*)"
+
+
 def approval_rating(jenni, msg):
-    analysis = TextBlob(str(msg))
+    try:
+        analysis = TextBlob(str(msg))
+    except Exception:
+        return
     if 'approval' not in jenni.brain:
         jenni.brain['approval'] = {}
     if msg.nick not in jenni.brain['approval']:
@@ -93,36 +190,40 @@ def how_happy_is_room(jenni, msg):
     highest_user = None
     lowest_score = 0
     lowest_user = None
-    if room not in jenni.brain['approval_room']:
-        return
-    for user in jenni.brain['approval_room'][room]:
-        score = jenni.brain['approval_room'][room][user]
-        if not (highest_user and lowest_user):
-            highest_user = user
-            highest_score = score
-            lowest_user = user
-            lowest_score = score
-        if score > highest_score:
-            highest_score = score
-            highest_user = user
-        if score < lowest_score:
-            lowest_score = score
-            lowest_user = user
-        final_score += score
-    reply = room
-    if final_score > 0:
-        reply += " is generally a positive room"
-    else:
-        reply += " is generally a negative room"
-    reply += " (%0.2f)." % (final_score, )
-    reply += " The most positive person in the room is %s (%0.2f) and " % (
-        highest_user,
-        highest_score,
-    )
-    reply += "it seems the most negative person in the room is %s (%0.2f)." % (
-        lowest_user,
-        lowest_score,
-    )
+    if room in jenni.brain['approval_room']:
+        for user in jenni.brain['approval_room'][room]:
+            score = jenni.brain['approval_room'][room][user]
+            if not (highest_user and lowest_user):
+                highest_user = user
+                highest_score = score
+                lowest_user = user
+                lowest_score = score
+            if score > highest_score:
+                highest_score = score
+                highest_user = user
+            if score < lowest_score:
+                lowest_score = score
+                lowest_user = user
+            final_score += score
+        reply = room
+        if final_score > 0:
+            reply += " is generally a positive room"
+        else:
+            reply += " is generally a negative room"
+        reply += " (%0.2f)." % (final_score, )
+        reply += " The most positive person in the room is %s (%0.2f) and " % (
+            highest_user,
+            highest_score,
+        )
+        reply += "it seems the most negative person in the room is %s (%0.2f)." % (
+            lowest_user,
+            lowest_score,
+        )
+    elif room in jenni.brain['approval_room'][msg.sender]:
+        reply = "%s approval score is %s." % (
+            room,
+            '%0.2f' % (jenni.brain['approval_room'][msg.sender][room]),
+        )
     jenni.reply(reply)
 how_happy_is_room.rule = r"!approval (\S+)"
 
@@ -131,10 +232,11 @@ how_happy_is_room.rule = r"!approval (\S+)"
 def how_happy_am_i(jenni, msg):
     room = msg.sender
     nick = msg.nick
-    jenni.brain['approval'][msg.nick],
-    if nick not in jenni.brain['approval']:
+    approvals = jenni.brain['approval_room'][room]
+    approvals[msg.nick],
+    if nick not in approvals:
         return
-    score = jenni.brain['approval'][nick]
+    score = approvals[nick]
     jenni.reply("Your approval score is: %0.2f" % score)
 how_happy_am_i.rule = r"!approval$"
 
