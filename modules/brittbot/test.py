@@ -295,7 +295,10 @@ def justxthingslistener(jenni, msg):
         return
     if len(msg.split(' ')) == 1 or len(msg.split(' ')) > 20:
         return
-    if str(msg)[0] in ['!']:
+    try:
+        if str(msg)[0] in ['!']:
+            return
+    except Exception:
         return
 
     if random.choice(range(175)) == 0:
