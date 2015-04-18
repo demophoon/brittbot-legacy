@@ -113,6 +113,22 @@ me.rule = (['me'], r'(#?\S+) (.*)')
 me.priority = 'low'
 
 
+def notice(jenni, input):
+    # Can only be done in privmsg by an admin
+    if input.sender.startswith('#'):
+        return
+    a, b = input.group(2), input.group(3)
+    helper = False
+    if hasattr(jenni.config, 'helpers'):
+        if a in jenni.config.helpers and (input.host in jenni.config.helpers[a] or (input.nick).lower() in jenni.config.helpers[a]):
+            helper = True
+    if input.admin or helper:
+        if a and b:
+            jenni.write(['NOTICE', a, ":%s" % (b, )])
+notice.rule = (['notice'], r'(#?\S+) (.*)')
+notice.priority = 'low'
+
+
 def defend_ground(jenni, input):
     '''
     This function monitors all kicks across all channels jenni is in. If she
