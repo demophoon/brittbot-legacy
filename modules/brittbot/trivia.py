@@ -97,7 +97,7 @@ def trivia(jenni, msg):
         colorize(rooms[chan]['category'], fg=colors['orange']),
         colorize(rooms[chan]['question'], fg=colors['orange']),
     )
-    jenni.write(['NOTICE', msg.sender, ":%s" % reply])
+    jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
     jenni.save_brain()
 trivia.rule = r"^($nickname\W |!)trivia$"
 
