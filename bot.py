@@ -61,6 +61,7 @@ class Jenni(irc.Bot):
         self.excludes = {}
         self.brain_file = 'brain.json'
         self.brain = {}
+        self.online_users = {}
         self.config = config
         if hasattr(config, 'excludes'):
             self.excludes = config.excludes
