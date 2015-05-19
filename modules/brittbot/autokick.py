@@ -6,7 +6,6 @@ More info:
  * jenni: https://github.com/myano/jenni/
 '''
 
-import pprint
 import re
 
 allowed_rooms = [
@@ -53,8 +52,9 @@ def auto_kick(jenni, msg):
     init_kick_brain(jenni)
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     kick, kickmsg = is_kick(jenni, msg.sender, hostmask)
+    if msg.sender not in jenni.online_users:
+        jenni.online_users[msg.sender] = []
     jenni.online_users[msg.sender] += [msg.nick]
-    pprint.pprint(jenni.online_users)
     if msg.nick == jenni.bot.nick:
         return
     if kick:
@@ -79,18 +79,20 @@ auto_kick.priority = 'high'
 
 
 def user_part(jenni, msg):
-    print msg
-    print msg.nick
-    jenni.online_users[msg.sender].remove(msg.nick)
-    pprint.pprint(jenni.online_users)
+    if msg.sender in jenni.online_users:
+        jenni.online_users[msg.sender].remove(msg.nick)
+    else:
+        jenni.online_users[msg.sender] = []
 user_part.event = 'PART'
 user_part.rule = '.*'
 user_part.priority = 'high'
 
 
 def user_quit(jenni, msg):
-    jenni.online_users[msg.sender].remove(msg.nick)
-    pprint.pprint(jenni.online_users)
+    if msg.sender in jenni.online_users:
+        jenni.online_users[msg.sender].remove(msg.nick)
+    else:
+        jenni.online_users[msg.sender] = []
 user_quit.event = 'QUIT'
 user_quit.rule = '.*'
 user_quit.priority = 'high'
@@ -102,7 +104,6 @@ def nametrigger(jenni, input):
     if channel not in jenni.online_users:
         jenni.online_users[channel] = []
     jenni.online_users[channel] += names
-    pprint.pprint(jenni.online_users)
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'
