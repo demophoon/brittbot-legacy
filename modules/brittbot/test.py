@@ -75,13 +75,13 @@ noneed.rule = r"(?i)^!noneed"
 def xfacts(jenni, msg):
     if 'facts' not in jenni.brain:
         jenni.brain['facts'] = {}
-    facttype = msg.groups()[0]
+    facttype = msg.groups()[0].lower()
     fact = msg.groups()[1]
     if facttype not in jenni.brain['facts']:
         jenni.brain['facts'][facttype] = []
     if fact and fact.strip():
         jenni.brain['facts'][facttype].append(fact.strip())
-        reply = "Fact added"
+        reply = "Fact added."
     else:
         if not jenni.brain['facts'][facttype]:
             return
