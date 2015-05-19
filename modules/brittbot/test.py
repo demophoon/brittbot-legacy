@@ -36,6 +36,16 @@ config_print.priority = 'medium'
 
 
 @smart_ignore
+def tacobellitem(jenni, msg):
+    from modules.brittbot.tacobell import generate_taco_bell
+    vegan = False
+    if msg.groups(0) == 'vegan':
+        vegan = True
+    jenni.reply("You should get the %s." % generate_taco_bell(vegan))
+tacobellitem.rule = r"$nickname.*what.*(vegan)?.*taco bell"
+
+
+@smart_ignore
 def mnightwho(jenni, msg):
     reply = "Did you mean M. Night Sha"
     reply += ''.join([random.choice("lamin") for _ in range(random.randint(6,24))])
