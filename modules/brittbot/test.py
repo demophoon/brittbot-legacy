@@ -19,7 +19,6 @@ from modules.brittbot.helpers import (
     colors,
     elapsed
 )
-from modules.brittbot.pil import justxthings
 
 
 def notice(jenni, chan, msg):
@@ -257,14 +256,9 @@ reload_brain.rule = r"^!loadbrain"
 
 @smart_ignore
 def justxthingshandler(jenni, msg):
+    from modules.brittbot.pil import justxthings
     hashtag = msg.groups()[1]
     quote = msg.groups()[0]
-
-    if msg.sender in [
-        #'#reddit-stlouis',
-    ]:
-        jenni.reply("nou")
-        return
 
     if quote[0] in ['!']:
         return
@@ -275,11 +269,12 @@ def justxthingshandler(jenni, msg):
         hashtag,
     )
     jenni.reply(url)
-justxthingshandler.rule = r"(.*) (#\S+)$"
+justxthingshandler.rule = r"(.*) (#\S+\w)$"
 
 
 @smart_ignore
 def justxthingslistener(jenni, msg):
+    from modules.brittbot.pil import justxthings
     if msg.sender not in [
         "#internship",
         "#r/kansascity",
