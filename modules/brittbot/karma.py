@@ -17,9 +17,9 @@ def setup_karma_brain(jenni):
         jenni.save_brain()
 
 karma = "(?:"
-karma += "([a-zA-Z0-9]+)(\+\+|--)|"
+karma += "([a-zA-Z0-9\.]+)(\+\+|--)|"
 karma += "\((.+)\)(\+\+|--)|"
-karma += "(\+\+|--)([a-zA-Z0-9]+)|"
+karma += "(\+\+|--)([a-zA-Z0-9\.]+)|"
 karma += "(\+\+|--)\((.+)\)|"
 karma += "\((inc|dec) (.+)\)"
 karma += ")+"
