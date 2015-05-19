@@ -16,6 +16,8 @@ limited_channels = {
 def is_allowed(function_name, jenni, msg):
     ignored_nicks = jenni.brain['filtered_nicks']
     irc_room = msg.sender
+    if msg.admin:
+        return True
     if 'filters' not in jenni.brain:
         jenni.brain['filters'] = jenni.config.channel_filters
         jenni.save_brain()
