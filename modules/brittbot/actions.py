@@ -7,6 +7,7 @@ import random
 from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import action
 
+from textblob import TextBlob
 
 bad_actions = [
     "falls over",
@@ -89,8 +90,10 @@ what_do.priority = 'medium'
 @smart_ignore
 def sandwich(jenni, msg):
     if "sudo" in msg:
+        make = TextBlob(msg.groups()[0]).words[0].pluralize()
+        make = str(make)
         jenni.say(action("%s %s a %s" % (
-            msg.groups()[0],
+            make,
             msg.nick,
             msg.groups()[1],
         )))
@@ -99,5 +102,5 @@ def sandwich(jenni, msg):
             msg.groups()[0][0].upper() + msg.groups()[0][1:].lower(),
             msg.groups()[1],
         ))
-sandwich.rule = "^(?:$nickname|sudo $nickname|$nickname sudo|)\W? (make|get|fetch) me a (\w+)"
+sandwich.rule = "^(?:$nickname|sudo $nickname|$nickname sudo|)\W? (make|get|fetch) me (?:an?|some|that|more) (.*)"
 sandwich.priority = 'medium'
