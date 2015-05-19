@@ -571,7 +571,7 @@ def buzzfeedify(jenni, msg):
         'count': random_number,
         'justwait': random.choice(range(random_number)),
     }
-    jenni.reply(reply)
+    jenni.reply(reply.upper())
 buzzfeedify.rule = r"^!buzzfeed (.*)"
 
 
