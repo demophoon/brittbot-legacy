@@ -24,6 +24,24 @@ rimshot.priority = 'medium'
 
 
 @smart_ignore
+def watupdates(jenni, input):
+    jenni.say("UPDATES! " * random.randrange(1, 11))
+watupdates.rule = "^!update"
+
+
+@smart_ignore
+def hardees_correct(jenni, input):
+    jenni.say("Carl's Jr.*")
+hardees_correct.rule = r"(?i).*hardees"
+
+
+@smart_ignore
+def tooedgy(jenni, input):
+    jenni.say("http://i.imgur.com/x5lhJEb.png")
+tooedgy.rule = "^!(2|too)?edgy"
+
+
+@smart_ignore
 def pod_bay_doors(jenni, input):
     jenni.say("I'm sorry Dave, I'm afraid I can't do that")
 pod_bay_doors.rule = "^!?open the pod bay doors(, $nickname)?"
