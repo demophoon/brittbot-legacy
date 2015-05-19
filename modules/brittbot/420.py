@@ -31,7 +31,6 @@ commandments = [
     "Thou shall not pass bad weed to thy homies.",
     "Thou shall covet the scrublord's mom, his prestige, and his noobtube.",
     "The scrubs tasted the water but it had been turned into Mtn Dew.",
-    "Sample text.",
 ]
 
 books = [
