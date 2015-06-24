@@ -46,6 +46,31 @@ tacobellitem.rule = r"$nickname.*what.*(vegan)?.*taco bell"
 
 
 @smart_ignore
+def how_many_x(jenni, msg):
+    many = msg.groups()[0]
+    subjects = TextBlob(str(msg.groups()[1])).noun_phrases.pluralize()
+    if subjects:
+        subject = random.choice(subjects)
+        many = "many"
+    else:
+        subject = msg.groups()[1]
+    if subject and len(subject.split(" ")) > 3:
+        return
+    if not subject:
+        subject = ""
+    so = "so"
+    if subject == "cooks":
+        so = "too"
+        many = "many"
+    if "brittbot" in subject.lower().split(" "):
+        subject = subject.lower().replace("brittbot", msg.nick.lower())
+    elif "i" in subject.lower().split(" "):
+        subject = subject.lower().replace("i", "you")
+    jenni.say("{} {} {}".format(so, many, subject))
+how_many_x.rule = r"(?i)how (many|much) ?([a-zA-Z\s]+)?\??$"
+
+
+@smart_ignore
 def mnightwho(jenni, msg):
     reply = "Did you mean M. Night Sha"
     reply += ''.join([random.choice("lamin") for _ in range(random.randint(6,24))])
