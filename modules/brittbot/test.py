@@ -42,7 +42,7 @@ def tacobellitem(jenni, msg):
     if msg.groups(0) == 'vegan':
         vegan = True
     jenni.reply("You should get the %s." % generate_taco_bell(vegan))
-tacobellitem.rule = r"$nickname.*what.*(vegan)?.*taco bell"
+tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\?"
 
 
 @smart_ignore
