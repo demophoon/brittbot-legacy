@@ -28,15 +28,16 @@ positive_karma = ['++', 'inc']
 negitive_karma = ['--', 'dec']
 
 positive_sayings = [
-    "has leveled up!",
-    "1 up",
-    "has collected $200!",
-    "+1",
+    "{0} has leveled up!",
+    "{0} 1 up",
+    "{0} has collected $200!",
+    "{0} +1",
+    "A winrar is {0}",
 ]
 negitive_sayings = [
-    "-1",
-    "womp womp womp.",
-    "lost a life.",
+    "{0} -1",
+    "{0} womp womp womp.",
+    "{0} lost a life.",
 ]
 
 
@@ -123,8 +124,9 @@ def karma_award(jenni, msg):
             karma_points = fixed_items[item.lower()]
         if item.lower() in decay:
             karma_points -= int((time.time() - decay[item]['starting_time']) / decay[item]['rate'])
-        karma_replies.append("%s %s (Karma: %s)" % (
-            item, saying, "{:,}".format(karma_points)
+        commentary = saying.format(item)
+        karma_replies.append("{0} (Karma: {1})".format(
+            commentary, "{:,}".format(karma_points)
         ))
     jenni.say(", ".join(karma_replies))
     jenni.save_brain()
