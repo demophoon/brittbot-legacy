@@ -102,6 +102,16 @@ arewefriends.rule = r"(?i)^$nickname\W? (?:are you my|am i your|are we) friends?
 
 
 @smart_ignore
+def alot(jenni, msg):
+    print msg
+    if "a alot" in msg or "an alot" in msg:
+        return
+    reply = "http://brittg.com/alot"
+    jenni.say("I think you mean 'a lot', {}".format(reply))
+alot.rule = r"(?i).* alot .*"
+
+
+@smart_ignore
 def noneed(jenni, msg):
     reply = "http://youtu.be/ygr5AHufBN4"
     jenni.say(reply)
