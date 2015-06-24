@@ -71,6 +71,18 @@ how_many_x.rule = r"(?i)how (many|much) ?([a-zA-Z\s]+)?\??$"
 
 
 @smart_ignore
+def translate_this(jenni, msg):
+    t_msg = TextBlob(msg.groups()[0])
+    from_lang = t_msg.detect_language()
+    if from_lang != 'en':
+        translated = t_msg.translate(from_lang=from_lang, to='en')
+        jenni.reply("{}".format(translated))
+    else:
+        return
+translate_this.rule = r'^!translate (.*)$'
+
+
+@smart_ignore
 def mnightwho(jenni, msg):
     reply = "Did you mean M. Night Sha"
     reply += ''.join([random.choice("lamin") for _ in range(random.randint(6,24))])
