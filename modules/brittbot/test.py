@@ -224,24 +224,11 @@ def room_rating(jenni, msg):
     if msg.sender not in jenni.brain['approval_room']:
         jenni.brain['approval_room'][msg.sender] = {}
     if msg.nick not in jenni.brain['approval_room'][msg.sender]:
-        jenni.brain['approval_room'][msg.sender][msg.nick] = 0
+        jenni.brain['approval_room'][msg.sender][msg.nick] = {'msgs': 0, 'score': 0}
     if analysis.sentiment.subjectivity < .5:
         return
-    jenni.brain['approval_room'][msg.sender][msg.nick] += analysis.sentiment.polarity
-    if not analysis.sentiment.polarity == 0:
-        jenni.save_brain()
-        p = analysis.sentiment.polarity
-        if p > 0:
-            p = "+%0.2f" % (p, )
-        else:
-            p = "%0.2f" % (p, )
-        print "%s <%s> (%s, %0.2f): %s" % (
-            msg.sender,
-            msg.nick,
-            p,
-            jenni.brain['approval_room'][msg.sender][msg.nick],
-            msg,
-        )
+    jenni.brain['approval_room'][msg.sender][msg.nick]['msgs'] += 1
+    jenni.brain['approval_room'][msg.sender][msg.nick]['score'] += analysis.sentiment.polarity
 room_rating.rule = r".*"
 
 
@@ -257,7 +244,10 @@ def how_happy_is_room(jenni, msg):
     lowest_user = None
     if room in jenni.brain['approval_room']:
         for user in jenni.brain['approval_room'][room]:
-            score = jenni.brain['approval_room'][room][user]
+            if jenni.brain['approval_room'][room][user]['msgs'] <= 25:
+                continue
+            score = jenni.brain['approval_room'][room][user]['score'] / jenni.brain['approval_room'][room][user]['msgs']
+            score *= 100
             if not (highest_user and lowest_user):
                 highest_user = user
                 highest_score = score
@@ -285,9 +275,11 @@ def how_happy_is_room(jenni, msg):
             lowest_score,
         )
     elif room in jenni.brain['approval_room'][msg.sender]:
+        score = jenni.brain['approval_room'][msg.sender][room]['score'] / jenni.brain['approval_room'][msg.sender][room]['msgs']
+        score *= 100
         reply = "%s approval score is %s." % (
             room,
-            '%0.2f' % (jenni.brain['approval_room'][msg.sender][room]),
+            '%0.2f' % (score),
         )
     jenni.reply(reply)
 how_happy_is_room.rule = r"!approval (\S+)"
@@ -301,7 +293,10 @@ def how_happy_am_i(jenni, msg):
     approvals[msg.nick],
     if nick not in approvals:
         return
-    score = approvals[nick]
+    if approvals[nick]['msgs'] <= 0:
+        return
+    score = approvals[nick]['score'] / approvals[nick]['msgs']
+    score *= 100
     jenni.reply("Your approval score is: %0.2f" % score)
 how_happy_am_i.rule = r"!approval$"
 
