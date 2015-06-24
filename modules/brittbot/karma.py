@@ -28,15 +28,16 @@ positive_karma = ['++', 'inc']
 negitive_karma = ['--', 'dec']
 
 positive_sayings = [
-    "has leveled up!",
-    "1 up",
-    "has collected $200!",
-    "+1",
+    "{0} has leveled up!",
+    "{0} 1 up",
+    "{0} has collected $200!",
+    "{0} +1",
+    "A winrar is {0}",
 ]
 negitive_sayings = [
-    "-1",
-    "womp womp womp.",
-    "lost a life.",
+    "{0} -1",
+    "{0} womp womp womp.",
+    "{0} lost a life.",
 ]
 
 
@@ -72,8 +73,9 @@ def karma_award(jenni, msg):
             saying = random.choice(positive_sayings)
         else:
             saying = random.choice(negitive_sayings)
-        jenni.say("%s %s (Karma: %s)" % (
-            item, saying, jenni.brain['karma'][item]
+        commentary = saying.format(item)
+        jenni.say("{0} (Karma: {1})".format(
+            commentary, jenni.brain['karma'][item]
         ))
         jenni.save_brain()
 karma_award.rule = r".*" + karma
