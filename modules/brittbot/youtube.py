@@ -68,5 +68,5 @@ def yt_context(jenni, msg):
             yt['author'],
             yt['shorturl'],
         ))
-yt_context.rule = r'.*(https?://.*?youtu\S*)\s?'
+yt_context.rule = r'.*(youtu\S*)\s?'
 yt_context.priority = 'medium'
