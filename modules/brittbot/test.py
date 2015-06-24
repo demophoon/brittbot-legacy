@@ -85,7 +85,7 @@ translate_this.rule = r'^!translate (.*)$'
 @smart_ignore
 def mnightwho(jenni, msg):
     reply = "Did you mean M. Night Sha"
-    reply += ''.join([random.choice("lamin") for _ in range(random.randint(6,24))])
+    reply += ''.join([random.choice("shlamin") for _ in range(random.randint(6,24))])
     reply += 'n?'
     jenni.reply(reply)
 mnightwho.rule = r"(?i).*(m\.? night).*"
