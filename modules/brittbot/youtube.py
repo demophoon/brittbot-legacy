@@ -21,21 +21,15 @@ def get_video_information(videoid, api_key):
     if not(len(videoid) == 11):
         return False
     yturl = get_data_url % (videoid, api_key)
-    try:
-        vid = json.loads(urllib.urlopen(yturl).read())['items'][0]
-        import pprint
-        pprint.pprint(vid)
-        vid_obj = {
-            'title': vid['snippet']['title'],
-            'duration': get_duration(vid['contentDetails']['duration']),
-            'description': vid['snippet']['description'],
-            'author': vid['snippet']['channelTitle'],
-            'shorturl': "http://youtu.be/" + videoid,
-        }
-        return vid_obj
-    except Exception as e:
-        print e
-        return False
+    vid = json.loads(urllib.urlopen(yturl).read())['items'][0]
+    vid_obj = {
+        'title': vid['snippet']['title'],
+        'duration': get_duration(vid['contentDetails']['duration']),
+        'description': vid['snippet']['description'],
+        'author': vid['snippet']['channelTitle'],
+        'shorturl': "http://youtu.be/" + videoid,
+    }
+    return vid_obj
 
 
 @smart_ignore
