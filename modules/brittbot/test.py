@@ -163,9 +163,18 @@ alwaysabouttorettoreply.rule = r"(?i)^(?:$nickname\W? )?(y|n)\w+"
 
 @smart_ignore
 def diceroll(jenni, msg):
-    num_of_dice = min(10, int(msg.groups()[0]))
-    num_of_side = min(1000, int(msg.groups()[1]))
-    rolls = [random.choice(range(1, num_of_side)) for _ in range(num_of_dice)]
+    max_dice = 10
+    max_side = 100
+    num_of_dice = int(msg.groups()[0])
+    num_of_side = int(msg.groups()[1])
+    truncate_warning = ""
+    if num_of_dice * num_of_side > max_dice * max_side:
+        num_of_dice = min(max_dice, int(msg.groups()[0]))
+        num_of_side = min(max_side, int(msg.groups()[1]))
+        truncate_warning = "Truncating results to {}d{}. ".format(num_of_dice, num_of_side)
+    if num_of_side < 1:
+        return
+    rolls = [random.randint(1, num_of_side) for _ in range(num_of_dice)]
     total = sum(rolls)
     reply = ""
     if msg.groups()[2]:
@@ -182,7 +191,7 @@ def diceroll(jenni, msg):
         reply += "Roll: %s" % (
             ', '.join([str(x) for x in rolls])
         )
-    jenni.reply(reply)
+    jenni.reply(truncate_warning + reply)
 diceroll.rule = r"^(?:\x01ACTION rolls |)(\d+)d(\d+)(.*)"
 
 
