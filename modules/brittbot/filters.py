@@ -16,8 +16,6 @@ limited_channels = {
 def is_allowed(function_name, jenni, msg):
     ignored_nicks = jenni.brain['filtered_nicks']
     irc_room = msg.sender
-    if msg.admin:
-        return True
     if 'filters' not in jenni.brain:
         jenni.brain['filters'] = jenni.config.channel_filters
         jenni.save_brain()
@@ -25,6 +23,9 @@ def is_allowed(function_name, jenni, msg):
     allowed = True
     if not irc_room.startswith("#") and not msg.admin:
         allowed = False
+    for nick in ignored_nicks:
+        if re.search(re.compile(nick, re.IGNORECASE), msg.nick):
+            allowed = False
     if msg.nick in jenni.brain['approval']:
         if jenni.brain['approval'][msg.nick] < -5:
             allowed = False
@@ -33,15 +34,14 @@ def is_allowed(function_name, jenni, msg):
         elif jenni.brain['approval'][msg.nick] > 5:
             msg.friend = True
             msg.enemy = False
+    if msg.admin:
+        allowed = True
     if irc_room in filters:
         if 'blocked' in filters[irc_room]:
             if function_name in filters[irc_room]['blocked']:
                 allowed = False
         if 'allowed' in filters[irc_room]:
             allowed = function_name in filters[irc_room]['allowed']
-    for nick in ignored_nicks:
-        if re.search(re.compile(nick, re.IGNORECASE), msg.nick):
-            allowed = False
     return allowed
 
 
