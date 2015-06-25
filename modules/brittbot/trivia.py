@@ -2,6 +2,7 @@
 # encoding: utf-8
 # jenni brittbot/trivia.py - Trivia bot!
 
+import random
 import time
 import re
 import urllib
@@ -39,6 +40,26 @@ def init_user_brain(jenni, nick):
 
 
 @smart_ignore
+def trivia_hint(jenni, msg):
+    import string
+    hint_chars = string.letters + string.digits
+    chan = msg.sender
+    rooms = jenni.brain['trivia']['rooms']
+    if chan not in rooms:
+        return
+    answer = rooms[chan]['answer'].lower()
+    answer = answer.replace('\\', "")
+    if not len(rooms[chan]['hint']) > 5:
+        all_letters = [x for x in list(set(answer)) if x not in rooms[chan]['hint']]
+        all_letters = [x for x in all_letters if x in hint_chars]
+        rooms[chan]['hint'].append(random.choice(all_letters))
+    hint_str = map(lambda l: l if l in rooms[chan]['hint'] or l not in hint_chars else "_", answer)
+    hint_str = " ".join(hint_str)
+    jenni.reply(hint_str)
+trivia_hint.rule = "^!hint$"
+
+
+@smart_ignore
 def trivia(jenni, msg):
     init_trivia_brain(jenni)
     chan = msg.sender
@@ -57,6 +78,7 @@ def trivia(jenni, msg):
             'category': None,
             'question': None,
             'answer': None,
+            'hint': [],
             'attempts': 0,
             'noplay': [],
             'noplay_hostmask': [],
@@ -88,6 +110,7 @@ def trivia(jenni, msg):
                     rooms[chan]['question'] = question['question']
                     rooms[chan]['answer'] = question['answer']
                     rooms[chan]['attempts'] = 1
+                    rooms[chan]['hint'] = []
         rooms[chan]['noplay'] = []
         rooms[chan]['noplay_hostmask'] = []
     if not points:
@@ -110,6 +133,8 @@ def trivia_answer(jenni, msg):
     global last_question_asked
     if time.time() - last_question_asked < 2:
         return
+    import string
+    hint_chars = string.letters + string.digits
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     chan = msg.sender
     if chan not in trivia_rooms:
@@ -138,11 +163,13 @@ def trivia_answer(jenni, msg):
     if jenni.brain['trivia']['users'][msg.nick]['banned'] > 1:
         return
     guess = msg.groups()[0].lower()
+    guess = ''.join(x for x in guess if x in hint_chars)
     guess = [pattern.sub('', y) for y in guess.split(" ")]
     guess = [x for x in guess if x]
     guess += [x[:-1] for x in guess if x.endswith("s")]
     guess += [x + "s" for x in guess if not x.endswith("s")]
     answer = rooms[chan]['answer'].lower()
+    answer = ''.join(x for x in answer if x in hint_chars)
     answer = [pattern.sub('', y)
               for y in answer.split(" ") if y not in ignored_words]
     correct = float(sum([x in answer for x in guess]))
