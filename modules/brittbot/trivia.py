@@ -277,11 +277,11 @@ def trivia_skip(jenni, msg):
         jenni.reply("Nou.")
         return
     init_user_brain(jenni, msg.nick)
-    jenni.reply("Skipping question.")
+    #jenni.reply("Skipping question.")
     jenni.brain['trivia']['users'][msg.nick]['skipped'] += 1
     rooms[chan]['question'] = None
     trivia(jenni, msg)
-trivia_skip.rule = r"$nickname\W? skip"
+trivia_skip.rule = r"^($nickname\W? skip|!skip)$"
 
 
 @smart_ignore
