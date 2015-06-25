@@ -80,7 +80,8 @@ auto_kick.priority = 'high'
 
 def user_part(jenni, msg):
     if msg.sender in jenni.online_users:
-        jenni.online_users[msg.sender].remove(msg.nick)
+        if msg.nick in jenni.online_users[msg.sender]:
+            jenni.online_users[msg.sender].remove(msg.nick)
     else:
         jenni.online_users[msg.sender] = []
 user_part.event = 'PART'
@@ -90,7 +91,8 @@ user_part.priority = 'high'
 
 def user_quit(jenni, msg):
     if msg.sender in jenni.online_users:
-        jenni.online_users[msg.sender].remove(msg.nick)
+        if msg.nick in jenni.online_users[msg.sender]:
+            jenni.online_users[msg.sender].remove(msg.nick)
     else:
         jenni.online_users[msg.sender] = []
 user_quit.event = 'QUIT'
