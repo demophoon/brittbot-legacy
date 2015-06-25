@@ -24,6 +24,8 @@ def movie(jenni, input):
     if not input.group(2):
         return
     word = input.group(2).rstrip()
+    if word == "Star trek: Return of the Jedi Episode I":
+        word = "Scorpion king 2"
     word = word.replace(" ", "+")
     uri = "http://www.imdbapi.com/?t=" + word
 
