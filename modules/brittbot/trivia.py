@@ -12,6 +12,7 @@ from modules.brittbot.helpers import colorize, colors
 
 trivia_room = '##brittbot-jeopardy'
 trivia_rooms = [trivia_room, '#stlouis-games']
+last_question_asked = 0
 
 
 def init_trivia_brain(jenni):
@@ -62,6 +63,8 @@ def trivia(jenni, msg):
         }
     points = None
     if not rooms[chan]['question']:
+        global last_question_asked
+        last_question_asked = time.time()
         while not rooms[chan]['question']:
             count = 1
             if chan != trivia_room:
@@ -104,6 +107,9 @@ trivia.rule = r"^($nickname\W |!)trivia$"
 
 @smart_ignore
 def trivia_answer(jenni, msg):
+    global last_question_asked
+    if time.time() - last_question_asked < 2:
+        return
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     chan = msg.sender
     if chan not in trivia_rooms:
