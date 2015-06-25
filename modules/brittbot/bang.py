@@ -139,10 +139,14 @@ command_help.priority = 'medium'
 
 @smart_ignore
 def one_one_upper(jenni, input):
+    a, b = (int(input.groups()[0]) + 1, int(input.groups()[2]) + 1)
+    if a == 2 and b == 4:
+        a = 3
+        b = 5
     jenni.say("%d%s%d%s" % (
-        int(input.groups()[0]) + 1,
+        a,
         input.groups()[1],
-        int(input.groups()[2]) + 1,
+        b,
         input.groups()[3],
     ))
 one_one_upper.rule = r'^(-?\d+)(\s?[a-zA-Z]+\s?)(-?\d+)(\s?[a-zA-Z]+)$'
@@ -151,8 +155,11 @@ one_one_upper.priority = 'medium'
 
 @smart_ignore
 def one_upper(jenni, input):
+    a = int(input.groups()[0]) + 1
+    if a == 2:
+        a = 3
     jenni.say("%d%s" % (
-        int(input.groups()[0]) + 1,
+        a,
         input.groups()[1],
     ))
 one_upper.rule = r'^(-?\d+)(\s?[a-zA-Z]+)$'
