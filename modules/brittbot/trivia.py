@@ -247,17 +247,17 @@ def trivia_giveup(jenni, msg):
     hostmask = "%s!%s@%s" % hostmask
     jenni.brain['trivia']['rooms'][chan]['noplay_hostmask'].append(hostmask)
     jenni.save_brain()
-trivia_giveup.rule = r"^$nickname\W? i (give up|have no idea|don'?t know)"
+trivia_giveup.rule = r"^(?:$nickname\W? i (?:give up|have no idea|don'?t know).*|!giveup)$"
 
 
 @smart_ignore
 def trivia_forgive(jenni, msg):
-    if not msg.admin:
-        return
     init_user_brain(jenni, msg.nick)
     nick = msg.groups()[0]
     if nick == 'me':
         nick = msg.nick
+    if nick == msg.nick and not msg.owner:
+        return
     jenni.brain['trivia']['users'][nick]['banned'] = 0
     jenni.reply("I have forgiven %s for you. "
                 "You might need to unban them from any rooms I am in." % (
