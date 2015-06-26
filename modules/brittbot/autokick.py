@@ -55,7 +55,7 @@ def auto_kick(jenni, msg):
     if msg.sender not in jenni.online_users:
         jenni.online_users[msg.sender] = []
     jenni.online_users[msg.sender] += [msg.nick]
-    if msg.nick == jenni.bot.nick:
+    if msg.nick == jenni.nick:
         return
     if kick:
         if msg.nick not in jenni.brain['kicks']:

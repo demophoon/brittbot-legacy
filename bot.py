@@ -169,7 +169,7 @@ class Jenni(irc.Bot):
                 func.priority = 'medium'
 
             if not hasattr(func, 'thread'):
-                func.thread = True
+                func.thread = False
 
             if not hasattr(func, 'event'):
                 func.event = 'PRIVMSG'
@@ -238,7 +238,7 @@ class Jenni(irc.Bot):
                 sender = origin.sender or text
                 if attr == 'reply':
                     return (lambda msg:
-                            self.bot.msg(sender, origin.nick + ': ' + msg))
+                            self.msg(sender, origin.nick + ': ' + msg))
                 elif attr == 'say':
                     return lambda msg: self._bot.msg(sender, msg)
                 elif attr == 'bot':
