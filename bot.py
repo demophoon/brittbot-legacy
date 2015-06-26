@@ -241,6 +241,8 @@ class Jenni(irc.Bot):
                             self.msg(sender, origin.nick + ': ' + msg))
                 elif attr == 'say':
                     return lambda msg: self._bot.msg(sender, msg)
+                elif attr == 'pm':
+                    return lambda msg: self._bot.msg(origin.nick, msg)
                 elif attr == 'bot':
                     # Allow deprecated usage of jenni.bot.foo but print a warning to the console
                     print "Warning: Direct access to jenni.bot.foo is deprecated.  Please use jenni.foo instead."
