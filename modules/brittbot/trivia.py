@@ -152,6 +152,7 @@ def trivia_answer(jenni, msg):
         'his',
         'her',
         'hers',
+        'and',
     ]
     pattern = re.compile("[\W]+")
 
