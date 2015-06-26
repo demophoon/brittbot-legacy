@@ -246,8 +246,8 @@ def duck_search(query):
         output = str()
         if m:
             for result in m:
-                if '/y.js?' not in result and '//ad.ddg.gg/' not in result:
-                    # ignore ads
+                if '/y.js?' not in result and '//ad.ddg.gg/' not in result and '.msn.com/' not in result:
+                    ## ignore ads
                     output = result
                     break
         else:
@@ -307,15 +307,15 @@ def duck(jenni, input):
     uri = duck_search(query)
     if uri:
         jenni.say(uri)
-        if hasattr(jenni, 'last_seen_uri') and input.sender in jenni.bot.last_seen_uri:
-            jenni.bot.last_seen_uri[input.sender] = uri
+        if hasattr(jenni, 'last_seen_uri') and input.sender in jenni.last_seen_uri:
+            jenni.last_seen_uri[input.sender] = uri
 
     # try to find any Zero-Click stuff
     result = duck_zero_click_api(query)
 
     if result and len(result) == 1:
-        if hasattr(jenni, 'last_seen_uri') and input.sender in jenni.bot.last_seen_uri:
-            jenni.bot.last_seen_uri[input.sender] = result[0]
+        if hasattr(jenni, 'last_seen_uri') and input.sender in jenni.last_seen_uri:
+            jenni.last_seen_uri[input.sender] = result[0]
 
     # loop through zero-click results
     if result and len(result) >= 1:

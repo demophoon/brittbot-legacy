@@ -50,13 +50,27 @@ class Origin(object):
         match = Origin.source.match(source or '')
         self.nick, self.user, self.host = match.groups()
 
-        if len(args) > 1:
+        target = mode = mode_target = names = None
+
+        arg_len = len(args)
+        if arg_len > 1:
             target = args[1]
+            if arg_len > 2:
+                mode = args[2]
+                if arg_len > 3:
+                    mode_target = args[3]
+                    if arg_len > 4:
+                        names = args[4]
+
         else:
             target = None
 
         mappings = {bot.nick: self.nick, None: None}
         self.sender = mappings.get(target, target)
+        self.mode = mode
+        self.mode_target = mode_target
+        self.names = names
+        self.full_ident = source
 
 
 def create_logdir():
@@ -93,19 +107,32 @@ def log_raw(line):
 
 class Bot(asynchat.async_chat):
 
-    def __init__(self, nick, name, channels, password=None, logchan_pm=None, logging=False, ipv6=False):
+    def __init__(self, nick, name, channels, user=None, password=None, logchan_pm=None, logging=False, ipv6=False):
         asynchat.async_chat.__init__(self)
         self.set_terminator('\n')
         self.buffer = ''
 
         self.nick = nick
-        self.user = nick
+        if user is not None:
+            self.user = user
+        else:
+            self.user = nick
         self.name = name
         self.password = password
+
+        # Right now, only accounting for two op levels.
+        # These lists are filled in startup.py
+        self.ops = dict()
+        self.hops = dict()
+        self.voices = dict()
 
         self.use_ssl = False
         self.use_sasl = False
         self.is_connected = False
+
+        # Store this separately from authenticated
+        # that way we don't try twice
+        self.auth_attempted = False
         self.is_authenticated = False
 
         self.verbose = True
@@ -229,10 +256,13 @@ class Bot(asynchat.async_chat):
         if self.verbose:
             print >> sys.stderr, 'connected!'
 
-        self.write(('CAP', 'LS'))
+        if self.use_sasl:
+            self.write(('CAP', 'LS'))
 
         if not self.use_sasl and self.password:
             self.write(('PASS', self.password))
+            # Store the fact that we authed, or at least tried
+            self.authed_attempted = True
         self.write(('NICK', self.nick))
         self.write(('USER', self.user, '+iw', self.nick), self.name)
 
@@ -407,6 +437,37 @@ class Bot(asynchat.async_chat):
         except:
             self.msg("##brittslittlesliceofheaven", "Got an error.")
 
+
+    # Functions to add/remove ops, hops, and voices
+    def add_op(self, channel, name):
+        if channel in self.ops:
+            self.ops[channel].add(name)
+        else:
+            self.ops[channel] = set([name])
+
+    def add_halfop(self, channel, name):
+        if channel in self.hops:
+            self.hops[channel].add(name)
+        else:
+            self.hops[channel] = set([name])
+
+    def add_voice(self, channel, name):
+        if channel in self.voices:
+            self.voices[channel].add(name)
+        else:
+            self.voices[channel] = set([name])
+
+    def del_op(self, channel, name):
+        try: self.ops[channel].remove(name)
+        except: pass
+
+    def del_halfop(self, channel, name):
+        try: self.hops[channel].remove(name)
+        except: pass
+
+    def del_voice(self, channel, name):
+        try: self.voices[channel].remove(name)
+        except: pass
 
 class TestBot(Bot):
     def f_ping(self, origin, match, args):

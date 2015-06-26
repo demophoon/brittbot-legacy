@@ -143,6 +143,7 @@ def remind(jenni, input):
         duration = int(duration)
 
     t = int(time.time()) + duration
+    message += ' | Set on: ' + str(datetime.now().isoformat())
     reminder = (input.sender, input.nick, message)
 
     try:

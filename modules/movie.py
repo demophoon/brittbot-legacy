@@ -1,57 +1,83 @@
 # -*- coding: utf8 -*-
-"""
-imdb.py - jenni Movie Information Module
+'''
+movie.py - jenni Movie Information Module
+Copyright 2014, Michael Yanovich, yanovich.net
 Copyright 2012, Elad Alfassa, <elad@fedoraproject.org>
 Licensed under the Eiffel Forum License 2.
 
-This module relies on imdbapi.com
+This module relies on omdbapi.com
 
 More info:
  * jenni: https://github.com/myano/jenni/
  * Phenny: http://inamidst.com/phenny/
-"""
-
-import json
-import web
+'''
 
 from modules.brittbot.filters import smart_ignore
+
+import json
+import urllib2
+import re
+
+API_BASE_URL = 'http://www.omdbapi.com/'
+
+
+def prep_title(txt):
+    txt = txt.replace(' ', '+')
+    txt = (txt).encode('utf-8')
+    txt = urllib2.quote(txt)
+    return txt
 
 
 @smart_ignore
 def movie(jenni, input):
-    """.imdb movie/show title -- displays information about a production"""
+    '''.imdb movie/show title -- displays information about a production'''
 
     if not input.group(2):
-        return
+        return jenni.say('Please enter a movie or TV show title. '
+                         'Year is optional.')
+
     word = input.group(2).rstrip()
     if word == "Star trek: Return of the Jedi Episode I":
         word = "Scorpion king 2"
     word = word.replace(" ", "+")
     uri = "http://www.imdbapi.com/?t=" + word
+    matchObj = re.match(r'([\w\s]*)\s?,\s?(\d{4})', word, re.M | re.I)
 
-    uri = uri.encode('utf-8')
-    page = web.get(uri)
-    data = json.loads(page)
+    if matchObj:
+        title = matchObj.group(1)
+        year = matchObj.group(2)
+        title = prep_title(title)
+        uri = API_BASE_URL + '?t=%s&y=%s&plot=short&r=json' % (title, year)
+    else:
+        title = word
+        title = prep_title(title)
+        uri = API_BASE_URL + '?t=%s&plot=short&r=json' % (title)
+
+    try:
+        page = urllib2.urlopen(uri).read()
+    except:
+        return jenni.say('[MOVIE] Connection to API did not succeed.')
+
+    try:
+        data = json.loads(page)
+    except:
+        return jenni.say("[MOVIE] Couldn't make sense of information from API")
+    message = '[MOVIE] '
 
     if data['Response'] == 'False':
         if 'Error' in data:
-            message = '[MOVIE] %s' % data['Error']
+            message += data['Error']
         else:
-            jenni.debug('movie',
-                        'Got an error from the imdb api,\
-                                search phrase was %s' %
-                        word, 'warning')
-            jenni.debug('movie', str(data), 'warning')
-            message = '[MOVIE] Got an error from imdbapi'
+            message += 'Got an error from imdbapi'
     else:
-        message = '[MOVIE] Title: ' + data['Title'] + \
-                  ' | Year: ' + data['Year'] + \
-                  ' | Rating: ' + data['imdbRating'] + \
-                  ' | Genre: ' + data['Genre'] + \
-                  ' | IMDB Link: http://imdb.com/title/' + data['imdbID']
+        temp = 'Title: %s | Released: %s | Plot: %s '
+        temp += '| IMDB Link: http://imdb.com/title/%s/'
+        message += temp % (data['Title'], data['Released'], data['Plot'],
+                           data['imdbID'])
+
     jenni.say(message)
-movie.commands = ['movie', 'imdb']
-movie.example = '.movie Movie Title'
+movie.commands = ['movie', 'imdb', 'show', 'tv']
+movie.example = '.movie Movie Title, 2015'
 
 if __name__ == '__main__':
     print __doc__.strip()

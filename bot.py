@@ -44,11 +44,18 @@ class Jenni(irc.Bot):
         ipv6 = False
         if hasattr(config, 'ipv6'):
             ipv6 = config.ipv6
+        serverpass = None
+        if hasattr(config, 'serverpass'):
+            serverpass = config.serverpass
+        user = None
+        if hasattr(config, 'user'):
+            user = config.user
         args = (
             config.nick,
             config.name,
             config.channels,
-            config.password,
+            user,
+            serverpass,
             lc_pm,
             logging,
             ipv6)
@@ -115,7 +122,7 @@ class Jenni(irc.Bot):
         f.close()
 
         if modules:
-            print >> sys.stderr, 'Registered modules:', ', '.join(modules)
+            print >> sys.stderr, 'Registered modules:', ', '.join(sorted(modules))
         else:
             print >> sys.stderr, "Warning: Couldn't find any modules"
 
@@ -136,7 +143,6 @@ class Jenni(irc.Bot):
         self.commands = {'high': {}, 'medium': {}, 'low': {}}
 
         def bind(self, priority, regexp, func):
-            print priority, regexp.pattern.encode('utf-8'), func
             # register documentation
             if not hasattr(func, 'name'):
                 func.name = func.__name__
@@ -148,12 +154,15 @@ class Jenni(irc.Bot):
                     example = None
                 self.doc[func.name] = (func.__doc__, example)
             self.commands[priority].setdefault(regexp, []).append(func)
+            regexp = re.sub('\x01|\x02', '', regexp.pattern)
+            return (func.__module__, func.__name__, regexp, priority)
 
         def sub(pattern, self=self):
             # These replacements have significant order
             pattern = pattern.replace('$nickname', re.escape(self.nick))
             return pattern.replace('$nick', r'%s[,:] +' % re.escape(self.nick))
 
+        bound_funcs = []
         for name, func in self.variables.iteritems():
             # print name, func
             if not hasattr(func, 'priority'):
@@ -180,7 +189,7 @@ class Jenni(irc.Bot):
                 if isinstance(func.rule, str):
                     pattern = sub(func.rule)
                     regexp = re.compile(pattern)
-                    bind(self, func.priority, regexp, func)
+                    bound_funcs.append(bind(self, func.priority, regexp, func))
 
                 if isinstance(func.rule, tuple):
                     # 1) e.g. ('$nick', '(.*)')
@@ -188,7 +197,7 @@ class Jenni(irc.Bot):
                         prefix, pattern = func.rule
                         prefix = sub(prefix)
                         regexp = re.compile(prefix + pattern)
-                        bind(self, func.priority, regexp, func)
+                        bound_funcs.append(bind(self, func.priority, regexp, func))
 
                     # 2) e.g. (['p', 'q'], '(.*)')
                     elif len(func.rule) == 2 and isinstance(func.rule[0], list):
@@ -197,7 +206,7 @@ class Jenni(irc.Bot):
                         for command in commands:
                             command = r'(?i)(%s)\b(?: +(?:%s))?' % (command, pattern)
                             regexp = re.compile(prefix + command)
-                            bind(self, func.priority, regexp, func)
+                            bound_funcs.append(bind(self, func.priority, regexp, func))
 
                     # 3) e.g. ('$nick', ['p', 'q'], '(.*)')
                     elif len(func.rule) == 3:
@@ -206,19 +215,24 @@ class Jenni(irc.Bot):
                         for command in commands:
                             command = r'(?i)(%s) +' % command
                             regexp = re.compile(prefix + command + pattern)
-                            bind(self, func.priority, regexp, func)
+                            bound_funcs.append(bind(self, func.priority, regexp, func))
 
             if hasattr(func, 'commands'):
                 for command in func.commands:
                     template = r'(?i)^%s(%s)(?: +(.*))?$'
                     pattern = template % (self.config.prefix, command)
                     regexp = re.compile(pattern)
-                    bind(self, func.priority, regexp, func)
+                    bound_funcs.append(bind(self, func.priority, regexp, func))
+
+        max_pattern_width = max(len(f[2]) for f in bound_funcs)
+        for module, name, regexp, priority in sorted(bound_funcs):
+            encoded_regex = regexp.encode('utf-8').ljust(max_pattern_width)
+            print ('{0} | {1}.{2}, {3} priority'.format(encoded_regex,  module, name, priority))
 
     def wrapped(self, origin, text, match):
         class JenniWrapper(object):
             def __init__(self, jenni):
-                self.bot = jenni
+                self._bot = jenni
 
             def __getattr__(self, attr):
                 sender = origin.sender or text
@@ -226,8 +240,23 @@ class Jenni(irc.Bot):
                     return (lambda msg:
                             self.bot.msg(sender, origin.nick + ': ' + msg))
                 elif attr == 'say':
-                    return lambda msg: self.bot.msg(sender, msg)
-                return getattr(self.bot, attr)
+                    return lambda msg: self._bot.msg(sender, msg)
+                elif attr == 'bot':
+                    # Allow deprecated usage of jenni.bot.foo but print a warning to the console
+                    print "Warning: Direct access to jenni.bot.foo is deprecated.  Please use jenni.foo instead."
+                    import traceback
+                    traceback.print_stack()
+                    # Let this keep working by passing it transparently to _bot
+                    return self._bot
+                return getattr(self._bot, attr)
+
+            def __setattr__(self, attr, value):
+                if attr in ('_bot',):
+                    # Explicitly allow the wrapped class to be set during __init__()
+                    return super(JenniWrapper, self).__setattr__(attr, value)
+                else:
+                    # All other attributes will be set on the wrapped class transparently
+                    return setattr(self._bot, attr, value)
 
         return JenniWrapper(self)
 
@@ -245,6 +274,10 @@ class Jenni(irc.Bot):
                 s.ident = origin.user
                 s.raw = origin
                 s.args = args
+                s.mode = origin.mode
+                s.mode_target = origin.mode_target
+                s.names = origin.names
+                s.full_ident = origin.full_ident
                 s.admin = origin.nick in self.config.admins
                 if s.admin is False:
                     for each_admin in self.config.admins:
@@ -285,12 +318,12 @@ class Jenni(irc.Bot):
 
         try:
             if hasattr(self, 'excludes'):
-                if input.sender in self.excludes:
-                    if '!' in self.excludes[input.sender]:
+                if (input.sender).lower() in self.excludes:
+                    if '!' in self.excludes[(input.sender).lower()]:
                         # block all function calls for this channel
                         return
                     fname = func.func_code.co_filename.split('/')[-1].split('.')[0]
-                    if fname in self.excludes[input.sender]:
+                    if fname in self.excludes[(input.sender).lower()]:
                         # block function call if channel is blacklisted
                         return
         except Exception:
@@ -391,3 +424,4 @@ class Jenni(irc.Bot):
 
 if __name__ == '__main__':
     print __doc__
+

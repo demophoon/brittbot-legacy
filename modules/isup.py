@@ -13,9 +13,12 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-import web
-
 from modules.brittbot.filters import smart_ignore
+
+
+from modules import proxy
+import re
+import web
 
 
 @smart_ignore
@@ -36,8 +39,8 @@ def isup(jenni, input):
         else:
             site = 'http://' + site
     try:
-        response = web.get(site)
-    except Exception:
+        response = proxy.get(site)
+    except Exception as e:
         jenni.say(site + ' looks down from here.')
         return
 
