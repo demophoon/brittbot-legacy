@@ -13,6 +13,7 @@ from modules.brittbot.helpers import colorize, colors
 
 trivia_room = '##brittbot-jeopardy'
 trivia_rooms = [trivia_room, '#stlouis-games']
+cached_questions = []
 last_question_asked = 0
 
 
@@ -61,6 +62,8 @@ trivia_hint.rule = "^!hint$"
 
 @smart_ignore
 def trivia(jenni, msg):
+    global cached_questions
+    global last_question_asked
     init_trivia_brain(jenni)
     chan = msg.sender
     if chan not in trivia_rooms:
@@ -85,32 +88,24 @@ def trivia(jenni, msg):
         }
     points = None
     if not rooms[chan]['question']:
-        global last_question_asked
-        last_question_asked = time.time()
-        while not rooms[chan]['question']:
-            count = 1
-            if chan != trivia_room:
-                count = 25
-                count = 1
+        while len(cached_questions) <= 1:
+            count = 50
             questions = json.loads(
                 urllib.urlopen("http://jservice.io/api/random?count=%s" % (count, )).read())
             for question in questions:
                 if not question['value']:
                     continue
-                if not points:
-                    points = int(question['value'])
-                current_points = int(question['value'])
-                if chan != trivia_room:
-                    current_points *= float(len(question['question']))
-                    current_points += len(question['answer'].split(' '))
-                    current_points /= len(question['answer'])
-                if current_points >= points:
-                    points = current_points
-                    rooms[chan]['category'] = question['category']['title']
-                    rooms[chan]['question'] = question['question']
-                    rooms[chan]['answer'] = question['answer']
-                    rooms[chan]['attempts'] = 1
-                    rooms[chan]['hint'] = []
+                if "http" in question['answer']:
+                    continue
+                cached_questions.append(question)
+    if not rooms[chan]['question']:
+        last_question_asked = time.time()
+        question = cached_questions.pop()
+        rooms[chan]['category'] = question['category']['title']
+        rooms[chan]['question'] = question['question']
+        rooms[chan]['answer'] = question['answer']
+        rooms[chan]['attempts'] = 1
+        rooms[chan]['hint'] = []
         rooms[chan]['noplay'] = []
         rooms[chan]['noplay_hostmask'] = []
     if not points:
