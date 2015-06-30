@@ -41,7 +41,17 @@ def tacobellitem(jenni, msg):
     vegan = False
     if msg.groups(0) == 'vegan':
         vegan = True
-    jenni.reply("You should get the %s." % generate_taco_bell(vegan))
+    drinks = ["Mtn Dew Baja Blast"]
+    items = []
+    for _ in range(random.randint(1, 3)):
+        items.append(generate_taco_bell(vegan))
+    if len(items) <= 2 and random.randint(1, 11) == 1:
+        items.append(random.choice(drinks))
+    if len(items) > 1:
+        saying = ", a ".join(items[:-1]) + ", and a " + items[-1]
+    else:
+        saying = items[0]
+    jenni.reply("You should get a %s." % saying)
 tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\?"
 
 
