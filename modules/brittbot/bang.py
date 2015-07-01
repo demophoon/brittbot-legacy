@@ -29,6 +29,7 @@ def rimshot(jenni, input):
 rimshot.rule = "^(!|\x01ACTION )rimshot"
 rimshot.priority = 'medium'
 
+
 @smart_ignore
 def fourofourd(jenni, input):
     jenni.say("http://www.homestarrunner.com/404error.html")
