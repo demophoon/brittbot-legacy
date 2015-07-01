@@ -31,6 +31,13 @@ rimshot.priority = 'medium'
 
 
 @smart_ignore
+def fourofourd(jenni, input):
+    jenni.say("http://www.homestarrunner.com/404error.html")
+fourofourd.rule = "^(!|\x01ACTION )404'd"
+fourofourd.priority = 'medium'
+
+
+@smart_ignore
 def contributing(jenni, input):
     jenni.say("https://github.com/demophoon/brittbot")
 contributing.rule = "^!contributing"
