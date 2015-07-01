@@ -18,6 +18,7 @@ commandments = [
     "Codmandment #8: After the genital-placing, thou shalt make salacious assertions about Scrub's mother, and detail thou's sexual acts with Scrub's mother.",
     "Codmandment #9: To prepare the Scrub, thou shalt describe in detail thou previous conquests and smitings in an intimidating and impressive manner.",
     "Codmandment #10: If thou ist ever offend by the Scrub, thou shalt question the Scrub's sexuality and assault the Scrub with verbal insults tailored to the Scrub's race, gender, and country of origin.",
+    "Codmandment #420: Thou shalt proclaim hey thrice, and then smoke weed everyday ",
     "Thou shalt smoke weed everyday.",
     "Praise it and blaze it.",
     "I am the Lord thy Clan, and thou shall have no other clans before [ME].",
@@ -36,6 +37,7 @@ commandments = [
 books = [
     "xX360quickscopezXx",
     "xXxSgtSkrublordxXx",
+    "xXxnoScopesWallHaxXx",
     "xXxCrystalFuckingWeedxXx",
 ]
 
