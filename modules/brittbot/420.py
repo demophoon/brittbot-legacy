@@ -37,7 +37,7 @@ commandments = [
 books = [
     "xX360quickscopezXx",
     "xXxSgtSkrublordxXx",
-    "xXxnoScopesWallHaxXx",
+    "xXxnoSc0pesWallHaxxXx",
     "xXxCrystalFuckingWeedxXx",
 ]
 
