@@ -81,7 +81,7 @@ def how_many_x(jenni, msg):
     elif "i" in subject.lower().split(" "):
         subject = subject.lower().replace("i", "you")
     jenni.say("{} {} {}".format(so, many, subject))
-how_many_x.rule = r"(?i)how (many|much) ?([a-zA-Z\s]+)?\??$"
+how_many_x.rule = r"(?i)how (few|many|much) ?([a-zA-Z\s]+)?\??$"
 
 
 @smart_ignore
