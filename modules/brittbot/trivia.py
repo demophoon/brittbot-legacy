@@ -42,6 +42,9 @@ def init_user_brain(jenni, nick):
 
 @smart_ignore
 def trivia_hint(jenni, msg):
+    global last_question_asked
+    if time.time() - last_question_asked < 2:
+        return
     import string
     hint_chars = string.letters + string.digits
     chan = msg.sender
@@ -223,6 +226,9 @@ trivia_answer.rule = r"^(?:$nickname\W? )?(?:w?W?hat|w?W?ho) \w+ (.*)\??"
 
 @smart_ignore
 def trivia_giveup(jenni, msg):
+    global last_question_asked
+    if time.time() - last_question_asked < 2:
+        return
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     chan = msg.sender
     if chan not in trivia_rooms:
@@ -265,6 +271,9 @@ trivia_forgive.rule = r"^$nickname\W? forgive (.*)"
 
 @smart_ignore
 def trivia_skip(jenni, msg):
+    global last_question_asked
+    if time.time() - last_question_asked < 2:
+        return
     chan = msg.sender
     if chan not in trivia_rooms:
         return
