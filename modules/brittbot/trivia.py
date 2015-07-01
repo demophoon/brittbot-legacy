@@ -163,7 +163,7 @@ def trivia_answer(jenni, msg):
         return
     guess = msg.groups()[0].lower()
     guess = ''.join(x for x in guess if x in hint_chars)
-    guess = [pattern.sub('', y) for y in guess.split(" ")]
+    guess = [pattern.sub('', y) for y in guess.split(" ") if y not in ignored_words]
     guess = [x for x in guess if x]
     guess += [x[:-1] for x in guess if x.endswith("s")]
     guess += [x + "s" for x in guess if not x.endswith("s")]
