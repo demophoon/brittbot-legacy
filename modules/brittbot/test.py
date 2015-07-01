@@ -72,6 +72,10 @@ def how_many_x(jenni, msg):
     if subject == "cooks":
         so = "too"
         many = "many"
+    if "fuck" in subject:
+        so = "no"
+        many = "fucks"
+        subject = "given"
     if "brittbot" in subject.lower().split(" "):
         subject = subject.lower().replace("brittbot", msg.nick.lower())
     elif "i" in subject.lower().split(" "):
