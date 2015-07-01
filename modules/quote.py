@@ -123,6 +123,7 @@ delquote.priority = 'low'
 delquote.example = '.rmquote'
 
 
+@smart_ignore
 def grabquote(jenni, input):
     try:
         from modules import find
