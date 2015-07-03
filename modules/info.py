@@ -28,6 +28,7 @@ def fchannels():
 @smart_ignore
 def doc(jenni, input):
     """Shows a command's documentation, and possibly an example."""
+    return
     if input.group(1) == "help":
         name = input.group(2)
     else:
@@ -45,6 +46,7 @@ doc.priority = 'low'
 
 @smart_ignore
 def commands(jenni, input):
+    return
     common_commands = "Common commands: join <channel> - Join the provided channel. (admin only); part <channel> - Leave the provided channel. (admin only); animate_me, nm8_me <search term> - Find an animated gif from giphy.com; py, python <python> - Interpret some Python (runs on Google App Engine); s/<find>/<replace> - Not a command, jenni will listen for phrases beginning with s/ and perform basic find-replace functionality. Note that this is not PRE compliant; .food <location> - Find food in your area using the Yelp API; img_me, image_me <search term> - Provide a random result from the first page of Google Image search; commands, help - Display a list of all commands, ip, iplookup, host <ip|host> - Get approximate geolocation from an IP or host using freegeoip.net; mustache_me <search term> - Adds a mustache to the image returned for the given search term; reload <module>: Ask jenni to reload a module. (admin only), bing <search query> - Provides the first result from a Bing search; duck, ddg <search query> - Provides the first link from a DuckDuckGo search; g - <query> - Google for <query> and return the top result; search <search query> - Provides the first result from Bing, DuckDuckgo, and Google; tell, to <person> <message> - relays a message to a person the next time they say something anywhere jenni is present; w, wik, wiki <entry> - Returns the wiki entry for <entry>; xkcd - Randomly generates a valid URL for an xkcd item."
 
     jenni.reply("I'm sending you a list of my most common commands in private.")
