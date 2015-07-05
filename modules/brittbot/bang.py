@@ -56,6 +56,12 @@ hardees_correct.rule = r"(?i).*hardees"
 
 
 @smart_ignore
+def do_it_live(jenni, input):
+    jenni.say("http://rationalmale.files.wordpress.com/2011/09/doitlive.jpeg")
+do_it_live.rule = r"(?i).*fuck it!"
+
+
+@smart_ignore
 def tooedgy(jenni, input):
     jenni.say("http://i.imgur.com/x5lhJEb.png")
 tooedgy.rule = "^!(2|too)?edgy"
