@@ -22,12 +22,6 @@ def image_from_url(url):
     return img
 
 
-def save_to_url(img):
-    imagefile = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
-    img.save(imagepath + imagefile, 'jpeg', quality=1)
-    return imagefile
-
-
 def enhance(url):
     img = image_from_url(url)
     enhancements = [
@@ -38,7 +32,10 @@ def enhance(url):
     ]
     for _ in range(random.randint(2,6)):
         img = random.choice(enhancements)(img).enhance(random.random() * 3)
-    return save_to_url(img)
+
+    imagefile = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
+    img.save(imagepath + imagefile, 'jpeg', quality=1)
+    return imagefile
 
 
 def zoom(url):
@@ -46,10 +43,13 @@ def zoom(url):
     width, height = img.size
     img = ImageOps.fit(
         img,
-        (int(random.random() * width), int(random.random() * height)),
+        (int(random.random() * width * .5), int(random.random() * height * .5)),
         Image.NEAREST,
         0,
         (random.random(), random.random())
     )
     img = img.resize((width, height))
-    return save_to_url(img)
+
+    imagefile = "%s.png" % str(uuid.uuid4()).replace('-', '')[0:8]
+    img.save(imagepath + imagefile)
+    return imagefile
