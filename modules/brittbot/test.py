@@ -353,6 +353,28 @@ img_enhance.rule = r'^!enhance( \S+)?$'
 
 
 @smart_ignore
+def img_zoom(jenni, msg):
+    from modules.brittbot.pil import enhance
+    from modules.find import load_db
+    url = msg.groups()[0]
+    if not url:
+        imgs = load_db().get(msg.sender)
+        if imgs and 'last_said' in imgs:
+            url_regex = "(https?://\S+\.(?:jpg|png|jpeg|gif))"
+            for img in reversed(imgs['last_said']):
+                urls = re.findall(url_regex, img)
+                if urls:
+                    url = random.choice(urls)
+                    break
+    if not url:
+        return
+    filename = enhance.zoom(url)
+    url = "http://brittbot.brittg.com/{}".format(filename)
+    jenni.reply(url)
+img_zoom.rule = r'^!zoom( \S+)?$'
+
+
+@smart_ignore
 def justxthingshandler(jenni, msg):
     from modules.brittbot.pil import justxthings
     from modules.find import load_db

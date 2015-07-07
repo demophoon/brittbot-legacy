@@ -40,3 +40,16 @@ def enhance(url):
         img = random.choice(enhancements)(img).enhance(random.random() * 3)
     return save_to_url(img)
 
+
+def zoom(url):
+    img = image_from_url(url)
+    width, height = img.size
+    img = ImageOps.fit(
+        img,
+        (int(random.random() * width), int(random.random() * height)),
+        Image.NEAREST,
+        0,
+        (random.random(), random.random())
+    )
+    img = img.resize((width, height))
+    return save_to_url(img)
