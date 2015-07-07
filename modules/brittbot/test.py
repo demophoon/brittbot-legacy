@@ -332,11 +332,20 @@ reload_brain.rule = r"^!loadbrain"
 @smart_ignore
 def justxthingshandler(jenni, msg):
     from modules.brittbot.pil import justxthings
+    from modules.find import load_db
+
     hashtag = msg.groups()[1]
     quote = msg.groups()[0]
 
-    if quote[0] in ['!']:
+    if not quote:
+        quotes = load_db().get(msg.sender)
+        if quotes and 'last_said' in quotes:
+            print quotes
+            quote = ''.join(quotes['last_said'][-1].split(':')[1:])
+
+    if quote[0] in ['!'] or 'http' in quote:
         return
+
     if hashtag.startswith("##"):
         return
     url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
@@ -344,7 +353,7 @@ def justxthingshandler(jenni, msg):
         hashtag,
     )
     jenni.reply(url)
-justxthingshandler.rule = r"(.*) (#\S+\w)$"
+justxthingshandler.rule = r"(.*)(#\S+\w)$"
 
 
 @smart_ignore
