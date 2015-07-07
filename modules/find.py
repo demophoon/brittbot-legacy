@@ -82,28 +82,34 @@ def save_db(search_dict):
 # Create a temporary log of the most recent thing anyone says.
 def collectlines(jenni, input):
     """Creates a temporary storage of most recent lines for s///"""
-    # don't log things in PM
     #channel = (input.sender).encode("utf-8")
     channel = uc.decode(input.sender)
     channel = uc.encode(channel)
     nick = (input.nick).encode("utf-8")
-    if not channel.startswith('#'): return
     search_dict = load_db()
     if channel not in search_dict:
         search_dict[channel] = dict()
+    if 'last_said' not in search_dict[channel]:
+        search_dict[channel]['last_said'] = list()
     if nick not in search_dict[channel]:
         search_dict[channel][nick] = list()
     templist = search_dict[channel][nick]
+    last_said_templist = search_dict[channel]['last_said']
     line = input.group()
-    if line.startswith("s/"):
+    try:
+        line = (line).encode("utf-8")
+    except Exception:
+        return
+    if line.startswith("s/") or line.startswith('!'):
         return
     elif line.startswith("\x01ACTION"):
         line = line[:-1]
-        templist.append(line)
-    else:
-        templist.append(line)
+    templist.append(line)
+    last_said_templist.append("{}: {}".format(input.nick, line))
     del templist[:-10]
+    del last_said_templist[:-10]
     search_dict[channel][nick] = templist
+    search_dict[channel]['last_said'] = last_said_templist
     save_db(search_dict)
 collectlines.rule = r'.*'
 collectlines.priority = 'low'
