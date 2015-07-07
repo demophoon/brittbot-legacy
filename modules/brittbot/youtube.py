@@ -38,7 +38,7 @@ def yt_context(jenni, msg):
     target = msg.groups()[0]
     video_id = parse_qs(urlparse(target).query).get("v")
     obfuscate = parse_qs(urlparse(target).query).get("o")
-    if "QrGrOK8oZG8" in video_id and msg.nick == "demophoon":
+    if video_id and "QrGrOK8oZG8" in video_id and msg.nick == "demophoon":
         obfuscate = True
     if not obfuscate is None:
         video_id = [random.choice([
