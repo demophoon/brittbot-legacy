@@ -220,7 +220,7 @@ def approval_rating(jenni, msg):
         jenni.brain['approval'][msg.nick] = 0
     jenni.brain['approval'][msg.nick] += analysis.sentiment.polarity
     jenni.save_brain()
-    print "Approval rating from %s: %s (%s)" % (
+    print "Approval rating from {}: {} ({})".format(
         msg.nick,
         jenni.brain['approval'][msg.nick],
         analysis.sentiment.polarity,
