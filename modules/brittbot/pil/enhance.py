@@ -34,7 +34,7 @@ def enhance(url):
         img = random.choice(enhancements)(img).enhance(random.random() * 3)
 
     imagefile = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
-    img.save(imagepath + imagefile, 'jpeg', quality=1)
+    img.save(imagepath + imagefile, 'jpeg', quality=random.randint(1,16))
     return imagefile
 
 
