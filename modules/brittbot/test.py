@@ -8,6 +8,7 @@ import time
 import math
 import random
 import os
+import re
 import json
 
 from textblob import TextBlob
@@ -327,6 +328,28 @@ def reload_brain(jenni, msg):
     f.close()
     jenni.reply("brain reloaded.")
 reload_brain.rule = r"^!loadbrain"
+
+
+@smart_ignore
+def img_enhance(jenni, msg):
+    from modules.brittbot.pil import enhance
+    from modules.find import load_db
+    url = msg.groups()[0]
+    if not url:
+        imgs = load_db().get(msg.sender)
+        if imgs and 'last_said' in imgs:
+            url_regex = "(https?://\S+\.(?:jpg|png|jpeg))"
+            for img in reversed(imgs['last_said']):
+                urls = re.findall(url_regex, img)
+                if urls:
+                    url = random.choice(urls)
+                    break
+    if not url:
+        return
+    filename = enhance.enhance(url)
+    url = "http://brittbot.brittg.com/{}".format(filename)
+    jenni.reply(url)
+img_enhance.rule = r'^!enhance( \S+)?$'
 
 
 @smart_ignore
