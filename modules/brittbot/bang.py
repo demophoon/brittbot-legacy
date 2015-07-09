@@ -134,13 +134,15 @@ define_Word.rule = "^!define (.*)"
 def command_help(jenni, input):
     jenni.say(random.choice([
         "You will have to get by on your own.",
+        "stahp",
+        "No help for you",
         "nou.",
         "Help Not Implemented.",
         "http://nooooooooooooooo.com/",
         "The request is understood, but has been refused.",
         "Please try again later.",
     ]))
-command_help.rule = "^!help"
+command_help.rule = "^!h(e|a)lp"
 command_help.priority = 'medium'
 
 

@@ -62,6 +62,7 @@ commands.priority = 'low'
 
 @smart_ignore
 def help(jenni, input):
+    return
     response = (
         'Hi, I\'m a bot. Say ".commands" to me in private for a list ' +
         'of my commands, or see https://github.com/myano/jenni/wiki for more ' +
