@@ -106,8 +106,8 @@ def collectlines(jenni, input):
         line = line[:-1]
     templist.append(line)
     last_said_templist.append("{}: {}".format(input.nick, line))
-    del templist[:-10]
-    del last_said_templist[:-10]
+    del templist[:-50]
+    del last_said_templist[:-50]
     search_dict[channel][nick] = templist
     search_dict[channel]['last_said'] = last_said_templist
     save_db(search_dict)
