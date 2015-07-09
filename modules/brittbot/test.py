@@ -333,7 +333,7 @@ reload_brain.rule = r"^!loadbrain"
 @smart_ignore
 def img_enhance(jenni, msg):
     from modules.brittbot.pil import enhance
-    from modules.find import load_db
+    from modules.find import load_db, save_db
     url = msg.groups()[0]
     if not url:
         imgs = load_db().get(msg.sender)
@@ -348,6 +348,9 @@ def img_enhance(jenni, msg):
         return
     filename = enhance.enhance(url)
     url = "http://brittbot.brittg.com/{}".format(filename)
+    msgs = load_db()
+    msgs[msg.sender]['last_said'].append(url)
+    save_db(msgs)
     jenni.reply(url)
 img_enhance.rule = r'^!enhance( \S+)?$'
 
@@ -355,7 +358,7 @@ img_enhance.rule = r'^!enhance( \S+)?$'
 @smart_ignore
 def img_zoom(jenni, msg):
     from modules.brittbot.pil import enhance
-    from modules.find import load_db
+    from modules.find import load_db, save_db
     url = msg.groups()[0]
     if not url:
         imgs = load_db().get(msg.sender)
@@ -370,6 +373,9 @@ def img_zoom(jenni, msg):
         return
     filename = enhance.zoom(url)
     url = "http://brittbot.brittg.com/{}".format(filename)
+    msgs = load_db()
+    msgs[msg.sender]['last_said'].append(url)
+    save_db(msgs)
     jenni.reply(url)
 img_zoom.rule = r'^!zoom( \S+)?$'
 
