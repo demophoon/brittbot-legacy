@@ -399,6 +399,8 @@ def justxthingshandler(jenni, msg):
 
     if hashtag.startswith("##"):
         return
+    if len(quote.split(' ')) > 25:
+        return
     url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
         str(quote),
         hashtag,
