@@ -338,7 +338,7 @@ def img_enhance(jenni, msg):
     if not url:
         imgs = load_db().get(msg.sender)
         if imgs and 'last_said' in imgs:
-            url_regex = "(https?://\S+\.(?:jpg|png|jpeg))"
+            url_regex = "(https?://\S+\.(?:jpg|png|jpeg|gif))"
             for img in reversed(imgs['last_said']):
                 urls = re.findall(url_regex, img)
                 if urls:
