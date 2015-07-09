@@ -44,7 +44,7 @@ meals = [
     'Taco Salad',
     'Burrito',
     'Gordita',
-    u'Chalupa Supreme®',
+    'Chalupa',
     'Crunchwrap',
     'Quesadilla',
     'Griller',
