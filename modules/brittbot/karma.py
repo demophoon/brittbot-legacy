@@ -95,7 +95,12 @@ def karma_award(jenni, msg):
             item = msg.nick.lower()
         if item.lower() in items_awarded:
             continue
-        is_tricky = any([("born" in item or "bourne" in item) and "again" in item, "shell" in item, "bash" in item])
+        is_tricky = any([
+            ("born" in item or "bourne" in item) and "again" in item,
+            "shell" in item,
+            "bash" in item,
+            re.match(r"b+a+s+h+", item),
+        ])
         if item.lower() in negitive_only or is_tricky:
             if is_tricky:
                 item = 'bash'
