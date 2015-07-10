@@ -147,6 +147,18 @@ command_help.priority = 'medium'
 
 
 @smart_ignore
+def botsnack(jenni, input):
+    jenni.say(random.choice([
+        "Om nom nom!",
+        "That's very nice of you!",
+        "Oh thx, have a cookie yourself!",
+        "Thank you very much.",
+        "Thanks for the treat!"
+    ]))
+botsnack.rule = "^(!?|$nickname\W? )botsnack"
+
+
+@smart_ignore
 def one_one_upper(jenni, input):
     a, b = (int(input.groups()[0]) + 1, int(input.groups()[2]) + 1)
     if a == 2 and b == 4:
