@@ -33,6 +33,8 @@ def join(jenni, input):
     if input.sender.startswith('#'):
         return
     incoming = input.group(2)
+    if not incoming:
+        return jenni.say('Please provide some channels to join.')
     inc = incoming.split(' ')
     if len(inc) > 2:
         # 3 or more inputs
