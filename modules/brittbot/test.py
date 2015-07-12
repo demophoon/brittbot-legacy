@@ -23,7 +23,7 @@ from modules.brittbot.helpers import (
 
 
 def notice(jenni, chan, msg):
-    jenni.write(['NOTICE', chan, ":%s" % msg])
+    jenni.write(['NOTICE', chan, ":{}".format(msg)])
 
 
 @smart_ignore
@@ -31,7 +31,7 @@ def config_print(jenni, msg):
     if not msg.admin:
         return
     reply = colorize_msg("tested. rainbows and stuff.")
-    jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
+    jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
 config_print.rule = r"^test$"
 config_print.priority = 'medium'
 
@@ -52,7 +52,7 @@ def tacobellitem(jenni, msg):
         saying = ", a ".join(items[:-1]) + ", and a " + items[-1]
     else:
         saying = items[0]
-    jenni.reply("You should get a %s." % saying)
+    jenni.reply("You should get a {}.".format(saying))
 tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\?"
 
 
@@ -73,6 +73,10 @@ def how_many_x(jenni, msg):
     if subject == "cooks":
         so = "too"
         many = "many"
+    if "second" in subject:
+        so = "just"
+        many = "one"
+        subject = "second"
     if "fuck" in subject:
         so = "no"
         many = "fucks"
@@ -198,12 +202,12 @@ def diceroll(jenni, msg):
         else:
             reply = "Roll Fails! "
     if len(rolls) > 1:
-        reply += "Total: %s, Rolls: %s" % (
+        reply += "Total: {}, Rolls: {}".format(
             total,
             ', '.join([str(x) for x in rolls])
         )
     else:
-        reply += "Roll: %s" % (
+        reply += "Roll: {}".format(
             ', '.join([str(x) for x in rolls])
         )
     jenni.reply(truncate_warning + reply)
@@ -292,7 +296,7 @@ def how_happy_is_room(jenni, msg):
     elif room in jenni.brain['approval_room'][msg.sender]:
         score = jenni.brain['approval_room'][msg.sender][room]['score'] / jenni.brain['approval_room'][msg.sender][room]['msgs']
         score *= 100
-        reply = "%s approval score is %s." % (
+        reply = "{} approval score is {}.".format(
             room,
             '%0.2f' % (score),
         )
@@ -310,9 +314,10 @@ def how_happy_am_i(jenni, msg):
         return
     if approvals[nick]['msgs'] <= 0:
         return
-    score = approvals[nick]['score'] / approvals[nick]['msgs']
+    samples = approvals[nick]['msgs']
+    score = approvals[nick]['score'] / samples
     score *= 100
-    jenni.reply("Your approval score is: %0.2f" % score)
+    jenni.reply("Your approval score is: %0.2f with %s samples" % (score, samples))
 how_happy_am_i.rule = r"!approval$"
 
 
@@ -401,10 +406,10 @@ def justxthingshandler(jenni, msg):
         return
     if len(quote.split(' ')) > 25:
         return
-    url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
+    url = "http://brittbot.brittg.com/{}".format(justxthings.generate_image(
         str(quote),
         hashtag,
-    )
+    ))
     jenni.reply(url)
 justxthingshandler.rule = r"(.*)(#\S+\w)$"
 
@@ -434,10 +439,10 @@ def justxthingslistener(jenni, msg):
         return
 
     if random.choice(range(175)) == 0:
-        url = "http://brittbot.brittg.com/%s" % justxthings.generate_image(
+        url = "http://brittbot.brittg.com/{}".format(justxthings.generate_image(
             str(msg),
-            "#just%sthings" % (msg.nick, )
-        )
+            "#just%sthings".format(msg.nick)
+        ))
         jenni.say(url)
         jenni.brain['last_action'][msg.sender] = time.time()
 justxthingslistener.rule = r".*"
@@ -493,26 +498,26 @@ def xofthey(jenni, msg):
         if isinstance(rekt, dict):
             expires = rekt['expires']
             if time.mktime(now.timetuple()) > expires:
-                reply = "I need a new %s of the %s. It was %s." % (
+                reply = "I need a new {} of the {}. It was {}.".format(
                     x,
                     y,
                     colorize(rekt['item'], fg=colors['red']),
                 )
-                jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
+                jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
                 return
             rekt = rekt['item']
     except Exception:
         return
-    reply = "The %s of the %s is %s." % (
+    reply = "The {} of the {} is {}.".format(
         x,
         y,
         colorize(rekt, fg=colors['red']),
     )
     if expires:
-        reply += ' (Expires in %s)' % (
+        reply += ' (Expires in {})'.format(
             elapsed(expires - time.mktime(now.timetuple())).strip()
         )
-    jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
+    jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
 xofthey.rule = r"^!(\w+)ofthe(\w+)( .*)?"
 
 
@@ -525,7 +530,7 @@ def dayssincelast(jenni, msg):
         jenni.brain['days_since'][msg.sender] = {}
     if item not in jenni.brain['days_since'][msg.sender]:
         return
-    jenni.reply("Days since %s: %s" % (
+    jenni.reply("Days since {}: {}".format(
         item,
         elapsed(
             time.time() - jenni.brain['days_since'][msg.sender][item]
@@ -543,7 +548,7 @@ def dayssincelastset(jenni, msg):
         jenni.brain['days_since'][msg.sender] = {}
     jenni.brain['days_since'][msg.sender][item] = time.time()
     jenni.save_brain()
-    jenni.reply("Days since %s: %s" % (
+    jenni.reply("Days since {}: {}".format(
         item,
         elapsed(0),
     ))
@@ -554,7 +559,7 @@ dayssincelastset.rule = r"^!setdayssince (.*)"
 def rainbowize(jenni, msg):
     print msg.groups()
     reply = colorize_msg(msg.groups()[0])
-    jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
+    jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
 rainbowize.rule = r"^!rainbows?(?:fg)? (.*)"
 
 
@@ -579,7 +584,7 @@ def rainbowizebg(jenni, msg):
             fg=colors['black'],
             bg=colors[rainbow[rindex % len(rainbow)]],
         )
-    jenni.write(['PRIVMSG', msg.sender, ":%s" % final])
+    jenni.write(['PRIVMSG', msg.sender, ":{}".format(final)])
 rainbowizebg.rule = r"^!rainbows?bg (.*)"
 
 
@@ -605,7 +610,7 @@ def rainbowizefgbg(jenni, msg):
             fg=colors[rainbow[rindex % len(rainbow)]],
             bg=colors[rainbow[rindexbg % len(rainbow)]],
         )
-    jenni.write(['PRIVMSG', msg.sender, ":%s" % final])
+    jenni.write(['PRIVMSG', msg.sender, ":{}".format(final)])
 rainbowizefgbg.rule = r"^!rainbows?(?:fgbg|bgfg) (.*)"
 
 
@@ -749,7 +754,7 @@ def global_notice(jenni, msg):
         "##brittbot",
     ]
     for chan in notice_channels:
-        jenni.write(['NOTICE', chan, ":%s" % reply])
+        jenni.write(['NOTICE', chan, ":{}".format(reply)])
 global_notice.rule = r"!notice (.*)"
 global_notice.priority = 'medium'
 
@@ -790,7 +795,7 @@ def adr_modify_cooldown(jenni, msg):
     if jenni.brain['adr']['cooldown'].get(item):
         jenni.brain['adr']['cooldown'][item] = int(duration)
         if message:
-            jenni.write(['NOTICE', chan, ":%s" % message])
+            jenni.write(['NOTICE', chan, ":{}".format(message)])
 adr_modify_cooldown.rule = r"^!adraward (#*\w+) (\w+) (\d+) (.*)"
 
 
@@ -874,10 +879,10 @@ def adr_stoke_fire(jenni, msg):
     else:
         room = "freezing"
 
-    reply = "The fire is %s. The room is %s." % (
+    reply = "The fire is {}. The room is {}.".format(
         fire, room
     )
-    jenni.write(['NOTICE', msg.sender, ":%s" % reply])
+    jenni.write(['NOTICE', msg.sender, ":{}".format(reply)])
     jenni.save_brain()
 adr_stoke_fire.rule = r"^(\x01ACTION )stokes (?:the )?fire"
 adr_stoke_fire.priority = 'medium'
@@ -892,12 +897,12 @@ def adr_gathers_wood(jenni, msg):
     if now - brain['inventory']['wood'][-1] < duration:
         remaining = duration - (now - brain['inventory']['wood'][-1])
         jenni.reply("you are currently gathering wood. "
-                    "Try again in %s seconds." % (remaining))
+                    "Try again in {} seconds.".format(remaining))
         return
     brain['inventory']['wood'].append(now)
-    reply = "You currently have %s wood in your inventory." % (
+    reply = "You currently have {} wood in your inventory.".format(
         sum([now - x >= duration for x in brain['inventory']['wood']]))
-    jenni.write(['NOTICE', msg.sender, ":%s" % reply])
+    jenni.write(['NOTICE', msg.sender, ":{}".format(reply)])
     jenni.save_brain()
 adr_gathers_wood.rule = r"^(\x01ACTION )(?:gathers|collects) wood"
 adr_gathers_wood.priority = 'medium'
