@@ -224,7 +224,7 @@ def approval_rating(jenni, msg):
     if msg.nick not in jenni.brain['approval']:
         jenni.brain['approval'][msg.nick] = 0
     jenni.brain['approval'][msg.nick] += analysis.sentiment.polarity
-    jenni.save_brain()
+    jenni.brain.save()
     print "Approval rating from {}: {} ({})".format(
         msg.nick,
         jenni.brain['approval'][msg.nick],
@@ -327,7 +327,7 @@ def reload_brain(jenni, msg):
         return
     if not os.path.isfile(jenni.brain_file):
         jenni.brain = {}
-        jenni.save_brain()
+        jenni.brain.save()
     f = open(jenni.brain_file, 'r')
     jenni.brain = json.loads(f.read())
     f.close()
@@ -491,7 +491,7 @@ def xofthey(jenni, msg):
             })
         else:
             rekt_dict[x][y][msg.sender].append(item.strip())
-        jenni.save_brain()
+        jenni.brain.save()
     try:
         rekt = jenni.brain['ofthe'][x][y][msg.sender][-1]
         expires = None
@@ -547,7 +547,7 @@ def dayssincelastset(jenni, msg):
     if msg.sender not in jenni.brain['days_since']:
         jenni.brain['days_since'][msg.sender] = {}
     jenni.brain['days_since'][msg.sender][item] = time.time()
-    jenni.save_brain()
+    jenni.brain.save()
     jenni.reply("Days since {}: {}".format(
         item,
         elapsed(0),
@@ -786,7 +786,7 @@ def init_adr_brain(jenni):
                 'room': 1800,
             },
         }
-        jenni.save_brain()
+        jenni.brain.save()
 
 
 @smart_ignore
@@ -883,7 +883,7 @@ def adr_stoke_fire(jenni, msg):
         fire, room
     )
     jenni.write(['NOTICE', msg.sender, ":{}".format(reply)])
-    jenni.save_brain()
+    jenni.brain.save()
 adr_stoke_fire.rule = r"^(\x01ACTION )stokes (?:the )?fire"
 adr_stoke_fire.priority = 'medium'
 
@@ -903,7 +903,7 @@ def adr_gathers_wood(jenni, msg):
     reply = "You currently have {} wood in your inventory.".format(
         sum([now - x >= duration for x in brain['inventory']['wood']]))
     jenni.write(['NOTICE', msg.sender, ":{}".format(reply)])
-    jenni.save_brain()
+    jenni.brain.save()
 adr_gathers_wood.rule = r"^(\x01ACTION )(?:gathers|collects) wood"
 adr_gathers_wood.priority = 'medium'
 

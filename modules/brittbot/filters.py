@@ -20,7 +20,7 @@ def is_allowed(function_name, jenni, msg):
     irc_room = msg.sender
     if 'filters' not in jenni.brain:
         jenni.brain['filters'] = jenni.config.channel_filters
-        jenni.save_brain()
+        jenni.brain.save()
     filters = jenni.brain["filters"]
     allowed = True
     if not irc_room.startswith("#") and not msg.admin:
@@ -70,7 +70,7 @@ def modify_filtered(jenni, msg):
         jenni.brain['filters'][room]['blocked'].remove(function)
     else:
         jenni.brain['filters'][room]['blocked'].append(function)
-    jenni.save_brain()
+    jenni.brain.save()
     jenni.reply('Function `%s` has been %sd in `%s`' % (
         function, action, room
     ))
@@ -87,7 +87,7 @@ def modify_ignored(jenni, msg):
         jenni.brain['filtered_nicks'].remove(nick)
     else:
         jenni.brain['filtered_nicks'].append(nick)
-    jenni.save_brain()
+    jenni.brain.save()
     jenni.reply('`%s` has been %sd' % (
         nick, action
     ))

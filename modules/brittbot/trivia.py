@@ -24,7 +24,7 @@ def init_trivia_brain(jenni):
             'users': {},
             'rooms': {},
         }
-    jenni.save_brain()
+    jenni.brain.save()
 
 
 def init_user_brain(jenni, nick):
@@ -37,7 +37,7 @@ def init_user_brain(jenni, nick):
         }
     if 'banned' not in jenni.brain['trivia']['users'][nick]:
         jenni.brain['trivia']['users'][nick]['banned'] = 0
-    jenni.save_brain()
+    jenni.brain.save()
 
 
 @smart_ignore
@@ -122,7 +122,7 @@ def trivia(jenni, msg):
         colorize(rooms[chan]['question'], fg=colors['orange']),
     )
     jenni.write(['PRIVMSG', msg.sender, ":%s" % reply])
-    jenni.save_brain()
+    jenni.brain.save()
 trivia.rule = r"^($nickname\W |!)trivia$"
 
 
@@ -220,7 +220,7 @@ def trivia_answer(jenni, msg):
         rooms[chan]['attempts'] -= 1
     if msg.sender in trivia_rooms and not rooms[chan]['question']:
         trivia(jenni, msg)
-    jenni.save_brain()
+    jenni.brain.save()
 trivia_answer.rule = r"^(?:$nickname\W? )?(?:w?W?hat|w?W?ho) \w+ (.*)\??"
 
 
@@ -248,7 +248,7 @@ def trivia_giveup(jenni, msg):
     ))
     hostmask = "%s!%s@%s" % hostmask
     jenni.brain['trivia']['rooms'][chan]['noplay_hostmask'].append(hostmask)
-    jenni.save_brain()
+    jenni.brain.save()
 trivia_giveup.rule = r"^(?:$nickname\W? i (?:give up|have no idea|don'?t know).*|!giveup)$"
 
 
@@ -265,7 +265,7 @@ def trivia_forgive(jenni, msg):
                 "You might need to unban them from any rooms I am in." % (
                     nick
                 ))
-    jenni.save_brain()
+    jenni.brain.save()
 trivia_forgive.rule = r"^$nickname\W? forgive (.*)"
 
 

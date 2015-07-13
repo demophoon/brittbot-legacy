@@ -14,7 +14,7 @@ def setup_karma_brain(jenni):
     brain = jenni.brain
     if 'karma' not in brain:
         brain['karma'] = {}
-        jenni.save_brain()
+        jenni.brain.save()
 
 karma = "(?:"
 karma += "([a-zA-Z0-9\.]+)(\+\+|--)|"
@@ -134,7 +134,7 @@ def karma_award(jenni, msg):
             commentary, "{:,}".format(karma_points)
         ))
     jenni.say(", ".join(karma_replies))
-    jenni.save_brain()
+    jenni.brain.save()
 karma_award.rule = r".*" + karma
 karma_award.priority = 'medium'
 
