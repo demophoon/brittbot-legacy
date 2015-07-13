@@ -28,7 +28,7 @@ def is_allowed(function_name, jenni, msg):
     for nick in ignored_nicks:
         if re.search(re.compile(nick, re.IGNORECASE), msg.nick):
             allowed = False
-    if msg.nick in jenni.brain['approval']:
+    if 'approval' in jenni.brain and msg.nick in jenni.brain['approval']:
         if jenni.brain['approval'][msg.nick] < -5:
             allowed = False
             msg.friend = False
