@@ -66,8 +66,6 @@ class Jenni(irc.Bot):
         self.stats = {}
         self.times = {}
         self.excludes = {}
-        self.brain_file = 'brain.json'
-        self.brain = {}
         self.online_users = {}
         self.config = config
         if hasattr(config, 'excludes'):
@@ -113,14 +111,6 @@ class Jenni(irc.Bot):
                 self.register(vars(module))
                 modules.append(name)
 
-        print "Loading Brain..."
-        if not os.path.isfile(self.brain_file):
-            self.brain = {}
-            self.save_brain()
-        f = open(self.brain_file, 'r')
-        self.brain = json.loads(f.read())
-        f.close()
-
         if modules:
             print >> sys.stderr, 'Registered modules:', ', '.join(sorted(modules))
         else:
@@ -129,9 +119,9 @@ class Jenni(irc.Bot):
         self.bind_commands()
 
     def save_brain(self):
-        f = open(self.brain_file, 'w')
-        f.write(json.dumps(self.brain))
-        f.close()
+        print "The `save_brain` function has been deprecated in favor of `jenni.brain.save()`"
+        # Lets continue to have this work so we can migrate off of it.
+        self.brain.save()
 
     def register(self, variables):
         # This is used by reload.py, hence it being methodised
