@@ -441,7 +441,7 @@ def justxthingslistener(jenni, msg):
     if random.choice(range(175)) == 0:
         url = "http://brittbot.brittg.com/{}".format(justxthings.generate_image(
             str(msg),
-            "#just%sthings".format(msg.nick)
+            "#just{}things".format(msg.nick)
         ))
         jenni.say(url)
         jenni.brain['last_action'][msg.sender] = time.time()
