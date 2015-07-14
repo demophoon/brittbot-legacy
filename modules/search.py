@@ -86,6 +86,10 @@ def formatnumber(n):
 @smart_ignore
 def g(jenni, input):
     """Queries Google for the specified input."""
+    from modules.brittbot.helpers import (
+        colorize,
+        colors,
+    )
     query = input.group(2)
     if not query:
         return jenni.reply('.g what?')
@@ -94,7 +98,14 @@ def g(jenni, input):
     if uri:
         if 'wikipedia.org/' in uri:
             uri = uri.replace('http:', 'https:')
-        jenni.reply(uri)
+        jenni.reply("{}: {}".format(
+            colorize("G", fg=colors['light blue']) +
+            colorize("o", fg=colors['red']) +
+            colorize("o", fg=colors['yellow']) +
+            colorize("g", fg=colors['light blue']) +
+            colorize("l", fg=colors['light green']) +
+            colorize("e", fg=colors['red']),
+            uri))
         if not hasattr(jenni, 'last_seen_uri'):
             jenni.bot.last_seen_uri = {}
         jenni.bot.last_seen_uri[input.sender] = uri
@@ -102,7 +113,7 @@ def g(jenni, input):
         jenni.reply("Problem getting data from Google.")
     else:
         jenni.reply("No results found for '%s'." % query)
-g.commands = ['g']
+g.commands = ['g', 'google']
 g.priority = 'high'
 g.example = '.g swhack'
 
