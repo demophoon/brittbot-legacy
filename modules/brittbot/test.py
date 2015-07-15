@@ -391,11 +391,24 @@ def deepdream(jenni, msg):
     from requests_toolbelt import MultipartEncoder
     import urllib
     import uuid
+    from modules.find import load_db, save_db
     if 'last_trip' in jenni.brain and time.time() - jenni.brain['last_trip'] < 30:
         jenni.reply('Tripping too hard right now, please try again in 30 seconds.')
         return
+    in_url = msg.groups()[0]
+    if not in_url:
+        imgs = load_db().get(msg.sender)
+        if imgs and 'last_said' in imgs:
+            url_regex = "(https?://\S+\.(?:jpg|jpeg))"
+            for img in reversed(imgs['last_said']):
+                urls = re.findall(url_regex, img)
+                if urls:
+                    in_url = random.choice(urls)
+                    break
+    if not in_url:
+        return
     f = open('/tmp/img.jpg', 'wb')
-    f.write(urllib.urlopen(msg.groups()[0]).read())
+    f.write(urllib.urlopen(in_url).read())
     f.close()
     data = MultipartEncoder({
         'title': 'wat',
@@ -431,8 +444,11 @@ def deepdream(jenni, msg):
     f.write(img)
     f.close()
     url = "http://brittbot.brittg.com/{}".format(imagename)
+    msgs = load_db()
+    msgs[msg.sender]['last_said'].append(url)
+    save_db(msgs)
     jenni.reply(url)
-deepdream.rule = r'!(?:lsd|deepdream) (\S+)'
+deepdream.rule = r'^!(?:lsd|deepdream)( \S+)?'
 
 
 @smart_ignore
