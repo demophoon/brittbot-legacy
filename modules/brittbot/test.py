@@ -386,6 +386,56 @@ img_zoom.rule = r'^!zoom( \S+)?$'
 
 
 @smart_ignore
+def deepdream(jenni, msg):
+    import requests
+    from requests_toolbelt import MultipartEncoder
+    import urllib
+    import uuid
+    if 'last_trip' in jenni.brain and time.time() - jenni.brain['last_trip'] < 30:
+        jenni.reply('Tripping too hard right now, please try again in 30 seconds.')
+        return
+    f = open('/tmp/img.jpg', 'wb')
+    f.write(urllib.urlopen(msg.groups()[0]).read())
+    f.close()
+    data = MultipartEncoder({
+        'title': 'wat',
+        'description': 'none',
+        'filter': 'trippy',
+        'submit': "Let's Dream",
+        'image': ('img0.jpg', open('/tmp/img.jpg', 'rb'), 'image/jpeg'),
+    })
+    response = requests.post(
+        'https://dreamscopeapp.com/api/images',
+        data=data,
+        verify=False,
+        headers={
+            'Content-Type': data.content_type
+        }
+    )
+    if response.status_code >= 400:
+        print response
+        print response.content
+        jenni.reply("An error has occurred.")
+    image_id = re.findall(r'pageUrl\(\'(\S+)\'\)', response.text)[-1]
+    for _ in range(7):
+        time.sleep(1.5)
+        r = requests.get('https://dreamscopeapp.com/api/images/{}'.format(image_id))
+        final_url = r.json()['filtered_url']
+        if final_url:
+            break
+    jenni.brain['last_trip'] = time.time()
+    img = urllib.urlopen(final_url).read()
+    imagepath = '/var/www/htdocs/brittbot/'
+    imagename = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
+    f = open(imagepath + imagename, 'w')
+    f.write(img)
+    f.close()
+    url = "http://brittbot.brittg.com/{}".format(imagename)
+    jenni.reply(url)
+deepdream.rule = r'!(?:lsd|deepdream) (\S+)'
+
+
+@smart_ignore
 def justxthingshandler(jenni, msg):
     from modules.brittbot.pil import justxthings
     from modules.find import load_db
