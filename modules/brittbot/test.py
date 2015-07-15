@@ -396,7 +396,7 @@ def justxthingshandler(jenni, msg):
     if not quote:
         quotes = load_db().get(msg.sender)
         if quotes and 'last_said' in quotes:
-            print quotes
+            quotes['last_said'] = [quote for quote in quotes['last_said'] if not re.match(r'(.*)(#\S+\w)$', quote)]
             quote = ''.join(quotes['last_said'][-1].split(':')[1:])
 
     if quote[0] in ['!'] or 'http' in quote:
