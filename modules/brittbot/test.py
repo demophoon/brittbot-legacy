@@ -430,12 +430,15 @@ def deepdream(jenni, msg):
         print response.content
         jenni.reply("An error has occurred.")
     image_id = re.findall(r'pageUrl\(\'(\S+)\'\)', response.text)[-1]
-    for _ in range(7):
+    for _ in range(15):
         time.sleep(1.5)
         r = requests.get('https://dreamscopeapp.com/api/images/{}'.format(image_id))
         final_url = r.json()['filtered_url']
         if final_url:
             break
+    if not final_url:
+        jenni.reply('Deep dream took too long to complete. Try a smaller image.')
+        return
     jenni.brain['last_trip'] = time.time()
     img = urllib.urlopen(final_url).read()
     imagepath = '/var/www/htdocs/brittbot/'
