@@ -625,8 +625,96 @@ dayssincelastset.rule = r"^!setdayssince (.*)"
 
 
 @smart_ignore
+def award_item(jenni, msg):
+    groups = msg.groups()
+    if groups[0] == 'give':
+        modifier = 1
+        to = groups[1]
+        quantity = groups[2]
+        item = groups[3]
+    elif groups[0] == 'take':
+        modifier = -1
+        quantity = groups[1]
+        item = groups[2]
+        to = groups[3]
+        if to.lower().startswith('from '):
+            to = ''.join(to.split(' ')[1:])
+    to = to.lower().strip()
+    item = item.lower().strip()
+    quantity = quantity.lower().strip()
+
+    if to[-1] == '\x01':
+        to = to[:-1]
+    if item[-1] == '\x01':
+        item = item[:-1]
+
+    if to == msg.nick:
+        return
+
+    # Get Quantity
+    doge = quantity in ['many', 'so', 'much', 'such', 'wow']
+    if quantity.lower() in ['a', 'an', 'another', 'one', 'the']:
+        quantity = 1
+    elif quantity.lower() in ['more', 'some', 'many', 'much', 'wow', 'so', 'such', 'lotsa']:
+        if item.split(' ')[0] in ['more']:
+            item = ' '.join(item.split(' ')[1:])
+        quantity = random.choice(range(2,10))
+    elif quantity.lower() in ['all']:
+        quantity = 10
+        if item.split(' ')[0] == 'the':
+            item = ' '.join(item.split(' ')[1:])
+        elif quantity.isdigit():
+            quantity = int(quantity)
+        else:
+            return
+
+    if quantity > 1:
+        if item.endswith('ies'):
+            item = item[:-3] + 'y'
+        elif item.endswith('es'):
+            item = item[:-2]
+        elif item.endswith('s'):
+            item = item[:-1]
+
+    quantity = quantity * modifier
+
+    if 'award_item' not in jenni.brain:
+        jenni.brain['award_item'] = {}
+    if msg.sender not in jenni.brain['award_item']:
+        jenni.brain['award_item'][msg.sender] = {}
+    if to not in jenni.brain['award_item'][msg.sender]:
+        jenni.brain['award_item'][msg.sender][to] = {}
+    if item not in jenni.brain['award_item'][msg.sender][to]:
+        jenni.brain['award_item'][msg.sender][to][item] = 0
+    jenni.brain['award_item'][msg.sender][to][item] += quantity
+    jenni.brain.save()
+    user_points = jenni.brain['award_item'][msg.sender][to][item]
+
+    if user_points != 1:
+        if item.endswith('es'):
+            pass
+        elif item.endswith('y'):
+            item = item[:-1] + 'ies'
+        elif item.endswith('s') or item.endswith('x'):
+            item += 'es'
+        else:
+            item += 's'
+
+    message = '{} has {} {}.'.format(to, user_points, item)
+    if doge:
+        message += random.choice([
+            ' such {}.'.format(item),
+            ' so {}.'.format(item),
+            ' wow.',
+            ' so amaze.',
+            ' many {}.'.format(item),
+        ])
+    jenni.reply(message)
+award_item.rule = r'^(?:!|\x01ACTION )(give|take)s? (\S+) (\S+) (.+)'
+
+
+@smart_ignore
 def rainbowize(jenni, msg):
-    print msg.groups()
     reply = colorize_msg(msg.groups()[0])
     jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
 rainbowize.rule = r"^!rainbows?(?:fg)? (.*)"
