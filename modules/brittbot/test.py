@@ -138,6 +138,16 @@ noneed.rule = r"(?i)^!noneed"
 
 
 @smart_ignore
+def meow(jenni, msg):
+    if msg.nick is not 'lizzi':
+        return
+    if random.randint(0,3) == 1:
+        reply = "meo{}w".format("o" * random.randint(3,10))
+        jenni.say(reply)
+meow.rule = r"(?i).*m+e+o+w"
+
+
+@smart_ignore
 def xfacts(jenni, msg):
     if 'facts' not in jenni.brain:
         jenni.brain['facts'] = {}
