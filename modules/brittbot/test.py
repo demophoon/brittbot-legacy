@@ -139,12 +139,12 @@ noneed.rule = r"(?i)^!noneed"
 
 @smart_ignore
 def meow(jenni, msg):
-    if msg.nick is not 'lizzi':
+    if not msg.friend and msg.nick.lower() not in ['lizzi', '_morgan'] :
         return
-    if random.randint(0,3) == 1:
+    if random.choice([True, False]):
         reply = "meo{}w".format("o" * random.randint(3,10))
         jenni.say(reply)
-meow.rule = r"(?i).*m+e+o+w"
+meow.rule = r"(?i).*m+[re]+o+w+"
 
 
 @smart_ignore
