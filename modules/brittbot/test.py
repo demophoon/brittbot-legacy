@@ -394,6 +394,25 @@ def img_zoom(jenni, msg):
     jenni.reply(url)
 img_zoom.rule = r'^!zoom( \S+)?$'
 
+image_filters = [
+    'inceptionist_painting',
+    'salvia',
+    'art_deco',
+    'painting',
+    'mirage',
+    'demonic',
+    'facelift',
+    'charcoal',
+    'trippy',
+    'self_transforming_machine_elves',
+    'botanical_dimensions',
+    'digital_prism',
+    'sketchasketch',
+    'dead_presidents',
+    'digital_weave',
+    'mystery_flavor',
+]
+
 
 @smart_ignore
 def deepdream(jenni, msg):
@@ -405,11 +424,14 @@ def deepdream(jenni, msg):
     if 'last_trip' in jenni.brain and time.time() - jenni.brain['last_trip'] < 30:
         jenni.reply('Tripping too hard right now, please try again in 30 seconds.')
         return
-    in_url = msg.groups()[0]
+    img_filter = msg.groups()[0]
+    in_url = msg.groups()[1]
+    if img_filter in ['lsd', 'deepdream']:
+        img_filter = 'trippy'
     if not in_url:
         imgs = load_db().get(msg.sender)
         if imgs and 'last_said' in imgs:
-            url_regex = "(https?://\S+\.(?:jpg|jpeg))"
+            url_regex = "(https?://\S+\.(?:jpg|png|jpeg))"
             for img in reversed(imgs['last_said']):
                 urls = re.findall(url_regex, img)
                 if urls:
@@ -461,7 +483,7 @@ def deepdream(jenni, msg):
     msgs[msg.sender]['last_said'].append(url)
     save_db(msgs)
     jenni.reply(url)
-deepdream.rule = r'^!(?:lsd|deepdream)( \S+)?'
+deepdream.rule = r'^!(lsd|deepdream|{})( \S+)?'.format('|'.join(image_filters))
 
 
 @smart_ignore
