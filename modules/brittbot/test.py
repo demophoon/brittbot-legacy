@@ -461,7 +461,7 @@ def deepdream(jenni, msg):
         print response
         print response.content
         jenni.reply("An error has occurred.")
-    image_id = re.findall(r'pageUrl\(\'(\S+)\'\)', response.text)[-1]
+    image_id = json.loads(response.text)['uuid']
     for _ in range(15):
         time.sleep(1.5)
         r = requests.get('https://dreamscopeapp.com/api/images/{}'.format(image_id))
