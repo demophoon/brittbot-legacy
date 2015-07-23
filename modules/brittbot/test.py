@@ -445,7 +445,7 @@ def deepdream(jenni, msg):
     data = MultipartEncoder({
         'title': 'wat',
         'description': 'none',
-        'filter': 'trippy',
+        'filter': img_filter,
         'submit': "Let's Dream",
         'image': ('img0.jpg', open('/tmp/img.jpg', 'rb'), 'image/jpeg'),
     })
