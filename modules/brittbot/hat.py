@@ -120,7 +120,21 @@ hats = [
 def hat(jenni, input):
     '''.hat <nick> -- have jenni give someone a hat'''
     index = random.choice(range(len(hats)))
-    msg = '%s is now wearing a %s' % (
-        input.nick,
+    txt = input.group(2)
+    if not txt:
+        msg = '%s has put on a %s' % (
+            input.nick,
+            hats[index],
+        )
+        return jenni.msg(input.sender, msg, x=True)
+    else:
+        msg = '%s is now wearing a %s' % (
+        input.group(2),
         hats[index],
-    )
+        )
+        jenni.msg(input.sender, msg, x=True)
+
+hat.commands = ['hat', 'hats']
+
+if __name__ == '__main__':
+    print __doc__.strip()
