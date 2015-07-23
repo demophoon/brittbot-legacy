@@ -43,10 +43,38 @@ register_lastfm_account.rule = r'^!lastfm register (\S+)'
 
 @smart_ignore
 def current_song(jenni, msg):
+    import random
     if 'lastfm' not in jenni.brain:
         jenni.brain['lastfm'] = {}
     username = msg.groups()[0].strip()
-    if username in jenni.brain['lastfm']:
+    if username.lower() in ["i"]:
+        username = msg.nick
+    if username.lower() in ["you", "brittbot"]:
+        robot_tracks = {
+            'Styx': ['Mr. Roboto'],
+            'The Flaming Lips': [
+                'Yoshimi Battles the Pink Robots, Part 1',
+                'Yoshimi Battles the Pink Robots, Part 2',
+                'One More Robot/Sympathy 3000-21',
+            ],
+            'Daft Punk': [
+                'Robot Rock',
+                'Harder Better Faster Stronger',
+                'Derezzed',
+            ],
+        }
+        artist = random.choice(robot_tracks.keys())
+        track = random.choice(robot_tracks[artist])
+        track = "%s by %s" % (
+            colorize(track, fg=colors['teal']),
+            colorize(artist, fg=colors['teal']),
+        )
+        fmsg = "I am listening to %s right now!" % (
+            track,
+        )
+        jenni.say(fmsg)
+        return
+    elif username in jenni.brain['lastfm']:
         username = jenni.brain['lastfm'][username]
     if not username:
         username = secret['username']
@@ -66,5 +94,5 @@ def current_song(jenni, msg):
     ])
     fmsg += "%s recent tracks: %s" % (username, tracks)
     jenni.say(fmsg)
-current_song.rule = r'^(?i)(?:$nickname\S? )?what is (\S+) listen.*to'
+current_song.rule = r'^(?i)(?:$nickname\S? )?what (?:am|are|is) (\S+) listen.*to'
 current_song.priority = 'medium'
