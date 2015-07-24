@@ -116,19 +116,20 @@ hats = [
     "Noh Mercy",
 ]
 
+
 @smart_ignore
 def hat(jenni, input):
     '''.hat <nick> -- have jenni give someone a hat'''
     index = random.choice(range(len(hats)))
     txt = input.group(2)
     if not txt:
-        msg = '%s has put on a %s' % (
+        msg = '{0} has put on a {1}'.format(
             input.nick,
             hats[index],
         )
         return jenni.msg(input.sender, msg, x=True)
     else:
-        msg = '%s is now wearing a %s' % (
+        msg = '{0} is now wearing a {1}'.format(
         input.group(2),
         hats[index],
         )
