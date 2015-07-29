@@ -41,11 +41,32 @@ unsubscribe_to_ping.rule = r'^!unsubscribe (.*)$'
 
 @smart_ignore
 def ping_users(jenni, msg):
+    import random
+    from modules.brittbot.helpers import (colors, colorize)
     setup_brain(jenni, msg)
     topic = msg.groups()[0].strip()
     if topic not in jenni.brain['ping'][msg.sender]:
         jenni.reply('Invalid topic')
         return
     pings = ', '.join(jenni.brain['ping'][msg.sender][topic])
-    jenni.reply('Ping for {}: {}'.format(topic, pings))
+    replies = [
+        "IT IS TIME FOR {topic}, ",
+        "{topic}?",
+        "You all have been summoned for {topic}.",
+        "Join me on a quest for {topic}.",
+        "{topic}! {topic}! {topic}!",
+        "I cannot hear you over the sound of my {topic}.",
+        "Ring ring! {topic} is calling!",
+        "Anybody want some {topic}?",
+        "TACO BELL! uh.. I mean {topic}...",
+        "May the {topic} be with you.",
+        "Show me the {topic}.",
+        "Needs more {topic}.",
+        "You can't handle the {topic}!",
+        "We're gonna need a bigger {topic}.",
+        "BEEP BOOP {topic}!",
+        "I feel the need, the need for {topic}!",
+    ]
+    reply = random.choice(replies) + " {users}"
+    jenni.say(reply.format(topic=colorize(topic, fg=colors['cyan']), users=pings))
 ping_users.rule = r'^!ping (.*)$'
