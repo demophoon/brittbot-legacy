@@ -695,10 +695,10 @@ def award_item(jenni, msg):
         quantity = 10
         if item.split(' ')[0] == 'the':
             item = ' '.join(item.split(' ')[1:])
-        elif quantity.isdigit():
-            quantity = int(quantity)
         else:
             return
+    if quantity.isdigit():
+        quantity = int(quantity)
 
     if quantity > 1:
         if item.endswith('ies'):
