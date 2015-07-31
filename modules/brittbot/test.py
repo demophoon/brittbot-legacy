@@ -748,7 +748,7 @@ award_item.rule = r'^(?:!|\x01ACTION )(give|take)s? (\S+) (\S+) (.+)'
 @smart_ignore
 def rainbowize(jenni, msg):
     reply = colorize_msg(msg.groups()[0])
-    jenni.write(['PRIVMSG', msg.sender, ":{}".format(reply)])
+    jenni.write(['PRIVMSG', msg.sender, u":{}".format(reply)])
 rainbowize.rule = r"^!rainbows?(?:fg)? (.*)"
 
 
@@ -773,7 +773,7 @@ def rainbowizebg(jenni, msg):
             fg=colors['black'],
             bg=colors[rainbow[rindex % len(rainbow)]],
         )
-    jenni.write(['PRIVMSG', msg.sender, ":{}".format(final)])
+    jenni.write(['PRIVMSG', msg.sender, u":{}".format(final)])
 rainbowizebg.rule = r"^!rainbows?bg (.*)"
 
 
@@ -799,7 +799,7 @@ def rainbowizefgbg(jenni, msg):
             fg=colors[rainbow[rindex % len(rainbow)]],
             bg=colors[rainbow[rindexbg % len(rainbow)]],
         )
-    jenni.write(['PRIVMSG', msg.sender, ":{}".format(final)])
+    jenni.write(['PRIVMSG', msg.sender, u":{}".format(final)])
 rainbowizefgbg.rule = r"^!rainbows?(?:fgbg|bgfg) (.*)"
 
 
