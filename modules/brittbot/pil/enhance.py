@@ -32,9 +32,14 @@ def enhance(url):
     ]
     for _ in range(random.randint(2,6)):
         img = random.choice(enhancements)(img).enhance(random.random() * 3)
-
     imagefile = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
-    img.save(imagepath + imagefile, 'jpeg', quality=random.randint(1,16))
+    img.save(imagepath + imagefile, 'jpeg', quality=random.randint(0,15))
+    return imagefile
+
+def to_jpg(url):
+    img = image_from_url(url)
+    imagefile = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
+    img.save(imagepath + imagefile, 'jpeg', quality=100)
     return imagefile
 
 
