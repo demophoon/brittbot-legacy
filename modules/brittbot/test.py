@@ -52,7 +52,7 @@ def tacobellitem(jenni, msg):
         saying = ", a ".join(items[:-1]) + ", and a " + items[-1]
     else:
         saying = items[0]
-    jenni.reply("You should get a {}.".format(saying))
+    jenni.reply(u"You should get a {}.".format(saying))
 tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\?"
 
 
