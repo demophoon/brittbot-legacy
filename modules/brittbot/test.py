@@ -119,7 +119,7 @@ def tech_jargon(jenni, msg):
             "COM", "HDD", "THX", "SMTP", "SMS", "USB", "PNG", "PGP", "GPG", "HTTPS",
             "GIT", "TFS", "SVN", "RBAC", "LDAP", "AD", "HTML", "IP", "IRC", "NIC",
             "HTMLS", "PnP", "AJAX", "JSON", "HOCON", "ZIP", "TAR", "SATA3", "SATA2",
-            "PATA", "VLC", "GSM", "CDMA", "GEOIP",
+            "PATA", "VLC", "GSM", "CDMA", "GEOIP", "AIO", "PE", "OSCON",
         ],
         'adjectives': [
             "auxiliary", "primary", "back-end", "digital", "enterprise",
@@ -127,7 +127,7 @@ def tech_jargon(jenni, msg):
             "haptic", "multi-byte", "bluetooth", "wireless", "1080p", "neural",
             "optical", "solid state", "mobile", "multi-threaded", "high fidelity",
             "haskell", "python", "postgresql", "MySql", "java", "javascript",
-            "node.js", "github",
+            "node.js", "github", "ruby", "clojure", "c++", "golang", "concurrent",
         ],
         'nouns': [
             "driver", "protocol", "bandwidth", "panel",
@@ -136,7 +136,12 @@ def tech_jargon(jenni, msg):
             "application", "transmitter", "bus", "circuit", "capacitor", "matrix",
             "mainframe", "keyboard", "input device", "sensor", "transistor", "ram disk",
             "system clock", "tree", "byte", "bytecode", "firewire", "link", "cache",
-            "dot matrix", "cache matrix", "variable",
+            "dot matrix", "cache matrix", "variable", "puppet strings",
+            "puppet", "hiera", "bitcoin", "cold brew", "magic the gathering",
+            "solaris", "leatherman", "catalog", "brittbot", "agent",
+            "custom fact", "custom type", "provider",
+            "RedHat Enterprise Linux", "Windows", "cfactor", "gcc",
+            "the pry debugger", "pusheen"
         ],
         'verbs': [
             "back up", "bypass", "hack", "override", "compress",
@@ -146,7 +151,7 @@ def tech_jargon(jenni, msg):
             "upload", "couple", "partition", "obfuscate", "recurse", "invert",
             "increase", "decrease", "fluctuate", "jump", "kick", "restart",
             "compile", "serialize", "deserialize", "encode", "reencode", "decode",
-            "decompile",
+            "decompile", "apply", "converge", "sync", "reverse engineer"
         ],
         'ingverbs': [
             "backing up", "bypassing", "hacking",
@@ -154,6 +159,8 @@ def tech_jargon(jenni, msg):
             "connecting", "generating", "quantifying", "calculating",
             "synthesizing", "transmitting", "programming", "parsing", "mapping",
             "degaussing", "downloading", "uploading", "decoupling", "coupling",
+            "torrenting", "converging", "devopsing", "executing", "chmod'ing",
+            "syncing"
         ]
     }
 
