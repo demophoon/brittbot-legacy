@@ -125,7 +125,8 @@ def tech_jargon(jenni, msg):
             "COM", "HDD", "THX", "SMTP", "SMS", "USB", "PNG", "PGP", "GPG", "HTTPS",
             "GIT", "TFS", "SVN", "RBAC", "LDAP", "AD", "HTML", "IP", "IRC", "NIC",
             "HTMLS", "PnP", "AJAX", "JSON", "HOCON", "ZIP", "TAR", "SATA3", "SATA2",
-            "PATA", "VLC", "GSM", "CDMA", "GEOIP", "JVM", "OSX", "HS256", "YAML"
+            "PATA", "VLC", "GSM", "CDMA", "GEOIP", "JVM", "OSX", "HS256", "YAML",
+            "AIO", "PE", "OSCON",
         ],
         'adjectives': [
             "auxiliary", "primary", "back-end", "digital", "enterprise",
@@ -134,7 +135,8 @@ def tech_jargon(jenni, msg):
             "optical", "solid state", "mobile", "multi-threaded", "high fidelity",
             "haskell", "python", "postgresql", "MySql", "java", "javascript",
             "node.js", "github", "reverse", "crypto", "dimensional", "temporal",
-            "quantum", "feedback", "anomalous",
+            "quantum", "feedback", "anomalous", "ruby", "clojure", "c++", "golang",
+            "concurrent",
         ],
         'nouns': [
             "driver", "protocol", "bandwidth", "panel",
@@ -145,6 +147,11 @@ def tech_jargon(jenni, msg):
             "system clock", "tree", "byte", "bytecode", "firewire", "link", "cache",
             "dot matrix", "cache matrix", "variable",  "cable", "server", "error",
             "core", "module", "terminal", "conduit", "field", "drone", "subroutines",
+            "puppet strings", "puppet", "hiera", "bitcoin", "cold brew",
+            "magic the gathering", "solaris", "leatherman", "catalog", "brittbot",
+            "agent", "custom fact", "custom type", "provider",
+            "RedHat Enterprise Linux", "Windows", "cfactor", "gcc",
+            "the pry debugger", "pusheen",
         ],
         'verbs': [
             "back up", "bypass", "hack", "override", "compress",
@@ -155,7 +162,7 @@ def tech_jargon(jenni, msg):
             "decrease", "fluctuate", "jump", "kick", "restart", "compile", "serialize",
             "deserialize", "encode", "reencode", "decode", "decompile", "encrypt",
             "pixelate", "process", "energize", "cause", "handle", "break", "update",
-            "cloak",
+            "cloak", "apply", "converge", "sync", "reverse engineer"
         ],
         'ingverbs': [
             "backing up", "bypassing", "hacking",
@@ -168,7 +175,8 @@ def tech_jargon(jenni, msg):
             "kicking", "restarting", "compiling", "serializing", "deserializing",
             "encoding", "reencoding", "decoding", "decompiling", "encrypting",
             "pixelating", "processing", "energizing", "causing", "handling",
-            "breaking", "updating", "cloaking",
+            "breaking", "updating", "cloaking", "torrenting", "converging",
+            "devopsing", "executing", "chmod'ing", "syncing",
         ]
     }
 
