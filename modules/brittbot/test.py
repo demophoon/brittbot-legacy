@@ -433,17 +433,22 @@ how_happy_am_i.rule = r"!approval$"
 
 
 @smart_ignore
-def reload_brain(jenni, msg):
+def set_brain_param(jenni, msg):
     if not msg.admin:
         return
-    if not os.path.isfile(jenni.brain_file):
-        jenni.brain = {}
-        jenni.brain.save()
-    f = open(jenni.brain_file, 'r')
-    jenni.brain = json.loads(f.read())
-    f.close()
-    jenni.reply("brain reloaded.")
-reload_brain.rule = r"^!loadbrain"
+    path = msg.groups()[0].strip()
+    current_node = jenni.brain
+    if path:
+        for key in path.split('.'):
+            current_node = current_node[key]
+    if isinstance(current_node, dict):
+        value = ', '.join(current_node.keys())
+    elif isinstance(current_node, list):
+        value = ', '.join(current_node)
+    else:
+        value = repr(current_node)
+    jenni.reply(value)
+set_brain_param.rule = r"^!readbrain(.*)"
 
 
 @smart_ignore
