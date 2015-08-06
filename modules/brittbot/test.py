@@ -111,6 +111,12 @@ mnightwho.rule = r"(?i).*(m\.? night).*"
 
 
 @smart_ignore
+def illusions(jenni, msg):
+    jenni.say("ILLUSIONS! YOU DON'T HAVE TIME FOR MY ILLUSIONS {}!!".format(msg.nick).upper())
+illusions.rule = r"(?i).*magic trick.*"
+
+
+@smart_ignore
 def tech_jargon(jenni, msg):
     jargon = {
         "abbreviations": [
