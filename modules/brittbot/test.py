@@ -220,6 +220,47 @@ tech_jargon.rule = r'(?i)^(?:!jargon|$nickname\S? what do you (?:think|know)\??)
 
 
 @smart_ignore
+def markov_generator(jenni, msg):
+    from modules.find import load_db, save_db
+    target = msg.groups()[0]
+    if not target:
+        target = 'last_said'
+    else:
+        target = target.strip()
+    msgs = load_db().get(msg.sender).get(target)
+    if target.lower() == 'everything':
+        db = load_db().get(msg.sender)
+        msgs = []
+        for key in db.keys():
+            msgs += db[key]
+    if not msgs:
+        return
+    msgs = [''.join(x.split(':')[1:]) for x in msgs]
+    t = {}
+    for line in msgs:
+        try:
+            ngrams = TextBlob(" ".join(line.split(" ")[2:])).ngrams(n=3)
+        except Exception:
+            pass
+        for ngram in ngrams:
+            grams = list(ngram)
+            word = grams[0]
+            if word not in t:
+                t[word] = []
+            t[word].append(grams[1:])
+    reply = [random.choice(t.keys())]
+    for _ in range(random.randint(5,13)):
+        words = t.get(reply[-1])
+        if not words:
+            break
+        words = random.choice(words)
+        reply += words
+    reply = ' '.join(reply)
+    jenni.say(reply)
+markov_generator.rule = r"^!markov( \S+)?"
+
+
+@smart_ignore
 def arewefriends(jenni, msg):
     if msg.friend:
         reply = "Yes"
