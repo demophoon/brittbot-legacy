@@ -107,11 +107,6 @@ class Jenni(irc.Bot):
 
         self.bind_commands()
 
-    def save_brain(self):
-        print "The `save_brain` function has been deprecated in favor of `jenni.brain.save()`"
-        # Lets continue to have this work so we can migrate off of it.
-        self.brain.save()
-
     def register(self, variables):
         # This is used by reload.py, hence it being methodised
         for name, obj in variables.iteritems():
