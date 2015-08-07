@@ -400,19 +400,6 @@ class Jenni(irc.Bot):
                                     except:
                                         if nick in input.nick:
                                             return
-                        # stats
-                        if func.thread:
-                            targs = (func, origin, jenni, input)
-                            t = threading.Thread(target=self.call, args=targs)
-                            t.start()
-                        else:
-                            self.call(func, origin, jenni, input)
-
-                        for source in [origin.sender, origin.nick]:
-                            try:
-                                self.stats[(func.name, source)] += 1
-                            except KeyError:
-                                self.stats[(func.name, source)] = 1
 
 if __name__ == '__main__':
     print __doc__
