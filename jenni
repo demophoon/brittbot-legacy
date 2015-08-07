@@ -109,10 +109,10 @@ def create_default_config(fn):
 
     # This allows one to allow specific people to use ".msg channel message here"
     # in specific channels.
-    helpers = {
-        '#channel1': ['a.somedomain.tld', 'b.anotherdomain.tld'],
-        '##channel2': ['some/other/hostmask'],
-        }
+    #helpers = {
+    #    '#channel1': ['a.somedomain.tld', 'b.anotherdomain.tld'],
+    #    '##channel2': ['some/other/hostmask'],
+    #}
 
     # Enable raw logging of everything jenni sees.
     # logged to the folder 'log'
