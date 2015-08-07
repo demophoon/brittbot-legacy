@@ -18,7 +18,7 @@ def init_kick_brain(jenni):
     brain = jenni.brain
     if 'kicks' not in brain:
         brain['kicks'] = {}
-        jenni.save_brain()
+        jenni.brain.save()
 
 
 def is_kick(jenni, channel, hostmask):
@@ -63,7 +63,7 @@ def auto_kick(jenni, msg):
         jenni.brain['kicks'][msg.nick] += 1
         if jenni.brain['kicks'][msg.nick] > 3:
             jenni.write(['MODE', msg.sender, "+b", "%s!%s@%s" % hostmask])
-        jenni.save_brain()
+        jenni.brain.save()
         print "Kicking %s from %s for reason %s" % (
             msg.nick, msg.sender, kickmsg
         )
