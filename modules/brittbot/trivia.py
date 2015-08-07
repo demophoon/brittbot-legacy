@@ -132,7 +132,7 @@ def trivia_answer(jenni, msg):
     if time.time() - last_question_asked < 2:
         return
     import string
-    hint_chars = string.letters + string.digits
+    hint_chars = string.letters + string.digits + " "
     hostmask = (msg.nick, msg.origin.user, msg.origin.host)
     chan = msg.sender
     if chan not in trivia_rooms:
@@ -165,8 +165,6 @@ def trivia_answer(jenni, msg):
     guess = ''.join(x for x in guess if x in hint_chars)
     guess = [pattern.sub('', y) for y in guess.split(" ") if y not in ignored_words]
     guess = [x for x in guess if x]
-    guess += [x[:-1] for x in guess if x.endswith("s")]
-    guess += [x + "s" for x in guess if not x.endswith("s")]
     answer = rooms[chan]['answer'].lower()
     answer = ''.join(x for x in answer if x in hint_chars)
     answer = [pattern.sub('', y)
