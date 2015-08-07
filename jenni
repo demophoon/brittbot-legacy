@@ -118,12 +118,6 @@ def create_default_config(fn):
     # logged to the folder 'log'
     logging = False
 
-    # Block modules from specific channels
-    # To not block anything for a channel, just don't mention it
-    excludes = {
-            '##blacklist': ['!'],
-        }
-
     # If you want to enumerate a list of modules rather than disabling
     # some, use "enable = ['example']", which takes precedent over exclude
     #
