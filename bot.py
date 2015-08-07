@@ -63,7 +63,6 @@ class Jenni(irc.Bot):
         irc.Bot.__init__(self, *args)
         self.config = config
         self.doc = {}
-        self.stats = {}
         self.times = {}
         self.online_users = {}
         self.config = config
