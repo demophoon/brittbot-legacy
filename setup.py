@@ -15,5 +15,6 @@ setup(
         "beautifulsoup",
         "pylast",
         "lxml",
+        "sqlalchemy",
     ],
 )
