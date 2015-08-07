@@ -11,8 +11,8 @@ import json
 from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import colorize, colors
 
-trivia_room = '##brittbot-jeopardy'
-trivia_rooms = [trivia_room, '#stlouis-games']
+trivia_room = '##brittbot-trivia'
+trivia_rooms = [trivia_room, '#brittbot-trivia']
 cached_questions = []
 last_question_asked = 0
 
