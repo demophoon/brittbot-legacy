@@ -72,13 +72,9 @@ class Jenni(irc.Bot):
         self.variables = {}
 
         filenames = []
-        if not hasattr(self.config, 'enable'):
-            for fn in os.listdir(os.path.join(os.getcwd(), 'modules')):
-                if fn.endswith('.py') and not fn.startswith('_'):
-                    filenames.append(os.path.join(home, 'modules', fn))
-        else:
-            for fn in self.config.enable:
-                filenames.append(os.path.join(home, 'modules', fn + '.py'))
+        for fn in os.listdir(os.path.join(os.getcwd(), 'modules')):
+            if fn.endswith('.py') and not fn.startswith('_'):
+                filenames.append(os.path.join(home, 'modules', fn))
 
         if hasattr(self.config, 'extra'):
             for fn in self.config.extra:
@@ -90,11 +86,8 @@ class Jenni(irc.Bot):
                             filenames.append(os.path.join(fn, n))
 
         modules = []
-        excluded_modules = getattr(self.config, 'exclude', [])
         for filename in filenames:
             name = os.path.basename(filename)[:-3]
-            if name in excluded_modules:
-                continue
             # if name in sys.modules:
             #     del sys.modules[name]
             try:

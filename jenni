@@ -104,8 +104,6 @@ def create_default_config(fn):
 
     # These are people who will be able to use admin.py's functions...
     admins = [owner, 'someoneyoutrust']
-    # But admin.py is disabled by default, as follows:
-    exclude = ['adminchannel', 'insult', 'lispy', 'twss']
 
     # This allows one to allow specific people to use ".msg channel message here"
     # in specific channels.
@@ -117,11 +115,6 @@ def create_default_config(fn):
     # Enable raw logging of everything jenni sees.
     # logged to the folder 'log'
     logging = False
-
-    # If you want to enumerate a list of modules rather than disabling
-    # some, use "enable = ['example']", which takes precedent over exclude
-    #
-    # enable = []
 
     # Directories to load user modules from
     # e.g. /path/to/my/modules
