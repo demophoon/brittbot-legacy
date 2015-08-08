@@ -683,8 +683,9 @@ def justxthingshandler(jenni, msg):
 
     if quote[0] in ['!'] or 'http' in quote:
         return
-
     if hashtag.startswith("##"):
+        return
+    if "action" in msg.lower():
         return
     if len(quote.split(' ')) > 25:
         return
@@ -699,13 +700,6 @@ justxthingshandler.rule = r"(.*)(#\S+\w)$"
 @smart_ignore
 def justxthingslistener(jenni, msg):
     from modules.brittbot.pil import justxthings
-    if msg.sender not in [
-        "#internship",
-        "#r/kansascity",
-        "#reddit-stlouis",
-        "demophoon",
-    ]:
-        return
     if 'last_action' not in jenni.brain:
         jenni.brain['last_action'] = {}
     if msg.sender not in jenni.brain['last_action']:
@@ -718,6 +712,8 @@ def justxthingslistener(jenni, msg):
         if str(msg)[0] in ['!']:
             return
     except Exception:
+        return
+    if "action" in msg.lower():
         return
 
     if random.choice(range(175)) == 0:
