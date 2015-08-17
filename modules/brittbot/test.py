@@ -596,6 +596,40 @@ image_filters = [
 
 
 @smart_ignore
+def urlshortner(jenni, msg):
+    import requests
+    import urllib
+    from modules.find import load_db, save_db
+
+    in_url = msg.groups()[0]
+    if not in_url:
+        imgs = load_db().get(msg.sender)
+        if imgs and 'last_said' in imgs:
+            url_regex = "(https?://\S+)"
+            for img in reversed(imgs['last_said']):
+                urls = re.findall(url_regex, img)
+                if urls:
+                    in_url = urls[0]
+                    break
+    if not in_url:
+        return
+    shrls_server = jenni.config.shrls.get('server')
+    shrls_username = jenni.config.shrls.get('username')
+    shrls_password = jenni.config.shrls.get('password')
+    response = requests.get('{}/admin/create'.format(shrls_server), params={
+        'u': in_url,
+        'c': jenni.nick,
+        'url_only': True,
+    }, auth=(shrls_username, shrls_password))
+    if response.status_code != 200:
+        jenni.reply("An error has occurred.")
+        return
+    url = response.content
+    jenni.reply(url)
+urlshortner.rule = r'^!(?:shrl|url|shorten|short|shortener)( \S+)?'
+
+
+@smart_ignore
 def deepdream(jenni, msg):
     import requests
     from requests_toolbelt import MultipartEncoder

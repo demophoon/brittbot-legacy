@@ -102,6 +102,14 @@ def create_default_config(fn):
         'path': None,
     }
 
+    # If you want url shortner integration (powered by shrls) fill in this
+    # space with the needed information
+    shrls = {
+        'server': 'http://example.com/',
+        'username': 'admin',
+        'password': 'changemenow',
+    }
+
     # These are people who will be able to use admin.py's functions...
     admins = [owner, 'someoneyoutrust']
 
