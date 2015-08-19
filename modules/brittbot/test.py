@@ -289,7 +289,7 @@ noneed.rule = r"(?i)^!noneed"
 
 @smart_ignore
 def meow(jenni, msg):
-    if not msg.friend and msg.nick.lower() not in ['lizzi', '_morgan'] :
+    if not msg.friend and msg.nick.lower() not in ['lizzi', '_morgan', 'hail9000'] :
         return
     if random.choice([True, False]):
         reply = "meo{}w".format("o" * random.randint(3,10))
