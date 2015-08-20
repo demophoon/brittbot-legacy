@@ -221,43 +221,80 @@ tech_jargon.rule = r'(?i)^(?:!jargon|$nickname\S? what do you (?:think|know)\??)
 
 @smart_ignore
 def markov_generator(jenni, msg):
-    from modules.find import load_db, save_db
-    target = msg.groups()[0]
-    if not target:
-        target = 'last_said'
-    else:
+    from modules.brittbot.model import Message
+    args = msg.groups()[1]
+    target = None
+    starting_word = None
+    room = msg.sender
+    if args:
+        args = args.split(" ")
+        if len(args) >= 1:
+            target = args[0]
+        if len(args) >= 2:
+            starting_word = args[1]
+    query = jenni.db.query(Message.body).filter(
+        Message.room==room,
+    )
+    if target and not target.lower() == 'everything':
         target = target.strip()
-    msgs = load_db().get(msg.sender).get(target)
-    if target.lower() == 'everything':
-        db = load_db().get(msg.sender)
-        msgs = []
-        for key in db.keys():
-            msgs += db[key]
+        query = query.filter(Message.nick==target)
+    msgs = query.order_by(
+        Message.created_at.desc()
+    ).limit(5000).all()
     if not msgs:
         return
-    msgs = [''.join(x.split(':')[1:]) for x in msgs]
+    msgs = [x[0] for x in msgs]
     t = {}
     for line in msgs:
         try:
-            ngrams = TextBlob(" ".join(line.split(" ")[2:])).ngrams(n=3)
+            ngrams = TextBlob(" ".join(line.split(" ")[2:])).ngrams(n=5)
         except Exception:
             pass
         for ngram in ngrams:
             grams = list(ngram)
-            word = grams[0]
+            word = ','.join(grams[0:2])
             if word not in t:
                 t[word] = []
-            t[word].append(grams[1:])
-    reply = [random.choice(t.keys())]
-    for _ in range(random.randint(5,13)):
-        words = t.get(reply[-1])
-        if not words:
+            t[word].append(grams[2:])
+    for _ in range(2):
+        if not starting_word:
+            for _ in range(5):
+                starting_word = random.choice(t.keys()).split(',')
+                tags = TextBlob(starting_word[0].split(",")[0]).pos_tags
+                print tags
+                if tags[0][1] in ['VB', 'NN', 'JJ', 'PRP']:
+                    break
+        else:
+            starting_choices = [x for x in t.keys() if starting_word in x]
+            if starting_choices:
+                starting_word = random.choice(starting_choices).split(',')
+        reply = starting_word
+        for jumps in range(random.randint(10,24)):
+            words = t.get(','.join(reply[-2:]))
+            print "{}".format(' '.join(reply))
+            if not words:
+                if jumps >= 3:
+                    break
+                if len(reply) < 2:
+                    break
+                tags = TextBlob(reply[-1]).pos_tags
+                if tags[0][1] in ['VB', 'NN', 'PRP']:
+                    break
+                print "removing {}".format(reply[-1])
+                reply = reply[:-1]
+                continue
+            words = random.choice(words)
+            reply += words
+        if jumps >= 3:
             break
-        words = random.choice(words)
-        reply += words
+    if len(reply) <= 1:
+        reply = "That didn't come up with anything interesting. Try one of these words instead: "
+        reply += ', '.join([random.choice(t.keys()) for _ in range(3)])
+        jenni.reply(reply)
+        return
     reply = ' '.join(reply)
     jenni.say(reply)
-markov_generator.rule = r"^!markov( \S+)?"
+markov_generator.commands = ['markov']
 
 
 @smart_ignore
