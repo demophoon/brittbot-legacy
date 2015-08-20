@@ -57,7 +57,7 @@ def f_reload(jenni, input):
         if not input.owner:
             jenni.msg(jenni.config.logchan_pm, 'RELOADED: %r -- (%s, %s) - %s' % (module, input.sender, input.nick, modified))
 f_reload.name = 'reload'
-f_reload.rule = ('$nick', ['reload'], r'(\S+)?')
+f_reload.rule = ('$nickname', ['reload'], r'(\S+)?')
 f_reload.priority = 'low'
 f_reload.thread = False
 

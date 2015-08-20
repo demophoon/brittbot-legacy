@@ -138,9 +138,13 @@ class Jenni(irc.Bot):
             return (func.__module__, func.__name__, regexp, priority)
 
         def sub(pattern, self=self):
-            # These replacements have significant order
-            pattern = pattern.replace('$nickname', re.escape(self.nick))
-            return pattern.replace('$nick', r'%s[,:] +' % re.escape(self.nick))
+            interpolatable_names = {
+                '$nickname': re.escape(self.nick),
+                '${prefix}': re.escape(self.config.prefix),
+            }
+            for var in interpolatable_names:
+                pattern = pattern.replace(var, interpolatable_names[var])
+            return pattern
 
         bound_funcs = []
         for name, func in self.variables.iteritems():
@@ -191,7 +195,7 @@ class Jenni(irc.Bot):
                     # 3) e.g. ('$nick', ['p', 'q'], '(.*)')
                     elif len(func.rule) == 3:
                         prefix, commands, pattern = func.rule
-                        prefix = sub(prefix)
+                        prefix = sub(r"^{}\S? ".format(prefix))
                         for command in commands:
                             command = r'(?i)(%s) +' % command
                             regexp = re.compile(prefix + command + pattern)
