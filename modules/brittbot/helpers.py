@@ -62,6 +62,10 @@ def action(msg):
     return msg
 
 
+def notice(jenni, chan, msg):
+    jenni.write(['NOTICE', chan, ":{}".format(msg)])
+
+
 def colorize(msg, fg=None, bg=None):
     if not fg and not bg:
         final = msg

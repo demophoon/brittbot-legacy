@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# jenni brittbot/bang.py - All the simple !.* commands
+# jenni brittbot/replies.py - All the simple !.* commands and simple replies
 
 import random
+import time
 
 from modules.brittbot.helpers import action
 
@@ -101,7 +102,7 @@ def themoreyouknow(jenni, input):
     themoreyouknow2 = u"≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈≈"
     star = u"★"
     jenni.say(colorize(themoreyouknow1, fg=colors['blue']))
-    jenni.say(colorize_msg(themoreyouknow2) + colorize(star, fg=colors['yellow']) )
+    jenni.say(colorize_msg(themoreyouknow2) + colorize(star, fg=colors['yellow']))
 themoreyouknow.rule = "^!themoreyouknow"
 
 
@@ -188,3 +189,78 @@ def karma_upper(jenni, input):
         ))
 karma_upper.rule = r'$nickname\+\+'
 karma_upper.priority = 'medium'
+
+
+def mnightwho(jenni, msg):
+    reply = "Did you mean M. Night Sha"
+    reply += ''.join([random.choice("shlamin") for _ in range(
+        random.randint(6, 24)
+    )])
+    reply += 'n?'
+    jenni.reply(reply)
+mnightwho.rule = r"(?i).*(m\.? night).*"
+
+
+def illusions(jenni, msg):
+    jenni.say("ILLUSIONS! YOU DON'T HAVE TIME FOR MY ILLUSIONS {}!!".format(
+        msg.nick
+    ).upper())
+illusions.rule = r"(?i).*magic trick.*"
+
+
+def alot(jenni, msg):
+    print msg
+    if "a alot" in msg or "an alot" in msg:
+        return
+    reply = "http://brittg.com/alot"
+    jenni.say("I think you mean 'a lot', {}".format(reply))
+alot.rule = r"(?i).* alot .*"
+
+
+def noneed(jenni, msg):
+    reply = "http://youtu.be/ygr5AHufBN4"
+    jenni.say(reply)
+noneed.rule = r"(?i)^!noneed"
+
+
+def meow(jenni, msg):
+    if not msg.friend and msg.nick.lower() not in [
+        'lizzi',
+        '_morgan',
+        'hail9000'
+    ]:
+        return
+    if random.choice([True, False]):
+        reply = "meo{}w".format("o" * random.randint(3, 10))
+        jenni.say(reply)
+meow.rule = r"(?i).*m+[re]+o+w+"
+
+
+def alwaysbouttoretto(jenni, msg):
+    jenni.brain['alwaysbouttorreto'] = time.time()
+    reply = "Is it about Toretto?"
+    jenni.reply(reply)
+alwaysbouttoretto.rule = r"^$nickname\W? guess what"
+
+
+def alwaysabouttorettoreply(jenni, msg):
+    if 'alwaysbouttorreto' in jenni.brain:
+        if time.time() - jenni.brain['alwaysbouttorreto'] > 60:
+            return
+        if not jenni.brain['alwaysbouttorreto']:
+            return
+    if msg.groups()[0].lower() == 'y':
+        reply = "Continue."
+    else:
+        reply = "I don't care."
+    jenni.brain['alwaysbouttorreto'] = False
+    jenni.reply(reply)
+alwaysabouttorettoreply.rule = r"(?i)^(?:$nickname\W? )?(y|n)\w+"
+
+
+def cagemebro(jenni, msg):
+    replies = [
+        "AAHHHHHHHHHHHHHHHHHGGGH!!!!!!!!",
+    ]
+    jenni.reply(random.choice(replies))
+cagemebro.rule = r'^!cageme(bro)?'

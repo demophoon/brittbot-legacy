@@ -115,6 +115,22 @@ def generate_taco_bell(vegan=False):
     food += get_next_phrase(meals, skips=food, randomness=1.0, vegan=vegan)
     food += get_next_phrase(modifiers, skips=food, randomness=.25, vegan=vegan)
 
-    taco_modifiers = [
-    ]
     return ' '.join(food)
+
+
+def tacobellitem(jenni, msg):
+    vegan = False
+    if msg.groups(0) == 'vegan':
+        vegan = True
+    drinks = ["Mtn Dew Baja Blast"]
+    items = []
+    for _ in range(random.randint(1, 3)):
+        items.append(generate_taco_bell(vegan))
+    if len(items) <= 2 and random.randint(1, 11) == 1:
+        items.append(random.choice(drinks))
+    if len(items) > 1:
+        saying = ", a ".join(items[:-1]) + ", and a " + items[-1]
+    else:
+        saying = items[0]
+    jenni.reply(u"You should get a {}.".format(saying))
+tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\??"
