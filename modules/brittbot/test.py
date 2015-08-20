@@ -662,7 +662,7 @@ def urlshortner(jenni, msg):
         jenni.reply("An error has occurred.")
         return
     url = response.content
-    jenni.reply(url)
+    jenni.say(url)
 urlshortner.rule = r'^!(?:shrl|url|shorten|short|shortener)( \S+)?'
 
 
