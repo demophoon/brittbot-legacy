@@ -133,6 +133,8 @@ class Jenni(irc.Bot):
                 else:
                     example = None
                 self.doc[func.name] = (func.__doc__, example)
+            if priority not in self.commands:
+                self.commands[priority] = {}
             self.commands[priority].setdefault(regexp, []).append(func)
             regexp = re.sub('\x01|\x02', '', regexp.pattern)
             return (func.__module__, func.__name__, regexp, priority)
