@@ -42,6 +42,7 @@ def irc_cap(jenni, input):
 irc_cap.rule = r'(.*)'
 irc_cap.event = 'CAP'
 irc_cap.priority = 'high'
+irc_cap.wrapped = False
 
 
 def irc_authenticated(jenni, input):
@@ -76,6 +77,7 @@ def irc_authenticated(jenni, input):
 irc_authenticated.rule = r'(.*)'
 irc_authenticated.event = 'AUTHENTICATE'
 irc_authenticated.priority = 'high'
+irc_authenticated.wrapped = False
 
 
 def irc_903(jenni, input):
@@ -85,6 +87,7 @@ def irc_903(jenni, input):
 irc_903.rule = r'(.*)'
 irc_903.event = '903'
 irc_903.priority = 'high'
+irc_903.wrapped = False
 
 
 def irc_904(jenni, input):
@@ -93,6 +96,7 @@ def irc_904(jenni, input):
 irc_904.rule = r'(.*)'
 irc_904.event = '904'
 irc_904.priority = 'high'
+irc_904.wrapped = False
 
 
 def irc_905(jenni, input):
@@ -101,6 +105,7 @@ def irc_905(jenni, input):
 irc_905.rule = r'(.*)'
 irc_905.event = '905'
 irc_905.priority = 'high'
+irc_905.wrapped = False
 
 
 def irc_906(jenni, input):
@@ -109,6 +114,7 @@ def irc_906(jenni, input):
 irc_906.rule = r'(.*)'
 irc_906.event = '906'
 irc_906.priority = 'high'
+irc_906.wrapped = False
 
 
 def irc_907(jenni, input):
@@ -117,6 +123,7 @@ def irc_907(jenni, input):
 irc_907.rule = r'(.*)'
 irc_907.event = '907'
 irc_907.priority = 'high'
+irc_907.wrapped = False
 
 
 def irc_001(jenni, input):
@@ -125,6 +132,7 @@ def irc_001(jenni, input):
 irc_001.rule = r'(.*)'
 irc_001.event = '001'
 irc_001.priority = 'high'
+irc_001.wrapped = False
 
 
 def irc_cap_end(jenni, input):

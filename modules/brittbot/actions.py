@@ -4,7 +4,6 @@
 
 import random
 
-from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import action
 
 from textblob import TextBlob
@@ -49,21 +48,18 @@ good_actions = [
 ]
 
 
-@smart_ignore
 def pats(jenni, input):
     return
 pats.rule = "\x01ACTION pats $nickname on the head"
 pats.priority = 'medium'
 
 
-@smart_ignore
 def standup(jenni, input):
     jenni.say(action("stands up"))
 standup.rule = "^will the real $nickname please stand up\??"
 standup.priority = 'medium'
 
 
-@smart_ignore
 def kicks_me(jenni, input):
     reply = "%s" % random.choice(bad_actions)
     if all([x in input for x in ['pats', 'head']]):
@@ -79,7 +75,6 @@ kicks_me.rule = "^(\x01ACTION )(\w+s) $nickname"
 kicks_me.priority = 'medium'
 
 
-@smart_ignore
 def what_do(jenni, msg):
     if msg.friend:
         actions = [
@@ -95,7 +90,6 @@ what_do.rule = "^(\x01ACTION )(\w+s) at $nickname"
 what_do.priority = 'medium'
 
 
-@smart_ignore
 def sandwich(jenni, msg):
     if "sudo" in msg:
         make = TextBlob(msg.groups()[0]).words[0].pluralize()

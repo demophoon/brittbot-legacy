@@ -4,10 +4,7 @@
 
 import random
 
-from modules.brittbot.filters import smart_ignore
 
-
-@smart_ignore
 def your_mom(jenni, msg):
     if jenni.nick in msg.lower():
         return

@@ -5,10 +5,6 @@
 import re
 import random
 
-from modules.brittbot import (
-    filters,
-)
-
 
 def setup_karma_brain(jenni):
     brain = jenni.brain
@@ -41,7 +37,6 @@ negitive_sayings = [
 ]
 
 
-@filters.smart_ignore
 def karma_award(jenni, msg):
     import time
     fixed_items = {
@@ -139,7 +134,6 @@ karma_award.rule = r".*" + karma
 karma_award.priority = 'medium'
 
 
-@filters.smart_ignore
 def karma_query(jenni, msg):
     item = msg.groups()[0]
     if re.match(r"^!karma (.+)( -?\d+)", msg):

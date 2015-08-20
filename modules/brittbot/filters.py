@@ -56,6 +56,7 @@ def smart_ignore(fn):
             return default_fn
         return fn(jenni, msg)
     return callable
+smart_ignore.wrapper = True
 
 
 def modify_filtered(jenni, msg):

@@ -16,8 +16,6 @@ import gzip
 import StringIO
 import web
 
-from modules.brittbot.filters import smart_ignore
-
 wikiuri = 'https://%s.wikipedia.org/wiki/%s'
 # wikisearch = 'http://%s.wikipedia.org/wiki/Special:Search?' \
 #                            + 'search=%s&fulltext=Search'
@@ -171,7 +169,6 @@ def wikipedia(term, language='en', last=False):
     return sentence + ' - ' + (wikiuri % (language, term))
 
 
-@smart_ignore
 def wik(jenni, input):
     origterm = input.groups()[1]
     if not origterm:

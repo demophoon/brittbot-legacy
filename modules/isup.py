@@ -13,15 +13,11 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-from modules.brittbot.filters import smart_ignore
-
-
 from modules import proxy
 import re
 import web
 
 
-@smart_ignore
 def isup(jenni, input):
     '''isup.me website status checker'''
     site = input.group(2)

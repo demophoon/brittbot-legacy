@@ -18,8 +18,6 @@ import threading
 import calendar
 from modules import clock
 
-from modules.brittbot.filters import smart_ignore
-
 
 def filename(self):
     name = self.nick + '-' + self.config.host + '.reminders.db'
@@ -126,7 +124,6 @@ p_command = r'${prefix}in ([0-9]+(?:\.[0-9]+)?)\s?((?:%s)\b)?:?\s?(.*)' % period
 r_command = re.compile(p_command)
 
 
-@smart_ignore
 def remind(jenni, input):
     m = r_command.match(input.bytes)
     if not m:
@@ -171,7 +168,6 @@ r_zone = re.compile(r'(?:[\d]{4}-[\d]{2}-[\d]{2})?\s+?(([A-Za-z]+|[+-]\d\d?)).*'
 r_date = re.compile(r'([\d]{4})-([\d]{2})-([\d]{2})')
 
 
-@smart_ignore
 def at(jenni, input):
     '''.at YYYY-MM-DD HH:MM TZ -- remind at a specific time.'''
     # input can be just a HH:MM TZ if you want the same day

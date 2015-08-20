@@ -12,9 +12,6 @@ More info:
 
 import web
 
-from modules.brittbot.filters import smart_ignore
-
-
 HTML_ENCODINGS = {
     " ": "%20",
     "!": "%21",
@@ -174,7 +171,6 @@ HTML_ENCODINGS = {
 uri = "http://www.numberempire.com/equation.render?"
 
 
-@smart_ignore
 def latex(jenni, input):
     text = input.group(2)
     for char in text:

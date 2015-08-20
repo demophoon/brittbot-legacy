@@ -18,8 +18,6 @@ import urllib
 import urlparse
 from modules import proxy
 
-from modules.brittbot.filters import smart_ignore
-
 try:
     from BeautifulSoup import BeautifulSoup as Soup
 except ImportError:
@@ -53,7 +51,6 @@ def image_me(term):
         return urllib.unquote_plus(img_url)
 
 
-@smart_ignore
 def img(jenni, input):
     origterm = input.groups()[1]
     if not origterm:

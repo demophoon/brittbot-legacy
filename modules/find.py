@@ -16,8 +16,6 @@ using the sed notation (s///) commonly found in vi/vim.
 from modules import unicode as uc
 import os, re
 
-from modules.brittbot.filters import smart_ignore
-
 
 def load_db():
     """ load lines from find.txt to search_dict """
@@ -115,7 +113,6 @@ collectlines.rule = r'.*'
 collectlines.priority = 'low'
 
 
-@smart_ignore
 def findandreplace(jenni, input):
     """s/old text/new text/ -- allows you to replace text from something you previously said"""
     # don't bother in PM

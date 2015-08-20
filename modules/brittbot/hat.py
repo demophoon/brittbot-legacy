@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 import random
-from modules.brittbot.filters import smart_ignore
 
 hats = [
     "Alien Swarm Parasite",
@@ -117,7 +116,6 @@ hats = [
 ]
 
 
-@smart_ignore
 def hat(jenni, input):
     '''.hat <nick> -- have jenni give someone a hat'''
     index = random.choice(range(len(hats)))
@@ -134,7 +132,6 @@ def hat(jenni, input):
         hats[index],
         )
         jenni.msg(input.sender, msg, x=True)
-
 hat.commands = ['hat', 'hats']
 
 if __name__ == '__main__':

@@ -13,7 +13,6 @@ import json
 
 from textblob import TextBlob
 
-from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import (
     colorize_msg,
     colorize,
@@ -26,7 +25,6 @@ def notice(jenni, chan, msg):
     jenni.write(['NOTICE', chan, ":{}".format(msg)])
 
 
-@smart_ignore
 def config_print(jenni, msg):
     if not msg.admin:
         return
@@ -36,7 +34,6 @@ config_print.rule = r"^test$"
 config_print.priority = 'medium'
 
 
-@smart_ignore
 def tacobellitem(jenni, msg):
     from modules.brittbot.tacobell import generate_taco_bell
     vegan = False
@@ -56,7 +53,6 @@ def tacobellitem(jenni, msg):
 tacobellitem.rule = r"$nickname.*(what)?.*(vegan)?.*taco bell\??"
 
 
-@smart_ignore
 def how_many_x(jenni, msg):
     many = msg.groups()[0]
     subjects = TextBlob(str(msg.groups()[1])).noun_phrases.pluralize()
@@ -89,7 +85,6 @@ def how_many_x(jenni, msg):
 how_many_x.rule = r"(?i)how (few|many|much) ?([a-zA-Z\s]+)?\??$"
 
 
-@smart_ignore
 def translate_this(jenni, msg):
     t_msg = TextBlob(msg.groups()[0])
     from_lang = t_msg.detect_language()
@@ -101,7 +96,6 @@ def translate_this(jenni, msg):
 translate_this.rule = r'^!translate (.*)$'
 
 
-@smart_ignore
 def mnightwho(jenni, msg):
     reply = "Did you mean M. Night Sha"
     reply += ''.join([random.choice("shlamin") for _ in range(random.randint(6,24))])
@@ -110,13 +104,11 @@ def mnightwho(jenni, msg):
 mnightwho.rule = r"(?i).*(m\.? night).*"
 
 
-@smart_ignore
 def illusions(jenni, msg):
     jenni.say("ILLUSIONS! YOU DON'T HAVE TIME FOR MY ILLUSIONS {}!!".format(msg.nick).upper())
 illusions.rule = r"(?i).*magic trick.*"
 
 
-@smart_ignore
 def tech_jargon(jenni, msg):
     jargon = {
         "abbreviations": [
@@ -297,7 +289,6 @@ def markov_generator(jenni, msg):
 markov_generator.commands = ['markov']
 
 
-@smart_ignore
 def arewefriends(jenni, msg):
     if msg.friend:
         reply = "Yes"
@@ -307,7 +298,6 @@ def arewefriends(jenni, msg):
 arewefriends.rule = r"(?i)^$nickname\W? (?:are you my|am i your|are we) friends?\??"
 
 
-@smart_ignore
 def alot(jenni, msg):
     print msg
     if "a alot" in msg or "an alot" in msg:
@@ -317,14 +307,12 @@ def alot(jenni, msg):
 alot.rule = r"(?i).* alot .*"
 
 
-@smart_ignore
 def noneed(jenni, msg):
     reply = "http://youtu.be/ygr5AHufBN4"
     jenni.say(reply)
 noneed.rule = r"(?i)^!noneed"
 
 
-@smart_ignore
 def meow(jenni, msg):
     if not msg.friend and msg.nick.lower() not in ['lizzi', '_morgan', 'hail9000'] :
         return
@@ -334,7 +322,6 @@ def meow(jenni, msg):
 meow.rule = r"(?i).*m+[re]+o+w+"
 
 
-@smart_ignore
 def xfacts(jenni, msg):
     if 'facts' not in jenni.brain:
         jenni.brain['facts'] = {}
@@ -353,7 +340,6 @@ def xfacts(jenni, msg):
 xfacts.rule = r"(?i)^!(\w+)facts( .*)?"
 
 
-@smart_ignore
 def alwaysbouttoretto(jenni, msg):
     jenni.brain['alwaysbouttorreto'] = time.time()
     reply = "Is it about Toretto?"
@@ -361,7 +347,6 @@ def alwaysbouttoretto(jenni, msg):
 alwaysbouttoretto.rule = r"^$nickname\W? guess what"
 
 
-@smart_ignore
 def alwaysabouttorettoreply(jenni, msg):
     if 'alwaysbouttorreto' in jenni.brain:
         if time.time() - jenni.brain['alwaysbouttorreto'] > 60:
@@ -377,7 +362,6 @@ def alwaysabouttorettoreply(jenni, msg):
 alwaysabouttorettoreply.rule = r"(?i)^(?:$nickname\W? )?(y|n)\w+"
 
 
-@smart_ignore
 def diceroll(jenni, msg):
     max_dice = 10
     max_side = 100
@@ -428,6 +412,7 @@ def approval_rating(jenni, msg):
         analysis.sentiment.polarity,
     )
 approval_rating.rule = r".*$nickname.*"
+approval_rating.wrapped = False
 
 
 def room_rating(jenni, msg):
@@ -446,9 +431,9 @@ def room_rating(jenni, msg):
     jenni.brain['approval_room'][msg.sender][msg.nick]['msgs'] += 1
     jenni.brain['approval_room'][msg.sender][msg.nick]['score'] += analysis.sentiment.polarity
 room_rating.rule = r".*"
+room_rating.wrapped = False
 
 
-@smart_ignore
 def how_happy_is_room(jenni, msg):
     if not msg.admin:
         return
@@ -501,7 +486,6 @@ def how_happy_is_room(jenni, msg):
 how_happy_is_room.rule = r"!approval (\S+)"
 
 
-@smart_ignore
 def how_happy_am_i(jenni, msg):
     room = msg.sender
     nick = msg.nick
@@ -518,7 +502,6 @@ def how_happy_am_i(jenni, msg):
 how_happy_am_i.rule = r"!approval$"
 
 
-@smart_ignore
 def set_brain_param(jenni, msg):
     if not msg.admin:
         return
@@ -537,7 +520,6 @@ def set_brain_param(jenni, msg):
 set_brain_param.rule = r"^!readbrain(.*)"
 
 
-@smart_ignore
 def img_enhance(jenni, msg):
     from modules.brittbot.pil import enhance
     from modules.find import load_db, save_db
@@ -562,7 +544,6 @@ def img_enhance(jenni, msg):
 img_enhance.rule = r'^!enhance( \S+)?$'
 
 
-@smart_ignore
 def img_save_as_jpg(jenni, msg):
     from modules.brittbot.pil import enhance
     from modules.find import load_db, save_db
@@ -588,7 +569,6 @@ def img_save_as_jpg(jenni, msg):
 img_save_as_jpg.rule = r'^!jpe?g( \S+)?$'
 
 
-@smart_ignore
 def img_zoom(jenni, msg):
     from modules.brittbot.pil import enhance
     from modules.find import load_db, save_db
@@ -632,7 +612,6 @@ image_filters = [
 ]
 
 
-@smart_ignore
 def urlshortner(jenni, msg):
     import requests
     import urllib
@@ -666,7 +645,6 @@ def urlshortner(jenni, msg):
 urlshortner.rule = r'^!(?:shrl|url|shorten|short|shortener)( \S+)?'
 
 
-@smart_ignore
 def deepdream(jenni, msg):
     import requests
     from requests_toolbelt import MultipartEncoder
@@ -738,7 +716,6 @@ def deepdream(jenni, msg):
 deepdream.rule = r'^!(lsd|deepdream|{})( \S+)?'.format('|'.join(image_filters))
 
 
-@smart_ignore
 def justxthingshandler(jenni, msg):
     from modules.brittbot.pil import justxthings
     from modules.find import load_db
@@ -768,7 +745,6 @@ def justxthingshandler(jenni, msg):
 justxthingshandler.rule = r"(.*)(#\S+\w)$"
 
 
-@smart_ignore
 def justxthingslistener(jenni, msg):
     from modules.brittbot.pil import justxthings
     if 'last_action' not in jenni.brain:
@@ -797,7 +773,6 @@ def justxthingslistener(jenni, msg):
 justxthingslistener.rule = r".*"
 
 
-@smart_ignore
 def xofthey(jenni, msg):
     now = datetime.datetime.utcnow()
     durations = {
@@ -870,7 +845,6 @@ def xofthey(jenni, msg):
 xofthey.rule = r"^!(\w+)ofthe(\w+)( .*)?"
 
 
-@smart_ignore
 def dayssincelast(jenni, msg):
     item = msg.groups()[0]
     if 'days_since' not in jenni.brain:
@@ -888,7 +862,6 @@ def dayssincelast(jenni, msg):
 dayssincelast.rule = r"^!dayssince (.*)"
 
 
-@smart_ignore
 def dayssincelastset(jenni, msg):
     item = msg.groups()[0]
     if 'days_since' not in jenni.brain:
@@ -904,7 +877,6 @@ def dayssincelastset(jenni, msg):
 dayssincelastset.rule = r"^!setdayssince (.*)"
 
 
-@smart_ignore
 def award_item(jenni, msg):
     groups = msg.groups()
     if groups[0] == 'give':
@@ -993,14 +965,12 @@ def award_item(jenni, msg):
 award_item.rule = r'^(?:!|\x01ACTION )(give|take)s? (\S+) (\S+) (.+)'
 
 
-@smart_ignore
 def rainbowize(jenni, msg):
     reply = colorize_msg(msg.groups()[0])
     jenni.write(['PRIVMSG', msg.sender, u":{}".format(reply)])
 rainbowize.rule = r"^!rainbows?(?:fg)? (.*)"
 
 
-@smart_ignore
 def rainbowizebg(jenni, msg):
     rmsg = msg.groups()[0]
     final = unicode()
@@ -1025,7 +995,6 @@ def rainbowizebg(jenni, msg):
 rainbowizebg.rule = r"^!rainbows?bg (.*)"
 
 
-@smart_ignore
 def rainbowizefgbg(jenni, msg):
     rmsg = msg.groups()[0]
     final = unicode()
@@ -1051,7 +1020,6 @@ def rainbowizefgbg(jenni, msg):
 rainbowizefgbg.rule = r"^!rainbows?(?:fgbg|bgfg) (.*)"
 
 
-@smart_ignore
 def ohai(jenni, msg):
     return
     jenni.config.allowed_channels
@@ -1061,13 +1029,11 @@ ohai.rule = r".*ohai.*"
 ohai.priority = 'medium'
 
 
-@smart_ignore
 def correct_me(jenni, msg):
     pass
 correct_me.rule = r".*$nickname.*"
 
 
-@smart_ignore
 def buzzfeedify(jenni, msg):
     subjects = TextBlob(str(msg)).noun_phrases.pluralize()
     if subjects:
@@ -1144,7 +1110,6 @@ def buzzfeedify(jenni, msg):
 buzzfeedify.rule = r"^!buzzfeed (.*)"
 
 
-@smart_ignore
 def eightball(jenni, msg):
     replies = [
         "Signs point to yes.",
@@ -1172,7 +1137,6 @@ def eightball(jenni, msg):
 eightball.rule = r'^!(eight|8)ball'
 
 
-@smart_ignore
 def cagemebro(jenni, msg):
     replies = [
         "AAHHHHHHHHHHHHHHHHHGGGH!!!!!!!!",
@@ -1181,7 +1145,6 @@ def cagemebro(jenni, msg):
 cagemebro.rule = r'^!cageme(bro)?'
 
 
-@smart_ignore
 def global_notice(jenni, msg):
     if not msg.admin:
         return
@@ -1226,7 +1189,6 @@ def init_adr_brain(jenni):
         jenni.brain.save()
 
 
-@smart_ignore
 def adr_modify_cooldown(jenni, msg):
     chan, item, duration, message = msg.groups()
     if jenni.brain['adr']['cooldown'].get(item):
@@ -1236,7 +1198,6 @@ def adr_modify_cooldown(jenni, msg):
 adr_modify_cooldown.rule = r"^!adraward (#*\w+) (\w+) (\d+) (.*)"
 
 
-@smart_ignore
 def adr_light_fire(jenni, msg):
     init_adr_brain(jenni)
     brain = jenni.brain['adr']
@@ -1254,7 +1215,6 @@ def adr_light_fire(jenni, msg):
 adr_light_fire.rule = r"^(\x01ACTION )lights (?:the )?fire"
 
 
-@smart_ignore
 def adr_stoke_fire(jenni, msg):
     init_adr_brain(jenni)
     now = int(time.time())
@@ -1325,7 +1285,6 @@ adr_stoke_fire.rule = r"^(\x01ACTION )stokes (?:the )?fire"
 adr_stoke_fire.priority = 'medium'
 
 
-@smart_ignore
 def adr_gathers_wood(jenni, msg):
     init_adr_brain(jenni)
     now = int(time.time())
@@ -1345,7 +1304,6 @@ adr_gathers_wood.rule = r"^(\x01ACTION )(?:gathers|collects) wood"
 adr_gathers_wood.priority = 'medium'
 
 
-@smart_ignore
 def shutdown(jenni, msg):
     if not msg.owner:
         return

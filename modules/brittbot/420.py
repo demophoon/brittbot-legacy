@@ -4,9 +4,6 @@
 
 import random
 
-from modules.brittbot.filters import smart_ignore
-
-
 commandments = [
     "Codmandment #1: Thou shalt smite noobs.",
     "Codmandment #2: Thou shalt refer to thy smited noobs as 'scrubs.'",
@@ -42,7 +39,6 @@ books = [
 ]
 
 
-@smart_ignore
 def blaze_it(jenni, input):
     index = random.choice(range(len(commandments)))
     msg = "'%s' - The Book of %s 420: 6-9" % (

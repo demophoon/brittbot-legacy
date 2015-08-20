@@ -2,7 +2,6 @@ import urllib
 import json
 from urlparse import urlparse, parse_qs
 
-from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import (colorize, colors)
 
 
@@ -32,7 +31,6 @@ def get_video_information(videoid, api_key):
     return vid_obj
 
 
-@smart_ignore
 def yt_context(jenni, msg):
     import random
     target = msg.groups()[0]

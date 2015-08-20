@@ -9,10 +9,7 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 """
 
-from modules.brittbot.filters import smart_ignore
 
-
-@smart_ignore
 def interjection(jenni, input):
     """response to interjections"""
     jenni.say(input.nick + '!')
@@ -21,7 +18,6 @@ interjection.priority = 'high'
 interjection.example = '$nickname!'
 
 
-@smart_ignore
 def f_ping(jenni, input):
     """ping jenni in a channel or pm"""
     jenni.reply('pong!')

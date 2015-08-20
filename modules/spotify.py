@@ -29,8 +29,6 @@ import sys
 
 from datetime import timedelta
 
-from modules.brittbot.filters import smart_ignore
-
 
 class NotModifiedError(Exception):
     def __init__(self):
@@ -105,24 +103,20 @@ class Spotify:
             raise Exception("Unknown response from the Spotify API")
 
 
-@smart_ignore
 def notify(jenni, recipient, text):
     jenni.write(('NOTICE', recipient), text)
 
 
-@smart_ignore
 def print_album(jenni, album):
     jenni.say(album['name'])
     jenni.say("   Artist: %s" % album['artist'])
     jenni.say("   Released: %s" % album['released'])
 
 
-@smart_ignore
 def print_artist(jenni, artist):
     jenni.say("Artist: %s" % artist['name'])
 
 
-@smart_ignore
 def print_track(jenni, track):
     length = str(timedelta(seconds=track['length']))[2:7]
     if length[0] == '0':
@@ -132,7 +126,6 @@ def print_track(jenni, track):
     jenni.say("   Album: \"%s\" " % track['album']['name'])
 
 
-@smart_ignore
 def query(jenni, input):
     spotify = Spotify()
     result = None

@@ -4,12 +4,7 @@
 
 import random
 
-from modules.brittbot import (
-    filters,
-)
 
-
-@filters.smart_ignore
 def ship_it(jenni, input):
     ship_its = [
         "FUCK IT. SHIP IT.",

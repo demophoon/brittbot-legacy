@@ -2,7 +2,6 @@ import json
 
 import pylast
 
-from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import colorize, colors
 
 
@@ -27,7 +26,6 @@ def format_track(song_obj):
     )
 
 
-@smart_ignore
 def register_lastfm_account(jenni, msg):
     nick = msg.nick
     if 'lastfm' not in jenni.brain:
@@ -41,7 +39,6 @@ def register_lastfm_account(jenni, msg):
 register_lastfm_account.rule = r'^!lastfm register (\S+)'
 
 
-@smart_ignore
 def current_song(jenni, msg):
     import random
     if 'lastfm' not in jenni.brain:

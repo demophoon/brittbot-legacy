@@ -8,7 +8,6 @@ import re
 import urllib
 import json
 
-from modules.brittbot.filters import smart_ignore
 from modules.brittbot.helpers import colorize, colors
 
 trivia_room = '##brittbot-trivia'
@@ -40,7 +39,6 @@ def init_user_brain(jenni, nick):
     jenni.brain.save()
 
 
-@smart_ignore
 def trivia_hint(jenni, msg):
     global last_question_asked
     if time.time() - last_question_asked < 2:
@@ -63,7 +61,6 @@ def trivia_hint(jenni, msg):
 trivia_hint.rule = "^!hint$"
 
 
-@smart_ignore
 def trivia(jenni, msg):
     global cached_questions
     global last_question_asked
@@ -126,7 +123,6 @@ def trivia(jenni, msg):
 trivia.rule = r"^($nickname\W |!)trivia$"
 
 
-@smart_ignore
 def trivia_answer(jenni, msg):
     global last_question_asked
     if time.time() - last_question_asked < 2:
@@ -222,7 +218,6 @@ def trivia_answer(jenni, msg):
 trivia_answer.rule = r"^(?:$nickname\W? )?(?:w?W?hat|w?W?ho) \w+ (.*)\??"
 
 
-@smart_ignore
 def trivia_giveup(jenni, msg):
     global last_question_asked
     if time.time() - last_question_asked < 2:
@@ -250,7 +245,6 @@ def trivia_giveup(jenni, msg):
 trivia_giveup.rule = r"^(?:$nickname\W? i (?:give up|have no idea|don'?t know).*|!giveup)$"
 
 
-@smart_ignore
 def trivia_forgive(jenni, msg):
     init_user_brain(jenni, msg.nick)
     nick = msg.groups()[0]
@@ -267,7 +261,6 @@ def trivia_forgive(jenni, msg):
 trivia_forgive.rule = r"^$nickname\W? forgive (.*)"
 
 
-@smart_ignore
 def trivia_skip(jenni, msg):
     global last_question_asked
     if time.time() - last_question_asked < 2:
@@ -287,7 +280,6 @@ def trivia_skip(jenni, msg):
 trivia_skip.rule = r"^($nickname\W? skip|!skip)$"
 
 
-@smart_ignore
 def trivia_points(jenni, msg):
     nick = msg.nick
     if msg.groups()[0]:
@@ -346,4 +338,3 @@ def shutdown_handler(jenni, msg):
         time.sleep(1)
     jenni.write(['MODE', trivia_room, "-i"])
     print "Powering off trivia."
-shutdown_handler.rule = '$^'

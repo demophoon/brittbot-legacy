@@ -2,8 +2,6 @@
 # encoding: utf-8
 # jenni brittbot/notify.py - Subscribe and notify to lists
 
-from modules.brittbot.filters import smart_ignore
-
 
 def setup_brain(jenni, msg):
     if 'ping' not in jenni.brain:
@@ -12,7 +10,6 @@ def setup_brain(jenni, msg):
         jenni.brain['ping'][msg.sender] = {}
 
 
-@smart_ignore
 def subscribe_to_ping(jenni, msg):
     setup_brain(jenni, msg)
     topic = msg.groups()[0].strip()
@@ -26,7 +23,6 @@ def subscribe_to_ping(jenni, msg):
 subscribe_to_ping.rule = r'^!subscribe (.*)$'
 
 
-@smart_ignore
 def unsubscribe_to_ping(jenni, msg):
     setup_brain(jenni, msg)
     topic = msg.groups()[0].strip()
@@ -42,7 +38,6 @@ def unsubscribe_to_ping(jenni, msg):
 unsubscribe_to_ping.rule = r'^!unsubscribe (.*)$'
 
 
-@smart_ignore
 def ping_users(jenni, msg):
     import random
     from modules.brittbot.helpers import (colors, colorize)

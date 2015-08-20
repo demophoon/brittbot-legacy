@@ -76,6 +76,7 @@ def auto_kick(jenni, msg):
 auto_kick.event = 'JOIN'
 auto_kick.rule = '.*'
 auto_kick.priority = 'high'
+auto_kick.wrapped = False
 
 
 def user_part(jenni, msg):
@@ -87,6 +88,7 @@ def user_part(jenni, msg):
 user_part.event = 'PART'
 user_part.rule = '.*'
 user_part.priority = 'high'
+user_part.wrapped = False
 
 
 def user_quit(jenni, msg):
@@ -98,6 +100,7 @@ def user_quit(jenni, msg):
 user_quit.event = 'QUIT'
 user_quit.rule = '.*'
 user_quit.priority = 'high'
+user_quit.wrapped = False
 
 
 def nametrigger(jenni, input):
@@ -109,6 +112,7 @@ def nametrigger(jenni, input):
 nametrigger.event = '353'
 nametrigger.rule = '(.*)'
 nametrigger.priority = 'high'
+nametrigger.wrapped = False
 
 
 def mean_kick(jenni, msg):

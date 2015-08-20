@@ -13,13 +13,10 @@ import re
 import unicodedata
 import urlparse
 
-from modules.brittbot.filters import smart_ignore
-
 control_chars = ''.join(map(unichr, range(0, 32) + range(127, 160)))
 control_char_re = re.compile(u'[%s]' % re.escape(control_chars))
 
 
-@smart_ignore
 def supercombiner(jenni, input):
     """.sc -- displays the infamous supercombiner"""
     s = 'u'

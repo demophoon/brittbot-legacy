@@ -12,8 +12,6 @@ More info:
  * Phenny: http://inamidst.com/phenny/
 '''
 
-from modules.brittbot.filters import smart_ignore
-
 import json
 import urllib2
 import re
@@ -28,7 +26,6 @@ def prep_title(txt):
     return txt
 
 
-@smart_ignore
 def movie(jenni, input):
     '''.imdb movie/show title -- displays information about a production'''
 

@@ -15,7 +15,6 @@ from subprocess import (
     Popen,
     PIPE
 )
-from modules.brittbot.filters import smart_ignore
 
 
 def git_info():
@@ -27,7 +26,6 @@ def git_info():
     return commit, author, date
 
 
-@smart_ignore
 def version(jenni, input):
     commit, author, date = git_info()
 
@@ -40,7 +38,6 @@ version.priority = 'medium'
 version.rate = 10
 
 
-@smart_ignore
 def ctcp_version(jenni, input):
     commit, author, date = git_info()
     date = date.replace('  ', '')
@@ -51,7 +48,6 @@ ctcp_version.rule = '\x01VERSION\x01'
 ctcp_version.rate = 20
 
 
-@smart_ignore
 def ctcp_source(jenni, input):
     jenni.write(('NOTICE', input.nick),
                 '\x01SOURCE https://github.com/myano/jenni/\x01')
@@ -61,7 +57,6 @@ ctcp_source.rule = '\x01SOURCE\x01'
 ctcp_source.rate = 10
 
 
-@smart_ignore
 def ctcp_ping(jenni, input):
     text = input.group()
     text = text.replace('PING ', '')
@@ -72,7 +67,6 @@ ctcp_ping.rule = '\x01PING\s(.*)\x01'
 ctcp_ping.rate = 10
 
 
-@smart_ignore
 def ctcp_time(jenni, input):
     dt = datetime.now()
     current_time = dt.strftime('%A, %d. %B %Y %I:%M%p')

@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-from modules.brittbot.filters import smart_ignore
-
 ORG_CODE = "d00d11e681934f4688fdce9cebd5afce"
 SESSION = "Session goes here"
 
-@smart_ignore
+
 def voicebox(jenni, msg):
     jenni.reply("This function is currently disabled.")
     return
@@ -30,7 +28,6 @@ def voicebox(jenni, msg):
 voicebox.rule = r'^!voicebox (.*)'
 
 
-@smart_ignore
 def voicebox_whats_next(jenni, msg):
     return
     ROOM_CODE = "HWWB"

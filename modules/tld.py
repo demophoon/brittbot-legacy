@@ -14,8 +14,6 @@ import datetime as dt
 import re
 import web
 
-from modules.brittbot.filters import smart_ignore
-
 BS = BeautifulSoup.BeautifulSoup
 
 uri = 'https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains'
@@ -26,7 +24,6 @@ soup = False
 last_updated = dt.datetime.now() - dt.timedelta(days=30)
 
 
-@smart_ignore
 def gettld(jenni, input):
     '''.tld .sh -- displays information about a given top level domain.'''
     global soup

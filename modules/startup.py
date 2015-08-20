@@ -83,6 +83,7 @@ def startup(jenni, input):
 startup.rule = r'(.*)'
 startup.event = '251'
 startup.priority = 'low'
+startup.wrapped = False
 
 # Method for populating op/hop/voice information in channels on join
 def privs_on_join(jenni, input):
@@ -103,6 +104,7 @@ def privs_on_join(jenni, input):
 privs_on_join.rule = r'(.*)'
 privs_on_join.event = '353'
 privs_on_join.priority = 'high'
+privs_on_join.wrapped = False
 
 # Method for tracking changes to ops/hops/voices in channels
 def track_priv_change(jenni, input):
@@ -137,6 +139,7 @@ def track_priv_change(jenni, input):
 track_priv_change.rule = r'(.*)'
 track_priv_change.event = 'MODE'
 track_priv_change.priority = 'high'
+track_priv_change.wrapped = False
 
 if __name__ == '__main__':
     print __doc__.strip()

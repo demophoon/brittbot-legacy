@@ -47,7 +47,8 @@ def db_logger(jenni, msg):
     jenni.db.add(message)
     jenni.db.commit()
 db_logger.rule = r'.*'
-db_logger.priority = 'high'
+db_logger.priority = -1
+db_logger.wrapped = False
 
 
 def create_session(db_conn):

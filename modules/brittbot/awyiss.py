@@ -6,10 +6,7 @@ import urllib
 import urllib2
 import json
 
-from modules.brittbot.filters import smart_ignore
 
-
-@smart_ignore
 def awwyiss(jenni, input):
     url = 'http://awyisser.com/api/generator'
     data = {

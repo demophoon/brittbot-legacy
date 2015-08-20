@@ -11,7 +11,6 @@ More info:
 
 import random
 from modules import unicode as uc
-from modules.brittbot.filters import smart_ignore
 
 def write_addquote(text):
     fn = open('quotes.txt', 'a')
@@ -21,7 +20,6 @@ def write_addquote(text):
     fn.close()
 
 
-@smart_ignore
 def addquote(jenni, input):
     '''
     .addquote <nick> something they said here -- adds the quote to the quote database.
@@ -38,7 +36,6 @@ addquote.priority = 'low'
 addquote.example = '.addquote'
 
 
-@smart_ignore
 def retrievequote(jenni, input):
     '''.quote <number> -- displays a given quote'''
     NO_QUOTES = 'There are currently no quotes saved.'
@@ -78,7 +75,6 @@ retrievequote.priority = 'low'
 retrievequote.example = '.quote'
 
 
-@smart_ignore
 def delquote(jenni, input):
     '''.rmquote <number> -- removes a given quote from the database. Can only be done by the owner of the bot.'''
     if not input.owner:
@@ -123,7 +119,6 @@ delquote.priority = 'low'
 delquote.example = '.rmquote'
 
 
-@smart_ignore
 def grabquote(jenni, input):
     try:
         from modules import find
