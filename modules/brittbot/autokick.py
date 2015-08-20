@@ -11,6 +11,7 @@ import re
 allowed_rooms = [
     '##brittslittlesliceofheaven',
     '##brittbot',
+    '##brittbot-trivia',
 ]
 
 
