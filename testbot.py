@@ -38,6 +38,21 @@ class MockBot(bot.Jenni):
     def msg(self, recipient, text, log=False, x=False, wait_time=3):
         print u"{}: {}".format(recipient, text)
 
+    def send(self, msg, room="##test", hostmask="sample!test@localhost"):
+        origin = irc.Origin(
+            self,
+            hostmask,
+            [
+                "PRIVMSG",
+                room,
+                msg,
+            ]
+        )
+        self.dispatch(origin, [
+            msg,
+            'PRIVMSG',
+        ])
+
 
 def get_jenni(config_path):
     config_files = []
