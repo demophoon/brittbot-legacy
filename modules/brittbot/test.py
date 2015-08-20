@@ -408,7 +408,7 @@ def diceroll(jenni, msg):
             ', '.join([str(x) for x in rolls])
         )
     jenni.reply(truncate_warning + reply)
-diceroll.rule = r"^(?:\x01ACTION rolls |)(\d+)d(\d+)(.*)"
+diceroll.rule = r"^(?:\x01ACTION rolls |!roll |$nickname\W? roll |$nickname\W? |)(\d+)d(\d+)(.*)"
 
 
 def approval_rating(jenni, msg):
