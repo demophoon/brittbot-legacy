@@ -32,21 +32,20 @@ bad_actions = [
 ]
 
 good_actions = [
-    "calculating",
-    "chillin",
-    "interpreting",
-    "parsing",
-    "becoming sentient",
-    "trying to pass the turing test",
-    "chillaxin",
-    "hanging",
-    "sputtering about",
-    "napping",
-    "idling",
-    "contemplating life",
-    "thinking about life",
-    "pondering",
-    "broken",
+    "is calculating",
+    "is chillin",
+    "is interpreting",
+    "is parsing",
+    "is becoming sentient",
+    "is trying to pass the turing test",
+    "is chillaxin",
+    "is sputtering about",
+    "is napping",
+    "is idling",
+    "is contemplating life",
+    "is thinking about life",
+    "is pondering",
+    "is broken",
 ]
 
 
@@ -81,8 +80,17 @@ kicks_me.priority = 'medium'
 
 
 @smart_ignore
-def what_do(jenni, input):
-    jenni.say(action("is %s" % random.choice(good_actions)))
+def what_do(jenni, msg):
+    if msg.friend:
+        actions = [
+            "http://brittg.com/Y0fPr.gif",
+            "http://brittg.com/PAHC5.gif",
+            "http://brittg.com/Fqqdu.gif",
+            "shakes his head to one side.",
+        ]
+    else:
+        actions = good_actions
+    jenni.say(action("%s" % random.choice(actions)))
 what_do.rule = "^(\x01ACTION )(\w+s) at $nickname"
 what_do.priority = 'medium'
 
