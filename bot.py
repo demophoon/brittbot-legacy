@@ -232,10 +232,12 @@ class Jenni(irc.Bot):
                     regexp = re.compile(pattern)
                     bound_funcs.append(bind(self, func.priority, regexp, func))
 
-        max_pattern_width = max(len(f[2]) for f in bound_funcs)
-        for module, name, regexp, priority in sorted(bound_funcs):
-            encoded_regex = regexp.encode('utf-8').ljust(max_pattern_width)
-            print ('{0} | {1}.{2}, {3} priority'.format(encoded_regex,  module, name, priority))
+        max_pattern_width = min(35, max(len(f[2]) for f in bound_funcs))
+        for module, name, regexp, priority in sorted(bound_funcs, key=lambda x: x[3]):
+            encoded_regex = regexp.encode('utf-8').ljust(max_pattern_width)[:max_pattern_width]
+            if len(encoded_regex.strip()) == max_pattern_width:
+                encoded_regex = encoded_regex[:-3] + '...'
+            print ('{0} | {1}.{2}, priority: {3}'.format(encoded_regex,  module, name, priority))
 
     def wrapped(self, origin, text, match):
         class JenniWrapper(object):
