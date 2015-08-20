@@ -512,11 +512,7 @@ global_notice.priority = 'medium'
 def shutdown(jenni, msg):
     if not msg.owner:
         return
-    priorities = [
-        'high',
-        'medium',
-        'low',
-    ]
+    priorities = sorted(jenni.commands.keys())
     print "Preparing for shutdown!"
     for priority in priorities:
         for pattern in jenni.commands[priority]:

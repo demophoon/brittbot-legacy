@@ -338,3 +338,4 @@ def shutdown_handler(jenni, msg):
         time.sleep(1)
     jenni.write(['MODE', trivia_room, "-i"])
     print "Powering off trivia."
+shutdown_handler.rule = r'$^'
