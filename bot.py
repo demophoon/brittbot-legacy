@@ -114,12 +114,18 @@ class Jenni(irc.Bot):
                 self.variables[name] = obj
 
     def bind_commands(self):
-        self.commands = {'high': {}, 'medium': {}, 'low': {}}
+        self.commands = {1: {}, 50: {}, 100: {}}
 
         def bind(self, priority, regexp, func):
             # register documentation
             if not hasattr(func, 'name'):
                 func.name = func.__name__
+            if priority == 'high':
+                priority = 1
+            elif priority == 'medium':
+                priority = 50
+            elif priority == 'low':
+                priority = 100
             if func.__doc__:
                 if hasattr(func, 'example'):
                     example = func.example
@@ -310,7 +316,8 @@ class Jenni(irc.Bot):
         bytes, event, args = args[0], args[1], args[2:]
         text = decode(bytes)
 
-        for priority in ('high', 'medium', 'low'):
+        priorities = sorted(self.commands.keys())
+        for priority in priorities:
             items = self.commands[priority].items()
             for regexp, funcs in items:
                 for func in funcs:
