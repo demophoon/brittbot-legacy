@@ -110,11 +110,25 @@ class Jenni(irc.Bot):
     def register(self, variables):
         # This is used by reload.py, hence it being methodised
         for name, obj in variables.iteritems():
-            if hasattr(obj, 'commands') or hasattr(obj, 'rule'):
+            if any([
+                hasattr(obj, 'commands'),
+                hasattr(obj, 'rule'),
+                hasattr(obj, 'wrapper'),
+            ]):
                 self.variables[name] = obj
 
     def bind_commands(self):
         self.commands = {1: {}, 50: {}, 100: {}}
+
+        wrappers = []
+        for name, func in self.variables.iteritems():
+            if not hasattr(func, 'wrapper'):
+                func.wrapper = False
+                continue
+            if func.wrapper:
+                print "Wrapper {} enabled".format(name)
+                func.wrapped = False
+                wrappers.append(func)
 
         def bind(self, priority, regexp, func):
             # register documentation
@@ -133,6 +147,9 @@ class Jenni(irc.Bot):
                 else:
                     example = None
                 self.doc[func.name] = (func.__doc__, example)
+            if not func.wrapper and func.wrapped:
+                for wrapper in wrappers:
+                    func = wrapper(func)
             if priority not in self.commands:
                 self.commands[priority] = {}
             self.commands[priority].setdefault(regexp, []).append(func)
@@ -150,9 +167,14 @@ class Jenni(irc.Bot):
 
         bound_funcs = []
         for name, func in self.variables.iteritems():
-            # print name, func
+            if hasattr(func, 'wrapper') and func.wrapper:
+                continue
+
             if not hasattr(func, 'priority'):
                 func.priority = 'medium'
+
+            if not hasattr(func, 'wrapped'):
+                func.wrapped = True
 
             if not hasattr(func, 'thread'):
                 func.thread = False
