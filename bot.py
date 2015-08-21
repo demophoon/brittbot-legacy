@@ -18,6 +18,7 @@ import threading
 import imp
 import json
 import irc
+import uuid
 
 home = os.getcwd()
 
@@ -243,6 +244,7 @@ class Jenni(irc.Bot):
         class JenniWrapper(object):
             def __init__(self, jenni):
                 self._bot = jenni
+                self.uuid = str(uuid.uuid4())
 
             def __getattr__(self, attr):
                 sender = origin.sender or text
@@ -346,6 +348,7 @@ class Jenni(irc.Bot):
         bytes, event, args = args[0], args[1], args[2:]
         text = decode(bytes)
 
+        uuids = []
         priorities = sorted(self.commands.keys())
         for priority in priorities:
             items = self.commands[priority].items()
@@ -370,6 +373,8 @@ class Jenni(irc.Bot):
                             t.start()
                         else:
                             self.call(func, origin, jenni, input)
+                            uuids.append(jenni.uuid)
+        return uuids
 
 if __name__ == '__main__':
     print __doc__

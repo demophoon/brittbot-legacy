@@ -4,6 +4,7 @@
 import os
 import sys
 import signal
+import time
 
 import configs
 import bot
@@ -32,13 +33,21 @@ class Watcher(object):
 
 class MockBot(bot.Jenni):
 
+    recieved_messages = {}
+
     def write(self, args, text=None, raw=False):
-        print text
+        print u"{}: {}".format(self.uuid, text)
 
     def msg(self, recipient, text, log=False, x=False, wait_time=3):
+        if self.uuid not in self.recieved_messages:
+            self.recieved_messages[self.uuid] = []
+        self.recieved_messages[self.uuid].append({
+            'room': recipient,
+            'message': text,
+        })
         print u"{}: {}".format(recipient, text)
 
-    def send(self, msg, room="##test", hostmask="sample!test@localhost"):
+    def send(self, msg, room="##test", hostmask="example!test@localhost"):
         origin = irc.Origin(
             self,
             hostmask,
@@ -48,10 +57,22 @@ class MockBot(bot.Jenni):
                 msg,
             ]
         )
-        self.dispatch(origin, [
+        task_ids = self.dispatch(origin, [
             msg,
             'PRIVMSG',
         ])
+        responses = []
+        for _ in range(10):
+            for task_id in task_ids:
+                response = self.recieved_messages.get(task_id)
+                if not response:
+                    continue
+                responses += response
+            if responses:
+                break
+            time.sleep(0.1)
+        responses = [x.get('message', "") for x in responses]
+        return '\n'.join(responses)
 
 
 def get_jenni(config_path):
@@ -83,3 +104,6 @@ def message(jenni, hostmask, room, msg):
         msg,
         'PRIVMSG',
     ])
+
+if __name__ == '__main__':
+    jenni = get_jenni("/home/britt/.jenni/default.py")
