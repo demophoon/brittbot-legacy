@@ -6,11 +6,10 @@ More info:
  * jenni: https://github.com/myano/jenni/
 '''
 
+import time
 import re
 from functools import wraps
-
-limited_channels = {
-}
+from modules.brittbot.autokick import is_kick
 
 
 def is_allowed(function_name, jenni, msg):
@@ -38,6 +37,17 @@ def is_allowed(function_name, jenni, msg):
             msg.enemy = False
     if msg.admin:
         allowed = True
+
+    if 'global_blocked' not in jenni.brain['filters']:
+        jenni.brain['filters']['global_blocked'] = []
+    if function_name in filters['global_blocked']:
+        allowed = False
+
+    if 'room_blocked' not in jenni.brain['filters']:
+        jenni.brain['filters']['room_blocked'] = []
+    if msg.sender.lower() in filters['room_blocked']:
+        allowed = False
+
     if irc_room in filters:
         if 'blocked' in filters[irc_room]:
             if function_name in filters[irc_room]['blocked']:
@@ -57,6 +67,56 @@ def smart_ignore(fn):
         return fn(jenni, msg)
     return callable
 smart_ignore.wrapper = True
+
+
+def rate_limiter(fn):
+    if not hasattr(fn, 'throttle'):
+        return fn
+    @wraps(fn)
+    def callable(jenni, msg):
+        if not hasattr(fn, '_last_called'):
+            fn._last_called = 0
+        default_fn = lambda jenni, msg: None
+        if time.time() - fn._last_called < fn.throttle:
+            return default_fn
+        fn._last_called = time.time()
+        return fn(jenni, msg)
+    return callable
+rate_limiter.wrapper = True
+
+
+def room_modify_filtered(jenni, msg):
+    if not msg.admin:
+        return
+    action, room = msg.groups()
+    if 'room_blocked' not in jenni.brain['filters']:
+        jenni.brain['filters']['room_blocked'] = []
+    if action == 'enable':
+        jenni.brain['filters']['room_blocked'].remove(room)
+    else:
+        jenni.brain['filters']['room_blocked'].append(room)
+    jenni.brain.save()
+    jenni.reply('Brittbot has been %sd in %s' % (
+        action, room
+    ))
+room_modify_filtered.rule = '!(?:room)(enable|disable) (.+)'
+
+
+def global_modify_filtered(jenni, msg):
+    if not msg.admin:
+        return
+    action, function = msg.groups()
+    if 'global_blocked' not in jenni.brain['filters']:
+        jenni.brain['filters']['global_blocked'] = []
+    if action == 'enable':
+        jenni.brain['filters']['global_blocked'].remove(function)
+    else:
+        jenni.brain['filters']['global_blocked'].append(function)
+    jenni.brain.save()
+    jenni.reply('Function `%s` has been %sd' % (
+        function, action
+    ))
+global_modify_filtered.rule = '!(?:global|g)(enable|disable) (.+)'
 
 
 def modify_filtered(jenni, msg):
