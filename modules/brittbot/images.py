@@ -102,6 +102,41 @@ def img_zoom(jenni, msg):
 img_zoom.rule = r'^!zoom( \S+)?$'
 
 
+def process_deepdream(file_handle, img_filter=None):
+    if not img_filter:
+        img_filter = 'trippy'
+
+    data = MultipartEncoder({
+        'title': 'wat',
+        'description': 'none',
+        'filter': img_filter,
+        'submit': "Let's Dream",
+        'image': ('img0.jpg', file_handle, 'image/jpeg'),
+    })
+    response = requests.post(
+        'https://dreamscopeapp.com/api/images',
+        data=data,
+        verify=False,
+        headers={
+            'Content-Type': data.content_type
+        }
+    )
+    if response.status_code >= 400:
+        print response
+        print response.content
+        raise("An error has occurred")
+    image_id = json.loads(response.text)['uuid']
+    for _ in range(30):
+        time.sleep(1.5)
+        r = requests.get('https://dreamscopeapp.com/api/images/{}'.format(image_id))
+        final_url = r.json()['filtered_url']
+        if final_url:
+            break
+    if not final_url:
+        raise('Deep dream took too long to complete. Try a smaller image.')
+    return final_url
+
+
 def deepdream(jenni, msg):
     if 'last_trip' in jenni.brain and time.time() - jenni.brain['last_trip'] < 30:
         jenni.reply('Tripping too hard right now, please try again in 30 seconds.')
@@ -124,42 +159,45 @@ def deepdream(jenni, msg):
     f = open('/tmp/img.jpg', 'wb')
     f.write(urllib.urlopen(in_url).read())
     f.close()
-    data = MultipartEncoder({
-        'title': 'wat',
-        'description': 'none',
-        'filter': img_filter,
-        'submit': "Let's Dream",
-        'image': ('img0.jpg', open('/tmp/img.jpg', 'rb'), 'image/jpeg'),
-    })
-    response = requests.post(
-        'https://dreamscopeapp.com/api/images',
-        data=data,
-        verify=False,
-        headers={
-            'Content-Type': data.content_type
-        }
-    )
-    if response.status_code >= 400:
-        print response
-        print response.content
-        jenni.reply("An error has occurred.")
-    image_id = json.loads(response.text)['uuid']
-    for _ in range(15):
-        time.sleep(1.5)
-        r = requests.get('https://dreamscopeapp.com/api/images/{}'.format(image_id))
-        final_url = r.json()['filtered_url']
-        if final_url:
-            break
-    if not final_url:
-        jenni.reply('Deep dream took too long to complete. Try a smaller image.')
-        return
-    jenni.brain['last_trip'] = time.time()
-    img = urllib.urlopen(final_url).read()
-    imagepath = '/var/www/htdocs/brittbot/'
-    imagename = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
-    f = open(imagepath + imagename, 'w')
-    f.write(img)
-    f.close()
+
+    if in_url.endswith('.gif'):
+        from PIL import (
+            Image,
+            ImageSequence,
+        )
+        import io
+        from modules.brittbot.pil.images2gif import writeGif
+
+        img = Image.open('/tmp/img.jpg')
+        if hasattr(img, 'format') and img.format.lower() == 'gif':
+            if not msg.admin:
+                return
+            original_duration = img.info['duration']
+            frames = [frame.copy() for frame in ImageSequence.Iterator(img)]
+            if len(frames) > 40:
+                jenni.reply("Too many frames :(")
+                return
+            final_frames = []
+            for i, frame in enumerate(frames):
+                im = frame.convert('RGBA')
+                im.save('/tmp/frame{}.jpg'.format(i), 'jpeg', quality=100)
+                print "Processing frame {}...".format(i)
+                url = process_deepdream(open('/tmp/frame{}.jpg'.format(i), 'rb'), img_filter)
+                im = Image.open(io.BytesIO(urllib.urlopen(url).read()))
+                final_frames.append(im)
+                time.sleep(2)
+            imagepath = '/var/www/htdocs/brittbot/'
+            imagename = "%s.gif" % str(uuid.uuid4()).replace('-', '')[0:8]
+            writeGif(imagepath + imagename, final_frames, duration=original_duration/1000.0, dither=0)
+    else:
+        final_url = process_deepdream(open('/tmp/img.jpg', 'rb'), img_filter)
+        jenni.brain['last_trip'] = time.time()
+        img = urllib.urlopen(final_url).read()
+        imagepath = '/var/www/htdocs/brittbot/'
+        imagename = "%s.jpg" % str(uuid.uuid4()).replace('-', '')[0:8]
+        f = open(imagepath + imagename, 'w')
+        f.write(img)
+        f.close()
     url = "http://brittbot.brittg.com/{}".format(imagename)
     msgs = load_db()
     msgs[msg.sender]['last_said'].append(url)
@@ -176,7 +214,7 @@ def justxthingshandler(jenni, msg):
     if not quote:
         quotes = load_db().get(msg.sender)
         if quotes and 'last_said' in quotes:
-            quotes['last_said'] = [quote for quote in quotes['last_said'] if not re.match(r'(.*)(#\S+\w)$', quote)]
+            quotes['last_said'] = [q for q in quotes['last_said'] if not re.match(r'(.*)(#\S+\w)$', q)]
             quote = ''.join(quotes['last_said'][-1].split(':')[1:])
 
     if quote[0] in ['!'] or 'http' in quote:
