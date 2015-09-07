@@ -75,6 +75,25 @@ kicks_me.rule = "^(\x01ACTION )(\w+s) $nickname"
 kicks_me.priority = 'medium'
 
 
+def kicks_admin(jenni, msg):
+    admin = msg.groups()[0]
+    if admin == msg.nick:
+        return
+    reply = random.choice([
+        "growls at {}".format(msg.nick),
+        "hisses at {}".format(msg.nick),
+        "glares at {}".format(msg.nick),
+        "fires a warning laser at {}'s feet".format(msg.nick),
+        "throws water onto {}".format(msg.nick),
+        "angrily beeps at {}".format(msg.nick),
+        "attempts to protect {} from {}".format(admin, msg.nick),
+        "attacks {}".format(msg.nick),
+    ])
+    jenni.say(action(reply))
+kicks_admin.rule = "^(?:\x01ACTION )(?:\w+s) (${admin})"
+kicks_admin.priority = 'medium'
+
+
 def what_do(jenni, msg):
     if msg.friend:
         actions = [
