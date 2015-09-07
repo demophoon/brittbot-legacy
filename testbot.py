@@ -36,12 +36,12 @@ class MockBot(bot.Jenni):
     recieved_messages = {}
 
     def write(self, args, text=None, raw=False):
-        print u"{}: {}".format(self.uuid, text)
+        print u"{}: {}".format(self.caller_func, text)
 
     def msg(self, recipient, text, log=False, x=False, wait_time=3):
-        if self.uuid not in self.recieved_messages:
-            self.recieved_messages[self.uuid] = []
-        self.recieved_messages[self.uuid].append({
+        if self.caller_func.__name__ not in self.recieved_messages:
+            self.recieved_messages[self.caller_func.__name__] = []
+        self.recieved_messages[self.caller_func.__name__].append({
             'room': recipient,
             'message': text,
         })

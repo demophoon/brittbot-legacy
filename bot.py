@@ -247,7 +247,7 @@ class Jenni(irc.Bot):
         class JenniWrapper(object):
             def __init__(self, jenni):
                 self._bot = jenni
-                self.uuid = str(uuid.uuid4())
+                self.caller_func = None
 
             def __getattr__(self, attr):
                 sender = origin.sender or text
@@ -351,7 +351,7 @@ class Jenni(irc.Bot):
         bytes, event, args = args[0], args[1], args[2:]
         text = decode(bytes)
 
-        uuids = []
+        function_names = []
         priorities = sorted(self.commands.keys())
         for priority in priorities:
             items = self.commands[priority].items()
@@ -359,7 +359,6 @@ class Jenni(irc.Bot):
                 for func in funcs:
                     if event != func.event:
                         continue
-
                     match = regexp.match(text)
                     if match:
                         if self.limit(origin, func):
@@ -367,17 +366,15 @@ class Jenni(irc.Bot):
 
                         jenni = self.wrapped(origin, text, match)
                         input = self.input(origin, text, bytes, match, event, args)
-
-                        nick = (input.nick).lower()
-
+                        jenni.caller_func = func
                         if func.thread:
                             targs = (func, origin, jenni, input)
                             t = threading.Thread(target=self.call, args=targs)
                             t.start()
                         else:
                             self.call(func, origin, jenni, input)
-                            uuids.append(jenni.uuid)
-        return uuids
+                            function_names.append(func.__name__)
+        return function_names
 
 if __name__ == '__main__':
     print __doc__
