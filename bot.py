@@ -160,7 +160,10 @@ class Jenni(irc.Bot):
         def sub(pattern, self=self):
             interpolatable_names = {
                 '$nickname': re.escape(self.nick),
+                '${nickname}': re.escape(self.nick),
                 '${prefix}': re.escape(self.config.prefix),
+                '${owner}': re.escape(self.config.owner),
+                '${admin}': "(?:{})".format('|'.join([re.escape(admin) for admin in self.config.admins])),
             }
             for var in interpolatable_names:
                 pattern = pattern.replace(var, interpolatable_names[var])
