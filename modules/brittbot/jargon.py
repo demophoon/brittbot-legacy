@@ -104,4 +104,4 @@ def tech_jargon(jenni, msg):
         words.append(get_word(t))
     reply = sentence_format['structure'].format(*words)
     jenni.reply(reply)
-tech_jargon.rule = r'(?i)^(?:!jargon|$nickname\S? what do you (?:think|know)\??)'
+tech_jargon.rule = r'(?i)^(?:!jargon|$nickname\S?.*what do you (?:think|know)\??)'

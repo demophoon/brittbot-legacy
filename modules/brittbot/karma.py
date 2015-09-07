@@ -94,7 +94,7 @@ def karma_award(jenni, msg):
             ("born" in item or "bourne" in item) and "again" in item,
             "shell" in item,
             "bash" in item,
-            re.match(r"b+a+s+h+", item),
+            re.match(r"(?i)(?:b|8)+(?:a|@|4)+(s|5)+h+", item),
         ])
         if item.lower() in negitive_only or is_tricky:
             if is_tricky:

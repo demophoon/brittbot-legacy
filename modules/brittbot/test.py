@@ -93,8 +93,14 @@ diceroll.rule = r"^(?:\x01ACTION rolls |!roll |$nickname\W? roll |$nickname\W? |
 def set_brain_param(jenni, msg):
     if not msg.admin:
         return
-    path = msg.groups()[0].strip()
+    action = msg.groups()[0].strip()
+    path = msg.groups()[1].strip()
     current_node = jenni.brain
+    new_value = None
+    if action == 'write':
+        parts = path.split('=')
+        path = parts[0].strip()
+        new_value = parts[-1].strip()
     if path:
         for key in path.split('.'):
             current_node = current_node[key]

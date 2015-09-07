@@ -176,7 +176,7 @@ one_upper.priority = 'medium'
 def karma_upper(jenni, input):
     nice_thanks = [
         ':D :D :D',
-        'Thank you! %s :D' % input.nick,
+        'Thank you %s! :D' % input.nick,
         action('does a jolly dance'),
         action('giggles'),
         action('smiles real big'),
