@@ -3,6 +3,7 @@
 # jenni brittbot/adarkroom.py - A Dark Room in IRC
 
 import time
+import math
 from modules.brittbot.helpers import notice
 
 

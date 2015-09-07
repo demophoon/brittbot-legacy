@@ -57,7 +57,7 @@ def markov_generator(jenni, msg):
             if starting_choices:
                 starting_word = random.choice(starting_choices).split(',')
         reply = starting_word
-        for jumps in range(random.randint(10,24)):
+        for jumps in range(random.randint(10, 24)):
             words = t.get(','.join(reply[-2:]))
             print "{}".format(' '.join(reply))
             if not words:

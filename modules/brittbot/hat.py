@@ -128,8 +128,8 @@ def hat(jenni, input):
         return jenni.msg(input.sender, msg, x=True)
     else:
         msg = '{0} is now wearing a {1}'.format(
-        input.group(2),
-        hats[index],
+            input.group(2),
+            hats[index],
         )
         jenni.msg(input.sender, msg, x=True)
 hat.commands = ['hat', 'hats']

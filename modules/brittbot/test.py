@@ -3,14 +3,12 @@
 # jenni brittbot/test.py - Test modules and features
 
 import datetime
-from dateutil.relativedelta import relativedelta
 import time
-import math
 import random
-import os
 import re
-import json
+from functools import wraps
 
+from dateutil.relativedelta import relativedelta
 from textblob import TextBlob
 
 from modules.brittbot.helpers import (
@@ -18,7 +16,6 @@ from modules.brittbot.helpers import (
     colorize,
     colors,
     elapsed,
-    notice,
 )
 
 
@@ -107,14 +104,24 @@ def set_brain_param(jenni, msg):
         value = ', '.join(current_node)
     else:
         value = repr(current_node)
+
+    if new_value:
+        if not(isinstance(current_node, int) or isinstance(current_node, str)):
+            jenni.reply("Unable to set non int or str values")
+            return
+        if new_value.isdigit():
+            new_value = int(new_value)
+        current_node = new_value
+        jenni.brain.save()
+        jenni.reply("{} is now set to {}".format(path, new_value))
+        return
     jenni.reply(value)
-set_brain_param.rule = r"^!readbrain(.*)"
+set_brain_param.rule = r"^!(read|write)brain(.*)"
 
 
 def urlshortner(jenni, msg):
     import requests
-    import urllib
-    from modules.find import load_db, save_db
+    from modules.find import load_db
 
     in_url = msg.groups()[0]
     if not in_url:
@@ -124,7 +131,7 @@ def urlshortner(jenni, msg):
             for img in reversed(imgs['last_said']):
                 urls = re.findall(url_regex, img)
                 if urls:
-                    in_url = urls[0]
+                    in_url = urls[0].strip()
                     break
     if not in_url:
         return
@@ -281,7 +288,7 @@ def award_item(jenni, msg):
     elif quantity.lower() in ['more', 'some', 'many', 'much', 'wow', 'so', 'such', 'lotsa']:
         if item.split(' ')[0] in ['more']:
             item = ' '.join(item.split(' ')[1:])
-        quantity = random.choice(range(2,10))
+        quantity = random.choice(range(2, 10))
     elif quantity.lower() in ['all']:
         quantity = 10
         if item.split(' ')[0] == 'the':

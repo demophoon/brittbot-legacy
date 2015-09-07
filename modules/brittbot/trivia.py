@@ -110,7 +110,6 @@ def trivia(jenni, msg):
         rooms[chan]['noplay_hostmask'] = []
     if not points:
         points = 1000
-    print "%s points" % (points, )
     rooms[chan]['answer'] = rooms[chan]['answer'].replace("<i>", "")
     rooms[chan]['answer'] = rooms[chan]['answer'].replace("</i>", "")
     rooms[chan]['answer'] = rooms[chan]['answer'].replace("\"", "")
@@ -273,7 +272,6 @@ def trivia_skip(jenni, msg):
         jenni.reply("Nou.")
         return
     init_user_brain(jenni, msg.nick)
-    #jenni.reply("Skipping question.")
     jenni.brain['trivia']['users'][msg.nick]['skipped'] += 1
     rooms[chan]['question'] = None
     trivia(jenni, msg)
@@ -337,5 +335,4 @@ def shutdown_handler(jenni, msg):
         jenni.write(['NOTICE', room, ":%s" % reply])
         time.sleep(1)
     jenni.write(['MODE', trivia_room, "-i"])
-    print "Powering off trivia."
 shutdown_handler.rule = r'$^'

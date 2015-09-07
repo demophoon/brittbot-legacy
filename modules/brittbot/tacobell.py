@@ -85,6 +85,7 @@ meats = [
     'Fajitas',
 ]
 
+
 def get_next_phrase(phrases, skips=None, randomness=0.5, vegan=False):
     trues = int(randomness * 100)
     falses = int(100 - trues)

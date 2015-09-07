@@ -252,8 +252,7 @@ class Jenni(irc.Bot):
             def __getattr__(self, attr):
                 sender = origin.sender or text
                 if attr == 'reply':
-                    return (lambda msg:
-                            self.msg(sender, origin.nick + ': ' + msg))
+                    return (lambda msg: self.msg(sender, origin.nick + ': ' + msg))
                 elif attr == 'say':
                     return lambda msg: self._bot.msg(sender, msg)
                 elif attr == 'pm':

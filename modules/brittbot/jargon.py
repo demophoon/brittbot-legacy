@@ -33,7 +33,7 @@ def tech_jargon(jenni, msg):
             "application", "transmitter", "bus", "circuit", "capacitor", "matrix",
             "mainframe", "keyboard", "input device", "sensor", "transistor", "ram disk",
             "system clock", "tree", "byte", "bytecode", "firewire", "link", "cache",
-            "dot matrix", "cache matrix", "variable",  "cable", "server", "error",
+            "dot matrix", "cache matrix", "variable", "cable", "server", "error",
             "core", "module", "terminal", "conduit", "field", "drone", "subroutines",
             "puppet strings", "puppet", "hiera", "bitcoin", "cold brew",
             "magic the gathering", "solaris", "leatherman", "catalog", "brittbot",

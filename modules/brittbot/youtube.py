@@ -38,7 +38,7 @@ def yt_context(jenni, msg):
     obfuscate = parse_qs(urlparse(target).query).get("o")
     if video_id and "QrGrOK8oZG8" in video_id and msg.nick == "demophoon":
         obfuscate = True
-    if not obfuscate is None:
+    if obfuscate is not None:
         video_id = [random.choice([
             # Maru
             "bXtHwvp7jYE",
@@ -49,13 +49,15 @@ def yt_context(jenni, msg):
             "VKQtwvKa-aY",
             "AeJX7fxz-f4",
             # Music videos
-            #"gy1B3agGNxw",
+            "gy1B3agGNxw",
+            # Aunty Donna Thats what you get
+            "9x7r1er6Ljw",
         ])]
     if not video_id:
         video_id = [urlparse(target).path[1:]]
     yt = get_video_information(video_id[0], jenni.config.youtube_api_key)
     if yt:
-        if not obfuscate is None:
+        if obfuscate is not None:
             yt['shorturl'] = "http://youtu.be/" + parse_qs(urlparse(target).query).get("v")[0]
         youtube = colorize("You", fg=colors['black'], bg=colors['white'])
         youtube += colorize("Tube", fg=colors['white'], bg=colors['red'])

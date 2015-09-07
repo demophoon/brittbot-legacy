@@ -7,7 +7,6 @@ import time
 
 try:
     import Adafruit_BMP.BMP085 as BMP085
-    import Adafruit_BBIO.GPIO as GPIO
     import Adafruit_BBIO.PWM as PWM
 except ImportError:
     raise Exception("Cannot utilize hardware components on this node.")
