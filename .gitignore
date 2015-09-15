@@ -1,5 +1,7 @@
 *.pyc
-*.txt
+comp.txt
+quotes.txt
+find.txt
 uno_test.py
 .*.sw*
 osu_osc.py

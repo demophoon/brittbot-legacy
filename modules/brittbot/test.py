@@ -50,10 +50,33 @@ def xfacts(jenni, msg):
         jenni.brain['facts'][facttype].append(fact.strip())
         reply = "Fact added."
     else:
-        if not jenni.brain['facts'][facttype]:
+        if facttype == 'snapple':
+            facts = open('modules/brittbot/facts.txt', 'r').read().split('\n')
+            replacement_word = None
+            while not replacement_word:
+                fact = random.choice(facts)
+                if ': ' in fact:
+                    tb = TextBlob(fact.split(": ")[1])
+                else:
+                    tb = TextBlob(fact)
+                phrases = tb.noun_phrases
+                phrases = [x for x in phrases if not x.lower().endswith('name')]
+                phrases = [x for x in phrases if not x.lower().startswith('\'s')]
+                if not phrases:
+                    continue
+                replacement_word = random.choice(tb.noun_phrases)
+                subword = msg.nick
+                if replacement_word.endswith('ians'):
+                    subword = subword + 'ians'
+                tb = re.sub(re.compile(r"(?:the )?\b{}\b".format(re.escape(str(replacement_word))), re.IGNORECASE), subword, str(fact))
+            reply = tb
+            if random.choice([True] + ([False] * 16)):
+                reply += " [citation needed]"
+        else:
+            reply = random.choice(jenni.brain['facts'][facttype])
+        if not reply and not jenni.brain['facts'][facttype]:
             return
-        reply = random.choice(jenni.brain['facts'][facttype])
-    jenni.reply(reply)
+    jenni.say(reply)
 xfacts.rule = r"(?i)^!(\w+)facts( .*)?"
 
 
