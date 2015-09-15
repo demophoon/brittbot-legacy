@@ -10,7 +10,6 @@ Fact #10: Mosquitoes are attracted to people who just ate bananas.
 Fact #11: Flamingos turn pink from eating shrimp.
 Fact #12: Emus and kangaroos cannot walk backward.
 Fact #13: Cats have over 100 vocal chords.
-Fact #14: Camel's milk does not curdle.
 Fact #15: All porcupines float in water.
 Fact #16: The world's termites outweigh the world's humans about 10 to 1.
 Fact #17: A hummingbird weighs less than a penny.
@@ -25,7 +24,6 @@ Fact #25: The only food that does not spoil is honey.
 Fact #26: The Hawaiian alphabet only has 12 letters.
 Fact #27: A ball of glass will bounce higher than a ball of rubber.
 Fact #28: Chewing gum while peeling onions will prevent you from crying.
-Fact #29: On average a human will spend up to 2 weeks kissing in his/her lifetime.
 Fact #30: Fish have eyelids.
 Fact #32: There are about 1 million ants for every person in the world.
 Fact #33: Termites eat through wood two times faster when listening to rock music!
@@ -93,7 +91,6 @@ Fact #98: When the moon is directly overhead, you weigh slightly less.
 Fact #99: You burn about 20 calories per hour chewing gum.
 Fact #100: In a year, the average person walks four miles making his or her bed.
 Fact #101: About half of all Americans are on a diet on any given day.
-Fact #102: A one-minute kiss burns about 26 calories.
 Fact #103: Frowning burns more calories than smiling.
 Fact #104: There are more than 30,000 diets on public record.
 Fact #105: You will burn about 7% more calories walking on hard dirt than on pavement.
@@ -224,7 +221,6 @@ Fact #232: The blue whale's heart is the size of a small car.
 Fact #233: There are seven letters that look the same upside down as right side up.
 Fact #234: Great Falls, Montana, is the windiest city in the U.S.
 Fact #235: The biggest pig in recorded history weighed almost one ton.
-Fact #236: Cows give more milk when they listen to music.
 Fact #237: The number of times a cricket chirps in 15 seconds, plus 37, will give you the current air temperature.
 Fact #238: An ostrich's brain is smaller than its eye.
 Fact #239: Besides humans, elephants are the only animals that can be taught to stand on their head.
@@ -584,7 +580,6 @@ Fact #764: The muzzle of a lion is like a fingerprint - no two lions have the sa
 Fact #766: The hippopotamus has the capability to remain underwater for as long as five minutes.
 Fact #767: Honeybees have hair on their eyes.
 Fact #768: Most elephants weigh less than the tongue of a blue whale.
-Fact #769: If a sheep and a goat mate the offspring is called a geep.
 Fact #770: Pistol shrimp can make a noise loud enough to break glass.
 Fact #771: Some dinosaurs were as small as chickens.
 Fact #773: Mountain goats aren't actually goats. They are antelopes.
@@ -937,7 +932,6 @@ Astronauts are not allowed to eat beans before they go into space because passin
 The word "queue" is the only word in the English language that is still pronounced the same way when the last four letters are removed.
 Beetles taste like apples, wasps like pine nuts, and worms like fried bacon.
 Of all the words in the English language, the word ’set’ has the most definitions!
-What is called a "French kiss" in the English speaking world is known as an "English kiss" in France.
 "Almost" is the longest word in the English language with all the letters in alphabetical order.
 "Rhythm" is the longest English word without a vowel.
 In 1386, a pig in France was executed by public hanging for the murder of a child.
@@ -964,7 +958,6 @@ Coca-Cola would be green if colouring weren’t added to it.
 On average a hedgehog’s heart beats 300 times a minute.
 More people are killed each year from bees than from snakes.
 The average lead pencil will draw a line 35 miles long or write approximately 50,000 English words.
-More people are allergic to cow’s milk than any other food.
 Camels have three eyelids to protect themselves from blowing sand.
 The placement of a donkey’s eyes in its’ heads enables it to see all four feet at all times!
 The six official languages of the United Nations are: English, French, Arabic, Chinese, Russian and Spanish.
@@ -992,7 +985,6 @@ Banging your head against a wall uses 150 calories a hour.
 The male praying mantis cannot copulate while its head is attached to its body. The female initiates sex by ripping the male's head off.
 The flea can jump 350 times its body length. It's like a human jumping the length of a football field.
 The catfish has over 27,000 taste buds.
-Some lions mate over 50 times a day.
 Butterflies taste with their feet.
 The strongest muscle in the body is the tongue.
 A cat's urine glows under a black light.
