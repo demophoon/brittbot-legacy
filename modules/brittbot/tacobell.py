@@ -17,6 +17,9 @@ adjectives = [
     'Crispy',
     'Loaded',
     'Grilled',
+    'Smothered',
+    'Stuft',
+    'Cantina',
 ]
 fillers = [
     'Potato',
@@ -31,11 +34,15 @@ fillers = [
     'Fajitas',
     u'Fritos®',
     u'Doritos® Locos',
+    u'Fiery Doritos® Locos',
+    u'Cool Ranch® Doritos® Locos',
+    u'Nacho Cheese Doritos® Locos',
 ]
 meal_modifiers = [
     'Fiesta',
     'Fresco',
     'Fresco Grilled',
+    'Lava',
 ]
 meals = [
     'Taco',
@@ -64,10 +71,15 @@ meals = [
     u'Doritos® Locos Gordita',
     u'Doritos® Locos Chalupa',
     u'Doritos® Locos Nachos',
+    'Waffle Taco',
+    'Enchirito',
+    'Roll-Up',
+    'Power Bowl',
 ]
 modifiers = [
     'Crunch',
     u'Supreme®',
+    'Party Pack',
 ]
 
 meats = [
